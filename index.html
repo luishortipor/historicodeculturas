@@ -297,6 +297,7 @@
             gap: 12px;
             border-bottom: 2px solid #f0ebd9;
             margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -431,13 +432,13 @@
         </div>
 
         <div class="filter-section">
-            <div class="filter-title">Quinta</div>
-            <div class="btn-grid-1" id="farms-grid"></div>
+            <div class="filter-title">Cultura</div>
+            <input type="text" id="culture-search" class="search-input" placeholder="Pesquisar cultura..." oninput="updateDashboard()">
         </div>
 
         <div class="filter-section">
-            <div class="filter-title">Cultura</div>
-            <input type="text" id="culture-search" class="search-input" placeholder="Pesquisar cultura..." oninput="updateDashboard()">
+            <div class="filter-title">Quinta</div>
+            <div class="btn-grid-1" id="farms-grid"></div>
         </div>
     </aside>
 
@@ -453,6 +454,7 @@
                 <button class="tab-btn active" onclick="switchTab('tab-quinta', this)">Por quinta</button>
                 <button class="tab-btn" onclick="switchTab('tab-ano', this)">Por ano</button>
                 <button class="tab-btn" onclick="switchTab('tab-cultura', this)">Por cultura</button>
+                <button class="tab-btn" onclick="switchTab('tab-kgm2ano', this)">kg/m²/ano</button>
             </div>
 
             <div id="tab-quinta" class="tab-content active">
@@ -479,6 +481,25 @@
                     <div class="chart-box"><div class="chart-box-title">Top 10 - kg/h de trabalho </div><div class="chart-container"><canvas id="chartC2"></canvas></div></div>
                     <div class="chart-box"><div class="chart-box-title">Top 10 - h/ha/sem </div><div class="chart-container"><canvas id="chartC3"></canvas></div></div>
                     <div class="chart-box"><div class="chart-box-title">Top 10 - kg/m²/cultura </div><div class="chart-container"><canvas id="chartC4"></canvas></div></div>
+                </div>
+            </div>
+
+            <!-- Separador kg/m²/ano -->
+            <div id="tab-kgm2ano" class="tab-content">
+                <div class="chart-box" style="width: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <div class="chart-box-title" style="margin-bottom:2px;">kg/m2/ano</div>
+                            <div style="font-size: 0.75rem; font-style: italic; color: var(--text-muted);">Total de kg produzidos na área da quinta, não tem em conta filtros de cultura/tipo</div>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                            <input type="checkbox" id="ungroupYearsToggle" onchange="updateDashboard()" style="width: 16px; height: 16px; cursor: pointer;">
+                            Por ano
+                        </label>
+                    </div>
+                    <div class="chart-container" style="height: 380px;">
+                        <canvas id="chartKgM2Ano"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
@@ -547,6 +568,7 @@
 
         const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
+        // Primeira fonte de dados (Culturas)
         const rawData = [
     {
         "quinta": "Caminhos da Cotovia",
@@ -6790,6 +6812,47 @@
     }
 ];
 
+        // Segunda fonte de dados (kg/m²/ano - Imagem)
+        const secondRawData = [
+            { ano: 2016, quinta: "Horticilha", kg_m2_ano: 15.00 },
+            { ano: 2017, quinta: "Horticilha", kg_m2_ano: 8.00 },
+            { ano: 2018, quinta: "Horticilha", kg_m2_ano: 22.00 },
+            { ano: 2019, quinta: "Horticilha", kg_m2_ano: 13.00 },
+            { ano: 2020, quinta: "Horticilha", kg_m2_ano: 21.00 },
+            { ano: 2021, quinta: "Horticilha", kg_m2_ano: 27.83 },
+            { ano: 2021, quinta: "Zambujeira", kg_m2_ano: 17.85 },
+            { ano: 2021, quinta: "Pegões", kg_m2_ano: 9.16 },
+            { ano: 2021, quinta: "CCS", kg_m2_ano: 14.62 },
+            { ano: 2022, quinta: "Horticilha", kg_m2_ano: 28.78 },
+            { ano: 2022, quinta: "Zambujeira", kg_m2_ano: 25.39 },
+            { ano: 2022, quinta: "Pegões", kg_m2_ano: 21.83 },
+            { ano: 2022, quinta: "CCS", kg_m2_ano: 13.35 },
+            { ano: 2022, quinta: "Sobreiro", kg_m2_ano: 22.79 },
+            { ano: 2022, quinta: "Campelos", kg_m2_ano: 21.22 },
+            { ano: 2022, quinta: "Caminhos da Cotovia", kg_m2_ano: 3.95 },
+            { ano: 2023, quinta: "Horticilha", kg_m2_ano: 31.65 },
+            { ano: 2023, quinta: "Zambujeira", kg_m2_ano: 26.42 },
+            { ano: 2023, quinta: "Pegões", kg_m2_ano: 22.36 },
+            { ano: 2023, quinta: "CCS", kg_m2_ano: 20.42 },
+            { ano: 2023, quinta: "Sobreiro", kg_m2_ano: 18.25 },
+            { ano: 2023, quinta: "Campelos", kg_m2_ano: 13.35 },
+            { ano: 2023, quinta: "Caminhos da Cotovia", kg_m2_ano: 23.28 },
+            { ano: 2024, quinta: "Horticilha", kg_m2_ano: 33.64 },
+            { ano: 2024, quinta: "Zambujeira", kg_m2_ano: 24.49 },
+            { ano: 2024, quinta: "Pegões", kg_m2_ano: 22.06 },
+            { ano: 2024, quinta: "CCS", kg_m2_ano: 12.05 },
+            { ano: 2024, quinta: "Sobreiro", kg_m2_ano: 16.83 },
+            { ano: 2024, quinta: "Campelos", kg_m2_ano: 25.23 },
+            { ano: 2024, quinta: "Caminhos da Cotovia", kg_m2_ano: 25.80 },
+            { ano: 2025, quinta: "Horticilha", kg_m2_ano: 36.60 },
+            { ano: 2025, quinta: "Zambujeira", kg_m2_ano: 23.05 },
+            { ano: 2025, quinta: "Pegões", kg_m2_ano: 21.41 },
+            { ano: 2025, quinta: "CCS", kg_m2_ano: 20.68 },
+            { ano: 2025, quinta: "Sobreiro", kg_m2_ano: 18.49 },
+            { ano: 2025, quinta: "Campelos", kg_m2_ano: 15.50 },
+            { ano: 2025, quinta: "Caminhos da Cotovia", kg_m2_ano: 28.44 }
+        ];
+
         let selectedMonths = [1,2,3,4,5,6,7,8,9,10,11,12];
         let selectedYears = [];
         let selectedTypes = [];
@@ -6803,13 +6866,14 @@
         });
 
         function initFilters() {
-            const years = [...new Set(rawData.map(d => d.ano))].sort();
-            const defaultYears = [2023, 2024, 2025, 2026];
-            selectedYears = years.filter(y => defaultYears.includes(y));
+            const allYears = [...new Set([...rawData.map(d => d.ano), ...secondRawData.map(d => d.ano)])].sort((a,b) => a - b);
+            const defaultYears = [2023, 2024, 2025];
+            selectedYears = allYears.filter(y => defaultYears.includes(y));
+            if(selectedYears.length === 0) selectedYears = [...allYears];
 
             const yearsGrid = document.getElementById('years-grid');
             yearsGrid.innerHTML = '';
-            years.forEach(yr => {
+            allYears.forEach(yr => {
                 const btn = document.createElement('button');
                 const isSelected = selectedYears.includes(yr);
                 btn.className = `btn-filter ${isSelected ? 'active' : ''}`;
@@ -6920,6 +6984,7 @@
             if (activeTabId === 'tab-quinta') updateTabQuintas(data);
             if (activeTabId === 'tab-ano') updateTabAnos(data);
             if (activeTabId === 'tab-cultura') updateTabCulturas(data);
+            if (activeTabId === 'tab-kgm2ano') updateTabKgM2Ano();
         }
 
         function updateStats(data) {
@@ -6932,7 +6997,18 @@
                 card.className = 'farm-stat-card';
                 card.style.setProperty('--farm-color', farmColors[farm] || '#ccc');
 
-                if(farmData.length === 0) {
+                const farmYearMatches = secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0);
+                const kgM2AnoAvg = farmYearMatches.length > 0 ? (farmYearMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmYearMatches.length).toFixed(2) : '-';
+                
+                let bestKgM2Ano = '-';
+                let bestKgM2AnoYear = '-';
+                if (farmYearMatches.length > 0) {
+                    let bestObj = farmYearMatches.reduce((max, curr) => curr.kg_m2_ano > max.kg_m2_ano ? curr : max, farmYearMatches[0]);
+                    bestKgM2Ano = bestObj.kg_m2_ano.toFixed(2);
+                    bestKgM2AnoYear = bestObj.ano;
+                }
+
+                if(farmData.length === 0 && farmYearMatches.length === 0) {
                     card.innerHTML = `
                         <div class="farm-stat-header"><span>${farm}</span></div>
                         <div class="no-data-text">Sem dados</div>
@@ -6970,19 +7046,24 @@
 
                     card.innerHTML = `
                         <div class="farm-stat-header"><span>${farm}</span></div>
-                        <div style="margin-bottom: 3px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 2px;">
+                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
+                            <div class="metric-row"><span class="metric-label">kg/m²/ano (Média)</span><span class="metric-val" style="color: #2d4a22;">${kgM2AnoAvg}</span></div>
+                            <div class="metric-row"><span class="metric-label">Máximo</span><span class="metric-val">${bestKgM2Ano}</span></div>
+                            <div class="metric-sub">${bestKgM2AnoYear}</div>
+                        </div>
+                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
                             <div class="metric-row"><span class="metric-label">kg/m²/sem (Média)</span><span class="metric-val">${m1.avg}</span></div>
                             <div class="metric-row"><span class="metric-label">Máximo</span><span class="metric-val">${m1.bestVal}</span></div>
                             <div class="metric-sub">${m1.cultura} (${m1.mesAno})</div>
                         </div>
-                        <div style="margin-bottom: 3px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 2px;">
+                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
                             <div class="metric-row"><span class="metric-label">kg/h trabalho (Média)</span><span class="metric-val">${m2.avg}</span></div>
                             <div class="metric-row"><span class="metric-label">Máximo</span><span class="metric-val">${m2.bestVal}</span></div>
                             <div class="metric-sub">${m2.cultura} (${m2.mesAno})</div>
                         </div>
-                        <div style="margin-bottom: 3px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 2px;">
+                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
                             <div class="metric-row"><span class="metric-label">h/ha/sem (Média)</span><span class="metric-val">${m3.avg}</span></div>
-                            <div class="metric-row"><span class="metric-label">Melhor (Mínimo)</span><span class="metric-val">${m3.bestVal}</span></div>
+                            <div class="metric-row"><span class="metric-label">Mínimo</span><span class="metric-val">${m3.bestVal}</span></div>
                             <div class="metric-sub">${m3.cultura} (${m3.mesAno})</div>
                         </div>
                         <div>
@@ -7064,36 +7145,16 @@
                         data: dataVals, 
                         backgroundColor: colorArray, 
                         borderColor: borderColors,
-                        borderWidth: {
-                            top: 2,
-                            right: 2,
-                            left: 2,
-                            bottom: 0
-                        },
+                        borderWidth: { top: 2, right: 2, left: 2, bottom: 0 },
                         borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 } 
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutQuart'
-                    },
-                    animations: {
-                        y: {
-                            duration: 1000,
-                            easing: 'easeOutQuart',
-                            from: function(context) {
-                                if (context.type === 'data') {
-                                    return context.chart.scales.y.getPixelForValue(0);
-                                }
-                            }
-                        }
-                    },
                     plugins: pluginsConfig,
                     scales: {
-                        y: { beginAtZero: true, grace: '20%', ticks: { font: { size: 11 } } },
+                        y: { beginAtZero: true, grace: '25%', ticks: { font: { size: 11 } } },
                         x: { ticks: { font: { size: 11, weight: '500' } }, grid: { display: false } }
                     }
                 }
@@ -7138,7 +7199,7 @@
         }
 
         function updateTabAnos(data) {
-            const years = [...selectedYears].sort();
+            const years = [...selectedYears].sort((a,b) => a - b);
             let yearBarColor = '#75b35c';
             if (selectedFarms.length === 1) yearBarColor = farmColors[selectedFarms[0]] || '#75b35c';
 
@@ -7215,6 +7276,120 @@
 
             const c4 = getTop10List('kg_m2_totais', false, false, null, d => Math.round(d.semanas_duracao || 0));
             renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => farmColors[d.farm] || '#4a7c36'), false, c4.map(d => d.extra));
+        }
+
+        function updateTabKgM2Ano() {
+            const canvasId = 'chartKgM2Ano';
+            const ungrouped = document.getElementById('ungroupYearsToggle').checked;
+            const filteredYears = [...selectedYears].sort((a,b) => a - b);
+            const filteredFarms = selectedFarms;
+
+            if (!ungrouped) {
+                let stats = [];
+                filteredFarms.forEach(farm => {
+                    const farmMatches = secondRawData.filter(d => d.quinta === farm && filteredYears.includes(d.ano) && d.kg_m2_ano > 0);
+                    if (farmMatches.length > 0) {
+                        const avg = farmMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmMatches.length;
+                        stats.push({ farm: farm, avg: +avg.toFixed(2) });
+                    }
+                });
+                stats.sort((a, b) => b.avg - a.avg);
+
+                const labels = stats.map(d => farmAbbreviations[d.farm] || d.farm);
+                const dataVals = stats.map(d => d.avg);
+                const colors = stats.map(d => farmColors[d.farm] || '#ccc');
+
+                renderBarChart(canvasId, labels, dataVals, colors, false);
+
+            } else {
+                if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+                const ctx = document.getElementById(canvasId).getContext('2d');
+
+                let flatLabels = [];
+                let flatData = [];
+                let flatColors = [];
+                let flatBorders = [];
+                let variations = [];
+
+                filteredYears.forEach(yr => {
+                    const yearShort = String(yr).slice(-2);
+                    let yearItems = filteredFarms.map(farm => {
+                        const match = secondRawData.find(d => d.ano === yr && d.quinta === farm);
+                        const val = (match && match.kg_m2_ano !== undefined) ? match.kg_m2_ano : 0;
+                        const abbr = farmAbbreviations[farm] || farm;
+                        return { farm, val, label: `${abbr} (${yearShort})` };
+                    });
+
+                    yearItems.sort((a, b) => b.val - a.val);
+
+                    // Descobrir o melhor valor estritamente DESTE ANO
+                    const validYearVals = yearItems.map(i => i.val).filter(v => v > 0);
+                    const bestYearVal = validYearVals.length > 0 ? Math.max(...validYearVals) : 0;
+
+                    yearItems.forEach(item => {
+                        flatLabels.push(item.label);
+                        flatData.push(item.val);
+                        const baseColor = farmColors[item.farm] || '#ccc';
+                        flatColors.push(baseColor);
+                        flatBorders.push(darkenColor(baseColor, 25));
+
+                        // Cálculo da variação em relação ao melhor APENAS deste ano
+                        let varStr = '';
+                        if (item.val > 0) {
+                            if (item.val === bestYearVal) {
+                                varStr = '(Melhor)';
+                            } else if (bestYearVal > 0) {
+                                const diff = ((item.val - bestYearVal) / bestYearVal) * 100;
+                                varStr = isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
+                            }
+                        }
+                        variations.push(varStr);
+                    });
+                });
+
+                chartInstances[canvasId] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: flatLabels,
+                        datasets: [{
+                            data: flatData,
+                            backgroundColor: flatColors,
+                            borderColor: flatBorders,
+                            borderWidth: { top: 2, right: 2, left: 2, bottom: 0 },
+                            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                font: { size: 10, weight: 'bold' },
+                                formatter: (val, ctx) => {
+                                    if (!val || val === 0) return '';
+                                    const varStr = variations[ctx.dataIndex];
+                                    const valStr = typeof val === 'number' ? val.toFixed(2) : val;
+                                    return varStr ? `${valStr}\n${varStr}` : `${valStr}`;
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grace: '25%', ticks: { font: { size: 11 } } },
+                            x: { 
+                                ticks: { 
+                                    font: { size: 10, weight: '500' },
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }, 
+                                grid: { display: false } 
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         function switchTab(tabId, btn) {

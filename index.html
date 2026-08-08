@@ -6867,8 +6867,7 @@
 
         function initFilters() {
             const allYears = [...new Set([...rawData.map(d => d.ano), ...secondRawData.map(d => d.ano)])].sort((a,b) => a - b);
-            const defaultYears = [2023, 2024, 2025];
-            selectedYears = allYears.filter(y => defaultYears.includes(y));
+selectedYears = allYears.filter(y => y >= 2023);
             if(selectedYears.length === 0) selectedYears = [...allYears];
 
             const yearsGrid = document.getElementById('years-grid');

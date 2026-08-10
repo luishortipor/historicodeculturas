@@ -6812,7 +6812,7 @@
     }
 ];
 
-        // Segunda fonte de dados (kg/m²/ano - Imagem)
+        // Segunda fonte de dados (kg/m²/ano)
         const secondRawData = [
             { ano: 2016, quinta: "Horticilha", kg_m2_ano: 15.00 },
             { ano: 2017, quinta: "Horticilha", kg_m2_ano: 8.00 },
@@ -6867,7 +6867,7 @@
 
         function initFilters() {
             const allYears = [...new Set([...rawData.map(d => d.ano), ...secondRawData.map(d => d.ano)])].sort((a,b) => a - b);
-selectedYears = allYears.filter(y => y >= 2023);
+            selectedYears = allYears.filter(y => y >= 2023);
             if(selectedYears.length === 0) selectedYears = [...allYears];
 
             const yearsGrid = document.getElementById('years-grid');
@@ -6991,6 +6991,8 @@ selectedYears = allYears.filter(y => y >= 2023);
             container.innerHTML = '';
 
             Object.keys(farmColors).forEach(farm => {
+                if (!selectedFarms.includes(farm)) return;
+
                 const farmData = data.filter(d => d.quinta === farm);
                 const card = document.createElement('div');
                 card.className = 'farm-stat-card';
@@ -7321,7 +7323,6 @@ selectedYears = allYears.filter(y => y >= 2023);
 
                     yearItems.sort((a, b) => b.val - a.val);
 
-                    // Descobrir o melhor valor estritamente DESTE ANO
                     const validYearVals = yearItems.map(i => i.val).filter(v => v > 0);
                     const bestYearVal = validYearVals.length > 0 ? Math.max(...validYearVals) : 0;
 
@@ -7332,7 +7333,6 @@ selectedYears = allYears.filter(y => y >= 2023);
                         flatColors.push(baseColor);
                         flatBorders.push(darkenColor(baseColor, 25));
 
-                        // Cálculo da variação em relação ao melhor APENAS deste ano
                         let varStr = '';
                         if (item.val > 0) {
                             if (item.val === bestYearVal) {

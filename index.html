@@ -101,8 +101,8 @@
         }
 
         .sidebar-header svg {
-            width: 32px;
-            height: 32px;
+            width: 50px;
+            height: 40px;
             fill: #85c469;
         }
 
@@ -400,7 +400,42 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <svg viewBox="0 0 24 24"><path d="M17,8C15.5,8 14.15,8.5 13.06,9.35C11.6,7.56 9.38,6.38 6.84,6.07C7.54,4.27 9.17,2.88 11.23,2.33C11.83,2.17 12.2,1.55 12.04,0.95C11.88,0.35 11.26,-0.02 10.66,0.14C7.88,0.88 5.67,2.81 4.7,5.34C4.38,5.3 4.05,5.27 3.71,5.27C2.22,5.27 0.8,5.77 -0.34,6.72C-0.81,7.11 -0.87,7.81 -0.48,8.28C-0.09,8.75 0.61,8.81 1.08,8.42C1.84,7.79 2.87,7.42 4,7.42C7.03,7.42 9.68,9.22 10.87,11.83C9.07,12.56 7.6,13.97 6.77,15.77C5.35,14.73 3.5,14.15 1.5,14.28C0.89,14.32 0.43,14.85 0.47,15.46C0.51,16.07 1.04,16.53 1.65,16.49C3.21,16.39 4.69,16.85 5.83,17.72C4.69,19.34 4.07,21.32 4.14,23.36C4.16,23.97 4.67,24.44 5.28,24.42C5.89,24.4 6.36,23.89 6.34,23.28C6.28,21.6 6.78,19.95 7.74,18.61C9.28,20.08 11.39,20.95 13.65,20.95C18.07,20.95 21.65,17.37 21.65,12.95C21.65,10.22 19.8,7.92 17,8Z"/></svg>
+            <svg viewBox="0 0 520 340" width="100%" height="100%" class="logo-hortipor-fiel">
+    <!-- 1. CORPO DO TOMATE -->
+    <!-- Círculo vermelho principal -->
+    <circle cx="260" cy="180" r="145" fill="#be0032" />
+    
+    <!-- Linha branca circular interna -->
+    <circle cx="260" cy="180" r="122" fill="none" stroke="#ffffff" stroke-width="4" />
+
+    <!-- 2. HASTE E FOLHAS DA PARTE SUPERIOR -->
+    <!-- Hastes e folhas em verde escuro com bordo branco -->
+    <g fill="#185627" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <!-- Pêndulo central no topo -->
+        <path d="M 248,15 L 272,15 L 272,38 L 248,38 Z" />
+        
+        <!-- Folha Central (Gota pontiaguda para baixo) -->
+        <path d="M 260,38 C 235,50 230,95 260,115 C 290,95 285,50 260,38 Z" />
+        
+        <!-- Folha Esquerda -->
+        <path d="M 242,42 C 190,20 135,55 135,108 C 195,108 238,80 248,50 Z" />
+        
+        <!-- Folha Direita -->
+        <path d="M 278,42 C 330,20 385,55 385,108 C 325,108 282,80 272,50 Z" />
+    </g>
+
+    <!-- 3. TEXTO "Hortipor" EM CAMADAS PARA O EFEITO DE BORDO DUPLO -->
+    <g font-family="'Arial Rounded MT Bold', 'Fredoka', 'Comfortaa', sans-serif" font-weight="900" text-anchor="middle">
+        <!-- Camada 1: Contorno exterior Verde Claro -->
+        <text x="260" y="235" font-size="110" fill="none" stroke="#7ec268" stroke-width="36" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
+        
+        <!-- Camada 2: Contorno interior Verde Escuro -->
+        <text x="260" y="235" font-size="110" fill="none" stroke="#185627" stroke-width="20" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
+        
+        <!-- Camada 3: Preenchimento Amarelo Vivo -->
+        <text x="260" y="235" font-size="110" fill="#fbe851">Hortipor</text>
+    </g>
+</svg>
             <div>
                 <h1>Dashboard Hortipor</h1>
                 <p>Histórico de Culturas</p>
@@ -409,7 +444,7 @@
         </div>
 
         <div class="filter-section">
-            <div class="filter-title">Época de Plantação</div>
+            <div class="filter-title">Época de plantação</div>
             <div class="btn-grid-1">
                 <button class="btn-filter active" id="ep-outono" onclick="toggleSeason('outono')">Outono / Inverno (Set a Fev)</button>
                 <button class="btn-filter active" id="ep-primavera" onclick="toggleSeason('primavera')">Primavera / Verão (Mar a Ago)</button>
@@ -417,12 +452,12 @@
         </div>
 
         <div class="filter-section">
-            <div class="filter-title">Mês de Plantação</div>
+            <div class="filter-title">Mês de plantação</div>
             <div class="btn-grid-3" id="months-grid"></div>
         </div>
 
         <div class="filter-section">
-            <div class="filter-title">Ano</div>
+            <div class="filter-title">Ano de início de colheita</div>
             <div class="btn-grid" id="years-grid"></div>
         </div>
 
@@ -484,7 +519,6 @@
                 </div>
             </div>
 
-            <!-- Separador kg/m²/ano -->
             <div id="tab-kgm2ano" class="tab-content">
                 <div class="chart-box" style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
@@ -568,7 +602,7 @@
 
         const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
-        // Primeira fonte de dados (Culturas)
+        ////////////////// Primeira fonte de dados (Culturas) /////////////////////
         const rawData = [
     {
         "quinta": "Caminhos da Cotovia",
@@ -580,8 +614,7 @@
         "kg_h": 47.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 159.0,
-        "mes": 12.0
+        "h_ha_sem": 159.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -593,8 +626,7 @@
         "kg_h": 35.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 53.0,
-        "h_ha_sem": 199.0,
-        "mes": 12.0
+        "h_ha_sem": 199.0
     },
     {
         "quinta": "Horticilha",
@@ -606,8 +638,7 @@
         "kg_h": 55.0,
         "plantacao": "07/09/2020",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 143.0,
-        "mes": 9.0
+        "h_ha_sem": 143.0
     },
     {
         "quinta": "Horticilha",
@@ -619,8 +650,7 @@
         "kg_h": 60.0,
         "plantacao": "08/09/2020",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 132.0,
-        "mes": 9.0
+        "h_ha_sem": 132.0
     },
     {
         "quinta": "Horticilha",
@@ -632,8 +662,7 @@
         "kg_h": 66.0,
         "plantacao": "18/01/2021",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 171.0,
-        "mes": 1.0
+        "h_ha_sem": 171.0
     },
     {
         "quinta": "Horticilha",
@@ -645,8 +674,7 @@
         "kg_h": 71.0,
         "plantacao": "29/12/2020",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 152.0,
-        "mes": 12.0
+        "h_ha_sem": 152.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -658,8 +686,7 @@
         "kg_h": 43.0,
         "plantacao": "17/04/2023",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 182.0,
-        "mes": 4.0
+        "h_ha_sem": 182.0
     },
     {
         "quinta": "Horticilha",
@@ -671,8 +698,7 @@
         "kg_h": 50.0,
         "plantacao": "08/02/2023",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 148.0,
-        "mes": 2.0
+        "h_ha_sem": 148.0
     },
     {
         "quinta": "Horticilha",
@@ -684,8 +710,7 @@
         "kg_h": 61.0,
         "plantacao": "18/01/2021",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 171.0,
-        "mes": 1.0
+        "h_ha_sem": 171.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -697,8 +722,7 @@
         "kg_h": 21.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 284.0,
-        "mes": 12.0
+        "h_ha_sem": 284.0
     },
     {
         "quinta": "Zambujeira",
@@ -710,8 +734,7 @@
         "kg_h": 50.0,
         "plantacao": "17/04/2023",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 179.0,
-        "mes": 4.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -723,8 +746,7 @@
         "kg_h": 17.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 53.0,
-        "h_ha_sem": 342.0,
-        "mes": 12.0
+        "h_ha_sem": 342.0
     },
     {
         "quinta": "Horticilha",
@@ -736,8 +758,7 @@
         "kg_h": 19.0,
         "plantacao": "11/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 305.0,
-        "mes": 12.0
+        "h_ha_sem": 305.0
     },
     {
         "quinta": "Horticilha",
@@ -749,8 +770,7 @@
         "kg_h": 67.0,
         "plantacao": "03/02/2022",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 162.0,
-        "mes": 2.0
+        "h_ha_sem": 162.0
     },
     {
         "quinta": "Horticilha",
@@ -762,8 +782,7 @@
         "kg_h": 44.0,
         "plantacao": "14/04/2023",
         "semanas_duracao": 35.0,
-        "h_ha_sem": 189.0,
-        "mes": 4.0
+        "h_ha_sem": 189.0
     },
     {
         "quinta": "Horticilha",
@@ -775,8 +794,7 @@
         "kg_h": 40.0,
         "plantacao": "04/05/2022",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 188.0,
-        "mes": 5.0
+        "h_ha_sem": 188.0
     },
     {
         "quinta": "Horticilha",
@@ -788,8 +806,7 @@
         "kg_h": 34.0,
         "plantacao": "14/08/2018",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 158.0,
-        "mes": 8.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Pegões",
@@ -801,8 +818,7 @@
         "kg_h": 54.0,
         "plantacao": "16/04/2024",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 122.0,
-        "mes": 4.0
+        "h_ha_sem": 122.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -814,8 +830,7 @@
         "kg_h": 29.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 185.0,
-        "mes": 12.0
+        "h_ha_sem": 185.0
     },
     {
         "quinta": "CCS",
@@ -827,8 +842,7 @@
         "kg_h": 21.0,
         "plantacao": "14/12/2022",
         "semanas_duracao": 56.0,
-        "h_ha_sem": 234.0,
-        "mes": 12.0
+        "h_ha_sem": 234.0
     },
     {
         "quinta": "Horticilha",
@@ -840,8 +854,7 @@
         "kg_h": 36.0,
         "plantacao": "13/08/2018",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 183.0,
-        "mes": 8.0
+        "h_ha_sem": 183.0
     },
     {
         "quinta": "CCS",
@@ -853,8 +866,7 @@
         "kg_h": 19.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 48.0,
-        "h_ha_sem": 295.0,
-        "mes": 12.0
+        "h_ha_sem": 295.0
     },
     {
         "quinta": "Horticilha",
@@ -866,8 +878,7 @@
         "kg_h": 46.0,
         "plantacao": "01/06/2022",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 178.0,
-        "mes": 6.0
+        "h_ha_sem": 178.0
     },
     {
         "quinta": "Horticilha",
@@ -879,8 +890,7 @@
         "kg_h": 56.0,
         "plantacao": "03/02/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 180.0,
-        "mes": 2.0
+        "h_ha_sem": 180.0
     },
     {
         "quinta": "Pegões",
@@ -892,8 +902,7 @@
         "kg_h": 50.0,
         "plantacao": "16/04/2024",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 122.0,
-        "mes": 4.0
+        "h_ha_sem": 122.0
     },
     {
         "quinta": "CCS",
@@ -905,8 +914,7 @@
         "kg_h": 19.0,
         "plantacao": "11/01/2024",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 340.0,
-        "mes": 1.0
+        "h_ha_sem": 340.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -918,8 +926,7 @@
         "kg_h": 36.0,
         "plantacao": "17/04/2023",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 192.0,
-        "mes": 4.0
+        "h_ha_sem": 192.0
     },
     {
         "quinta": "Horticilha",
@@ -931,8 +938,7 @@
         "kg_h": 56.0,
         "plantacao": "06/05/2025",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 152.0,
-        "mes": 5.0
+        "h_ha_sem": 152.0
     },
     {
         "quinta": "Horticilha",
@@ -944,8 +950,7 @@
         "kg_h": 49.0,
         "plantacao": "30/04/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 183.0,
-        "mes": 4.0
+        "h_ha_sem": 183.0
     },
     {
         "quinta": "Horticilha",
@@ -957,8 +962,7 @@
         "kg_h": 16.0,
         "plantacao": "17/01/2024",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 362.0,
-        "mes": 1.0
+        "h_ha_sem": 362.0
     },
     {
         "quinta": "Horticilha",
@@ -970,8 +974,7 @@
         "kg_h": 37.0,
         "plantacao": "01/06/2022",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 207.0,
-        "mes": 6.0
+        "h_ha_sem": 207.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -983,8 +986,7 @@
         "kg_h": 18.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 284.0,
-        "mes": 12.0
+        "h_ha_sem": 284.0
     },
     {
         "quinta": "Horticilha",
@@ -996,8 +998,7 @@
         "kg_h": 14.0,
         "plantacao": "11/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 347.0,
-        "mes": 12.0
+        "h_ha_sem": 347.0
     },
     {
         "quinta": "CCS",
@@ -1009,8 +1010,7 @@
         "kg_h": 17.0,
         "plantacao": "11/01/2024",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 382.0,
-        "mes": 1.0
+        "h_ha_sem": 382.0
     },
     {
         "quinta": "Pegões",
@@ -1022,8 +1022,7 @@
         "kg_h": 38.0,
         "plantacao": "11/04/2025",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 156.0,
-        "mes": 4.0
+        "h_ha_sem": 156.0
     },
     {
         "quinta": "Horticilha",
@@ -1035,8 +1034,7 @@
         "kg_h": 46.0,
         "plantacao": "14/04/2023",
         "semanas_duracao": 35.0,
-        "h_ha_sem": 157.0,
-        "mes": 4.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1048,8 +1046,7 @@
         "kg_h": 48.0,
         "plantacao": "19/02/2021",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 239.0,
-        "mes": 2.0
+        "h_ha_sem": 239.0
     },
     {
         "quinta": "Horticilha",
@@ -1061,8 +1058,7 @@
         "kg_h": 61.0,
         "plantacao": "20/12/2022",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 146.0,
-        "mes": 12.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -1074,8 +1070,7 @@
         "kg_h": 19.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 53.0,
-        "h_ha_sem": 252.0,
-        "mes": 12.0
+        "h_ha_sem": 252.0
     },
     {
         "quinta": "CCS",
@@ -1087,8 +1082,7 @@
         "kg_h": 23.0,
         "plantacao": "17/03/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 294.0,
-        "mes": 3.0
+        "h_ha_sem": 294.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -1100,8 +1094,7 @@
         "kg_h": 24.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 53.0,
-        "h_ha_sem": 201.0,
-        "mes": 12.0
+        "h_ha_sem": 201.0
     },
     {
         "quinta": "Horticilha",
@@ -1113,8 +1106,7 @@
         "kg_h": 45.0,
         "plantacao": "23/11/2020",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 206.0,
-        "mes": 11.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Horticilha",
@@ -1126,8 +1118,7 @@
         "kg_h": 55.0,
         "plantacao": "20/12/2024",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 140.0,
-        "mes": 12.0
+        "h_ha_sem": 140.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1139,8 +1130,7 @@
         "kg_h": 55.0,
         "plantacao": "22/02/2021",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 220.0,
-        "mes": 2.0
+        "h_ha_sem": 220.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -1152,8 +1142,7 @@
         "kg_h": 35.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 135.0,
-        "mes": 12.0
+        "h_ha_sem": 135.0
     },
     {
         "quinta": "Horticilha",
@@ -1165,8 +1154,7 @@
         "kg_h": 45.0,
         "plantacao": "06/05/2025",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 178.0,
-        "mes": 5.0
+        "h_ha_sem": 178.0
     },
     {
         "quinta": "CCS",
@@ -1178,8 +1166,7 @@
         "kg_h": 19.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 48.0,
-        "h_ha_sem": 263.0,
-        "mes": 12.0
+        "h_ha_sem": 263.0
     },
     {
         "quinta": "Horticilha",
@@ -1191,8 +1178,7 @@
         "kg_h": 45.0,
         "plantacao": "30/04/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 183.0,
-        "mes": 4.0
+        "h_ha_sem": 183.0
     },
     {
         "quinta": "Horticilha",
@@ -1204,8 +1190,7 @@
         "kg_h": 54.0,
         "plantacao": "29/04/2025",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 142.0,
-        "mes": 4.0
+        "h_ha_sem": 142.0
     },
     {
         "quinta": "Horticilha",
@@ -1217,8 +1202,7 @@
         "kg_h": 50.0,
         "plantacao": "24/11/2021",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 174.0,
-        "mes": 11.0
+        "h_ha_sem": 174.0
     },
     {
         "quinta": "Horticilha",
@@ -1230,8 +1214,7 @@
         "kg_h": 62.0,
         "plantacao": "27/12/2025",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 131.0,
-        "mes": 12.0
+        "h_ha_sem": 131.0
     },
     {
         "quinta": "Horticilha",
@@ -1243,8 +1226,7 @@
         "kg_h": 62.0,
         "plantacao": "20/12/2022",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 137.0,
-        "mes": 12.0
+        "h_ha_sem": 137.0
     },
     {
         "quinta": "Sobreiro",
@@ -1256,8 +1238,7 @@
         "kg_h": 37.0,
         "plantacao": "16/02/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 227.0,
-        "mes": 2.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "Horticilha",
@@ -1269,8 +1250,7 @@
         "kg_h": 52.0,
         "plantacao": "29/04/2025",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 149.0,
-        "mes": 4.0
+        "h_ha_sem": 149.0
     },
     {
         "quinta": "Horticilha",
@@ -1282,8 +1262,7 @@
         "kg_h": 52.0,
         "plantacao": "15/12/2022",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 152.0,
-        "mes": 12.0
+        "h_ha_sem": 152.0
     },
     {
         "quinta": "Horticilha",
@@ -1295,8 +1274,7 @@
         "kg_h": 43.0,
         "plantacao": "23/11/2020",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 206.0,
-        "mes": 11.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Horticilha",
@@ -1308,8 +1286,7 @@
         "kg_h": 31.0,
         "plantacao": "29/08/2018",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 194.0,
-        "mes": 8.0
+        "h_ha_sem": 194.0
     },
     {
         "quinta": "Zambujeira",
@@ -1321,8 +1298,7 @@
         "kg_h": 45.0,
         "plantacao": "31/05/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 208.0,
-        "mes": 5.0
+        "h_ha_sem": 208.0
     },
     {
         "quinta": "Horticilha",
@@ -1334,8 +1310,7 @@
         "kg_h": 57.0,
         "plantacao": "27/12/2025",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 141.0,
-        "mes": 12.0
+        "h_ha_sem": 141.0
     },
     {
         "quinta": "Zambujeira",
@@ -1347,8 +1322,7 @@
         "kg_h": 40.0,
         "plantacao": "20/04/2023",
         "semanas_duracao": 35.0,
-        "h_ha_sem": 170.0,
-        "mes": 4.0
+        "h_ha_sem": 170.0
     },
     {
         "quinta": "Horticilha",
@@ -1360,8 +1334,7 @@
         "kg_h": 48.0,
         "plantacao": "03/03/2020",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 130.0,
-        "mes": 3.0
+        "h_ha_sem": 130.0
     },
     {
         "quinta": "Pegões",
@@ -1373,8 +1346,7 @@
         "kg_h": 39.0,
         "plantacao": "17/04/2025",
         "semanas_duracao": 55.0,
-        "h_ha_sem": 109.0,
-        "mes": 4.0
+        "h_ha_sem": 109.0
     },
     {
         "quinta": "Zambujeira",
@@ -1386,8 +1358,7 @@
         "kg_h": 53.0,
         "plantacao": "11/04/2022",
         "semanas_duracao": 20.0,
-        "h_ha_sem": 218.0,
-        "mes": 4.0
+        "h_ha_sem": 218.0
     },
     {
         "quinta": "Horticilha",
@@ -1399,8 +1370,7 @@
         "kg_h": 55.0,
         "plantacao": "15/12/2022",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 141.0,
-        "mes": 12.0
+        "h_ha_sem": 141.0
     },
     {
         "quinta": "Pegões",
@@ -1412,8 +1382,7 @@
         "kg_h": 49.0,
         "plantacao": "17/04/2024",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 110.0,
-        "mes": 4.0
+        "h_ha_sem": 110.0
     },
     {
         "quinta": "Horticilha",
@@ -1425,8 +1394,7 @@
         "kg_h": 48.0,
         "plantacao": "24/11/2021",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 174.0,
-        "mes": 11.0
+        "h_ha_sem": 174.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1438,8 +1406,7 @@
         "kg_h": 48.0,
         "plantacao": "01/06/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 178.0,
-        "mes": 6.0
+        "h_ha_sem": 178.0
     },
     {
         "quinta": "Horticilha",
@@ -1451,8 +1418,7 @@
         "kg_h": 54.0,
         "plantacao": "16/12/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 155.0,
-        "mes": 12.0
+        "h_ha_sem": 155.0
     },
     {
         "quinta": "Horticilha",
@@ -1464,8 +1430,7 @@
         "kg_h": 45.0,
         "plantacao": "01/05/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 177.0,
-        "mes": 5.0
+        "h_ha_sem": 177.0
     },
     {
         "quinta": "Horticilha",
@@ -1477,8 +1442,7 @@
         "kg_h": 47.0,
         "plantacao": "20/12/2024",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 149.0,
-        "mes": 12.0
+        "h_ha_sem": 149.0
     },
     {
         "quinta": "Campelos",
@@ -1490,8 +1454,7 @@
         "kg_h": 39.0,
         "plantacao": "10/02/2024",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 183.0,
-        "mes": 2.0
+        "h_ha_sem": 183.0
     },
     {
         "quinta": "Horticilha",
@@ -1503,8 +1466,7 @@
         "kg_h": 39.0,
         "plantacao": "08/02/2023",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 147.0,
-        "mes": 2.0
+        "h_ha_sem": 147.0
     },
     {
         "quinta": "Horticilha",
@@ -1516,8 +1478,7 @@
         "kg_h": 16.0,
         "plantacao": "20/02/2023",
         "semanas_duracao": 49.0,
-        "h_ha_sem": 292.0,
-        "mes": 2.0
+        "h_ha_sem": 292.0
     },
     {
         "quinta": "Horticilha",
@@ -1529,8 +1490,7 @@
         "kg_h": 53.0,
         "plantacao": "21/12/2024",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 126.0,
-        "mes": 12.0
+        "h_ha_sem": 126.0
     },
     {
         "quinta": "Horticilha",
@@ -1542,8 +1502,7 @@
         "kg_h": 54.0,
         "plantacao": "05/06/2025",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 139.0,
-        "mes": 6.0
+        "h_ha_sem": 139.0
     },
     {
         "quinta": "Horticilha",
@@ -1555,8 +1514,7 @@
         "kg_h": 45.0,
         "plantacao": "01/05/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 176.0,
-        "mes": 5.0
+        "h_ha_sem": 176.0
     },
     {
         "quinta": "Zambujeira",
@@ -1568,8 +1526,7 @@
         "kg_h": 40.0,
         "plantacao": "24/04/2023",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 164.0,
-        "mes": 4.0
+        "h_ha_sem": 164.0
     },
     {
         "quinta": "Horticilha",
@@ -1581,8 +1538,7 @@
         "kg_h": 56.0,
         "plantacao": "15/12/2023",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 139.0,
-        "mes": 12.0
+        "h_ha_sem": 139.0
     },
     {
         "quinta": "Horticilha",
@@ -1594,8 +1550,7 @@
         "kg_h": 56.0,
         "plantacao": "16/12/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 145.0,
-        "mes": 12.0
+        "h_ha_sem": 145.0
     },
     {
         "quinta": "Horticilha",
@@ -1607,8 +1562,7 @@
         "kg_h": 48.0,
         "plantacao": "23/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 158.0,
-        "mes": 12.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Pegões",
@@ -1620,8 +1574,7 @@
         "kg_h": 36.0,
         "plantacao": "30/04/2025",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 142.0,
-        "mes": 4.0
+        "h_ha_sem": 142.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1633,8 +1586,7 @@
         "kg_h": 34.0,
         "plantacao": "28/05/2021",
         "semanas_duracao": 47.0,
-        "h_ha_sem": 137.0,
-        "mes": 5.0
+        "h_ha_sem": 137.0
     },
     {
         "quinta": "Horticilha",
@@ -1646,8 +1598,7 @@
         "kg_h": 33.0,
         "plantacao": "04/05/2022",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 173.0,
-        "mes": 5.0
+        "h_ha_sem": 173.0
     },
     {
         "quinta": "Zambujeira",
@@ -1659,8 +1610,7 @@
         "kg_h": 49.0,
         "plantacao": "13/03/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 170.0,
-        "mes": 3.0
+        "h_ha_sem": 170.0
     },
     {
         "quinta": "Horticilha",
@@ -1672,8 +1622,7 @@
         "kg_h": 52.0,
         "plantacao": "21/12/2024",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 125.0,
-        "mes": 12.0
+        "h_ha_sem": 125.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1685,8 +1634,7 @@
         "kg_h": 49.0,
         "plantacao": "03/06/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 168.0,
-        "mes": 6.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Zambujeira",
@@ -1698,8 +1646,7 @@
         "kg_h": 20.0,
         "plantacao": "29/05/2023",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 280.0,
-        "mes": 5.0
+        "h_ha_sem": 280.0
     },
     {
         "quinta": "Zambujeira",
@@ -1711,8 +1658,7 @@
         "kg_h": 44.0,
         "plantacao": "14/04/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 209.0,
-        "mes": 4.0
+        "h_ha_sem": 209.0
     },
     {
         "quinta": "Horticilha",
@@ -1724,8 +1670,7 @@
         "kg_h": 49.0,
         "plantacao": "06/06/2025",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 139.0,
-        "mes": 6.0
+        "h_ha_sem": 139.0
     },
     {
         "quinta": "Pegões",
@@ -1737,8 +1682,7 @@
         "kg_h": 58.0,
         "plantacao": "16/04/2021",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 138.0,
-        "mes": 4.0
+        "h_ha_sem": 138.0
     },
     {
         "quinta": "Horticilha",
@@ -1750,8 +1694,7 @@
         "kg_h": 45.0,
         "plantacao": "16/07/2021",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 174.0,
-        "mes": 7.0
+        "h_ha_sem": 174.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1763,8 +1706,7 @@
         "kg_h": 39.0,
         "plantacao": "04/06/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 147.0,
-        "mes": 6.0
+        "h_ha_sem": 147.0
     },
     {
         "quinta": "CCS",
@@ -1776,8 +1718,7 @@
         "kg_h": 13.0,
         "plantacao": "11/01/2024",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 405.0,
-        "mes": 1.0
+        "h_ha_sem": 405.0
     },
     {
         "quinta": "Horticilha",
@@ -1789,8 +1730,7 @@
         "kg_h": 18.0,
         "plantacao": "16/01/2024",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 260.0,
-        "mes": 1.0
+        "h_ha_sem": 260.0
     },
     {
         "quinta": "Horticilha",
@@ -1802,8 +1742,7 @@
         "kg_h": 38.0,
         "plantacao": "31/05/2021",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 227.0,
-        "mes": 5.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "Sobreiro",
@@ -1815,8 +1754,7 @@
         "kg_h": 28.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 190.0,
-        "mes": 3.0
+        "h_ha_sem": 190.0
     },
     {
         "quinta": "Horticilha",
@@ -1828,8 +1766,7 @@
         "kg_h": 24.0,
         "plantacao": "13/09/2018",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 194.0,
-        "mes": 9.0
+        "h_ha_sem": 194.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1841,8 +1778,7 @@
         "kg_h": 51.0,
         "plantacao": "04/06/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 150.0,
-        "mes": 6.0
+        "h_ha_sem": 150.0
     },
     {
         "quinta": "Campelos",
@@ -1854,8 +1790,7 @@
         "kg_h": 39.0,
         "plantacao": "09/02/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 179.0,
-        "mes": 2.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Horticilha",
@@ -1867,8 +1802,7 @@
         "kg_h": 16.0,
         "plantacao": "16/01/2024",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 292.0,
-        "mes": 1.0
+        "h_ha_sem": 292.0
     },
     {
         "quinta": "Horticilha",
@@ -1880,8 +1814,7 @@
         "kg_h": 45.0,
         "plantacao": "18/06/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 181.0,
-        "mes": 6.0
+        "h_ha_sem": 181.0
     },
     {
         "quinta": "Horticilha",
@@ -1893,8 +1826,7 @@
         "kg_h": 18.0,
         "plantacao": "11/12/2024",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 223.0,
-        "mes": 12.0
+        "h_ha_sem": 223.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1906,8 +1838,7 @@
         "kg_h": 54.0,
         "plantacao": "04/06/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 141.0,
-        "mes": 6.0
+        "h_ha_sem": 141.0
     },
     {
         "quinta": "Sobreiro",
@@ -1919,8 +1850,7 @@
         "kg_h": 28.0,
         "plantacao": "17/02/2023",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 243.0,
-        "mes": 2.0
+        "h_ha_sem": 243.0
     },
     {
         "quinta": "Horticilha",
@@ -1932,8 +1862,7 @@
         "kg_h": 26.0,
         "plantacao": "14/08/2018",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 207.0,
-        "mes": 8.0
+        "h_ha_sem": 207.0
     },
     {
         "quinta": "Portos Brancos",
@@ -1945,8 +1874,7 @@
         "kg_h": 18.0,
         "plantacao": "03/06/2021",
         "semanas_duracao": 36.0,
-        "h_ha_sem": 302.0,
-        "mes": 6.0
+        "h_ha_sem": 302.0
     },
     {
         "quinta": "Zambujeira",
@@ -1958,8 +1886,7 @@
         "kg_h": 49.0,
         "plantacao": "21/04/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 181.0,
-        "mes": 4.0
+        "h_ha_sem": 181.0
     },
     {
         "quinta": "Horticilha",
@@ -1971,8 +1898,7 @@
         "kg_h": 53.0,
         "plantacao": "25/11/2021",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 129.0,
-        "mes": 11.0
+        "h_ha_sem": 129.0
     },
     {
         "quinta": "CCS",
@@ -1984,8 +1910,7 @@
         "kg_h": 18.0,
         "plantacao": "17/03/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 294.0,
-        "mes": 3.0
+        "h_ha_sem": 294.0
     },
     {
         "quinta": "Horticilha",
@@ -1997,8 +1922,7 @@
         "kg_h": 44.0,
         "plantacao": "19/06/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 181.0,
-        "mes": 6.0
+        "h_ha_sem": 181.0
     },
     {
         "quinta": "Pegões",
@@ -2010,8 +1934,7 @@
         "kg_h": 38.0,
         "plantacao": "11/04/2025",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 129.0,
-        "mes": 4.0
+        "h_ha_sem": 129.0
     },
     {
         "quinta": "CCS",
@@ -2023,8 +1946,7 @@
         "kg_h": 33.0,
         "plantacao": "09/04/2025",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 206.0,
-        "mes": 4.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Horticilha",
@@ -2036,8 +1958,7 @@
         "kg_h": 40.0,
         "plantacao": "04/05/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 167.0,
-        "mes": 5.0
+        "h_ha_sem": 167.0
     },
     {
         "quinta": "Horticilha",
@@ -2049,8 +1970,7 @@
         "kg_h": 18.0,
         "plantacao": "20/02/2023",
         "semanas_duracao": 49.0,
-        "h_ha_sem": 216.0,
-        "mes": 2.0
+        "h_ha_sem": 216.0
     },
     {
         "quinta": "Horticilha",
@@ -2062,8 +1982,7 @@
         "kg_h": 50.0,
         "plantacao": "25/11/2021",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 122.0,
-        "mes": 11.0
+        "h_ha_sem": 122.0
     },
     {
         "quinta": "Zambujeira",
@@ -2075,8 +1994,7 @@
         "kg_h": 46.0,
         "plantacao": "21/01/2021",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 133.0,
-        "mes": 1.0
+        "h_ha_sem": 133.0
     },
     {
         "quinta": "Zambujeira",
@@ -2088,8 +2006,7 @@
         "kg_h": 60.0,
         "plantacao": "17/12/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 115.0,
-        "mes": 12.0
+        "h_ha_sem": 115.0
     },
     {
         "quinta": "Horticilha",
@@ -2101,8 +2018,7 @@
         "kg_h": 52.0,
         "plantacao": "13/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 126.0,
-        "mes": 12.0
+        "h_ha_sem": 126.0
     },
     {
         "quinta": "Zambujeira",
@@ -2114,8 +2030,7 @@
         "kg_h": 54.0,
         "plantacao": "17/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 124.0,
-        "mes": 12.0
+        "h_ha_sem": 124.0
     },
     {
         "quinta": "Campelos",
@@ -2127,8 +2042,7 @@
         "kg_h": 21.0,
         "plantacao": "03/06/2022",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 266.0,
-        "mes": 6.0
+        "h_ha_sem": 266.0
     },
     {
         "quinta": "Horticilha",
@@ -2140,8 +2054,7 @@
         "kg_h": 25.0,
         "plantacao": "04/05/2022",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 200.0,
-        "mes": 5.0
+        "h_ha_sem": 200.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -2153,8 +2066,7 @@
         "kg_h": 17.0,
         "plantacao": "17/04/2023",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 281.0,
-        "mes": 4.0
+        "h_ha_sem": 281.0
     },
     {
         "quinta": "Horticilha",
@@ -2166,8 +2078,7 @@
         "kg_h": 53.0,
         "plantacao": "18/12/2023",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 128.0,
-        "mes": 12.0
+        "h_ha_sem": 128.0
     },
     {
         "quinta": "Horticilha",
@@ -2179,8 +2090,7 @@
         "kg_h": 41.0,
         "plantacao": "19/07/2021",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 174.0,
-        "mes": 7.0
+        "h_ha_sem": 174.0
     },
     {
         "quinta": "Sobreiro",
@@ -2192,8 +2102,7 @@
         "kg_h": 36.0,
         "plantacao": "20/02/2023",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 184.0,
-        "mes": 2.0
+        "h_ha_sem": 184.0
     },
     {
         "quinta": "Horticilha",
@@ -2205,8 +2114,7 @@
         "kg_h": 37.0,
         "plantacao": "22/08/2018",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 173.0,
-        "mes": 8.0
+        "h_ha_sem": 173.0
     },
     {
         "quinta": "CCS",
@@ -2218,8 +2126,7 @@
         "kg_h": 14.0,
         "plantacao": "14/12/2022",
         "semanas_duracao": 56.0,
-        "h_ha_sem": 238.0,
-        "mes": 12.0
+        "h_ha_sem": 238.0
     },
     {
         "quinta": "Sobreiro",
@@ -2231,8 +2138,7 @@
         "kg_h": 27.0,
         "plantacao": "15/02/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 270.0,
-        "mes": 2.0
+        "h_ha_sem": 270.0
     },
     {
         "quinta": "Horticilha",
@@ -2244,8 +2150,7 @@
         "kg_h": 45.0,
         "plantacao": "23/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 146.0,
-        "mes": 12.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Pegões",
@@ -2257,8 +2162,7 @@
         "kg_h": 49.0,
         "plantacao": "16/04/2021",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 147.0,
-        "mes": 4.0
+        "h_ha_sem": 147.0
     },
     {
         "quinta": "Horticilha",
@@ -2270,8 +2174,7 @@
         "kg_h": 54.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 116.0,
-        "mes": 12.0
+        "h_ha_sem": 116.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2283,8 +2186,7 @@
         "kg_h": 43.0,
         "plantacao": "16/06/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 170.0,
-        "mes": 6.0
+        "h_ha_sem": 170.0
     },
     {
         "quinta": "Horticilha",
@@ -2296,8 +2198,7 @@
         "kg_h": 39.0,
         "plantacao": "06/06/2024",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 192.0,
-        "mes": 6.0
+        "h_ha_sem": 192.0
     },
     {
         "quinta": "Horticilha",
@@ -2309,8 +2210,7 @@
         "kg_h": 55.0,
         "plantacao": "19/12/2025",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 131.0,
-        "mes": 12.0
+        "h_ha_sem": 131.0
     },
     {
         "quinta": "Horticilha",
@@ -2322,8 +2222,7 @@
         "kg_h": 15.0,
         "plantacao": "30/07/2020",
         "semanas_duracao": 51.0,
-        "h_ha_sem": 235.0,
-        "mes": 7.0
+        "h_ha_sem": 235.0
     },
     {
         "quinta": "Horticilha",
@@ -2335,8 +2234,7 @@
         "kg_h": 16.0,
         "plantacao": "20/02/2023",
         "semanas_duracao": 49.0,
-        "h_ha_sem": 241.0,
-        "mes": 2.0
+        "h_ha_sem": 241.0
     },
     {
         "quinta": "Campelos",
@@ -2348,8 +2246,7 @@
         "kg_h": 44.0,
         "plantacao": "24/02/2022",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 177.0,
-        "mes": 2.0
+        "h_ha_sem": 177.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2361,8 +2258,7 @@
         "kg_h": 50.0,
         "plantacao": "21/06/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 146.0,
-        "mes": 6.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Horticilha",
@@ -2374,8 +2270,7 @@
         "kg_h": 12.0,
         "plantacao": "18/12/2023",
         "semanas_duracao": 51.0,
-        "h_ha_sem": 292.0,
-        "mes": 12.0
+        "h_ha_sem": 292.0
     },
     {
         "quinta": "Sobreiro",
@@ -2387,8 +2282,7 @@
         "kg_h": 34.0,
         "plantacao": "15/02/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 206.0,
-        "mes": 2.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Horticilha",
@@ -2400,8 +2294,7 @@
         "kg_h": 41.0,
         "plantacao": "14/04/2021",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 158.0,
-        "mes": 4.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Horticilha",
@@ -2413,8 +2306,7 @@
         "kg_h": 47.0,
         "plantacao": "03/06/2020",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 139.0,
-        "mes": 6.0
+        "h_ha_sem": 139.0
     },
     {
         "quinta": "Horticilha",
@@ -2426,8 +2318,7 @@
         "kg_h": 39.0,
         "plantacao": "04/05/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 161.0,
-        "mes": 5.0
+        "h_ha_sem": 161.0
     },
     {
         "quinta": "Pegões",
@@ -2439,8 +2330,7 @@
         "kg_h": 49.0,
         "plantacao": "24/04/2023",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 161.0,
-        "mes": 4.0
+        "h_ha_sem": 161.0
     },
     {
         "quinta": "Zambujeira",
@@ -2452,8 +2342,7 @@
         "kg_h": 52.0,
         "plantacao": "18/12/2025",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 114.0,
-        "mes": 12.0
+        "h_ha_sem": 114.0
     },
     {
         "quinta": "CCS",
@@ -2465,8 +2354,7 @@
         "kg_h": 32.0,
         "plantacao": "25/04/2025",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 192.0,
-        "mes": 4.0
+        "h_ha_sem": 192.0
     },
     {
         "quinta": "Sobreiro",
@@ -2478,8 +2366,7 @@
         "kg_h": 25.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 290.0,
-        "mes": 3.0
+        "h_ha_sem": 290.0
     },
     {
         "quinta": "Horticilha",
@@ -2491,8 +2378,7 @@
         "kg_h": 51.0,
         "plantacao": "13/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 123.0,
-        "mes": 12.0
+        "h_ha_sem": 123.0
     },
     {
         "quinta": "Sobreiro",
@@ -2504,8 +2390,7 @@
         "kg_h": 23.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 202.0,
-        "mes": 3.0
+        "h_ha_sem": 202.0
     },
     {
         "quinta": "Pegões",
@@ -2517,8 +2402,7 @@
         "kg_h": 32.0,
         "plantacao": "13/04/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 253.0,
-        "mes": 4.0
+        "h_ha_sem": 253.0
     },
     {
         "quinta": "Zambujeira",
@@ -2530,8 +2414,7 @@
         "kg_h": 42.0,
         "plantacao": "13/04/2021",
         "semanas_duracao": 20.0,
-        "h_ha_sem": 210.0,
-        "mes": 4.0
+        "h_ha_sem": 210.0
     },
     {
         "quinta": "Sobreiro",
@@ -2543,8 +2426,7 @@
         "kg_h": 28.0,
         "plantacao": "09/02/2024",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 254.0,
-        "mes": 2.0
+        "h_ha_sem": 254.0
     },
     {
         "quinta": "Horticilha",
@@ -2556,8 +2438,7 @@
         "kg_h": 12.0,
         "plantacao": "22/08/2018",
         "semanas_duracao": 51.0,
-        "h_ha_sem": 290.0,
-        "mes": 8.0
+        "h_ha_sem": 290.0
     },
     {
         "quinta": "Zambujeira",
@@ -2569,8 +2450,7 @@
         "kg_h": 47.0,
         "plantacao": "30/12/2025",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 122.0,
-        "mes": 12.0
+        "h_ha_sem": 122.0
     },
     {
         "quinta": "Horticilha",
@@ -2582,8 +2462,7 @@
         "kg_h": 19.0,
         "plantacao": "27/08/2017",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 214.0,
-        "mes": 8.0
+        "h_ha_sem": 214.0
     },
     {
         "quinta": "Pegões",
@@ -2595,8 +2474,7 @@
         "kg_h": 53.0,
         "plantacao": "24/04/2023",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 151.0,
-        "mes": 4.0
+        "h_ha_sem": 151.0
     },
     {
         "quinta": "Horticilha",
@@ -2608,8 +2486,7 @@
         "kg_h": 19.0,
         "plantacao": "27/08/2017",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 215.0,
-        "mes": 8.0
+        "h_ha_sem": 215.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2621,8 +2498,7 @@
         "kg_h": 37.0,
         "plantacao": "05/06/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 128.0,
-        "mes": 6.0
+        "h_ha_sem": 128.0
     },
     {
         "quinta": "Campelos",
@@ -2634,8 +2510,7 @@
         "kg_h": 31.0,
         "plantacao": "08/02/2024",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 208.0,
-        "mes": 2.0
+        "h_ha_sem": 208.0
     },
     {
         "quinta": "Horticilha",
@@ -2647,8 +2522,7 @@
         "kg_h": 37.0,
         "plantacao": "31/05/2021",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 197.0,
-        "mes": 5.0
+        "h_ha_sem": 197.0
     },
     {
         "quinta": "Horticilha",
@@ -2660,8 +2534,7 @@
         "kg_h": 50.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 130.0,
-        "mes": 12.0
+        "h_ha_sem": 130.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2673,8 +2546,7 @@
         "kg_h": 48.0,
         "plantacao": "19/02/2021",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 169.0,
-        "mes": 2.0
+        "h_ha_sem": 169.0
     },
     {
         "quinta": "Campelos",
@@ -2686,8 +2558,7 @@
         "kg_h": 17.0,
         "plantacao": "05/05/2023",
         "semanas_duracao": 36.0,
-        "h_ha_sem": 279.0,
-        "mes": 5.0
+        "h_ha_sem": 279.0
     },
     {
         "quinta": "Horticilha",
@@ -2699,8 +2570,7 @@
         "kg_h": 45.0,
         "plantacao": "27/06/2022",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 162.0,
-        "mes": 6.0
+        "h_ha_sem": 162.0
     },
     {
         "quinta": "Horticilha",
@@ -2712,8 +2582,7 @@
         "kg_h": 52.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 124.0,
-        "mes": 12.0
+        "h_ha_sem": 124.0
     },
     {
         "quinta": "Sobreiro",
@@ -2725,8 +2594,7 @@
         "kg_h": 39.0,
         "plantacao": "26/02/2022",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 187.0,
-        "mes": 2.0
+        "h_ha_sem": 187.0
     },
     {
         "quinta": "CCS",
@@ -2738,8 +2606,7 @@
         "kg_h": 10.0,
         "plantacao": "11/01/2024",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 441.0,
-        "mes": 1.0
+        "h_ha_sem": 441.0
     },
     {
         "quinta": "Horticilha",
@@ -2751,8 +2618,7 @@
         "kg_h": 18.0,
         "plantacao": "29/08/2018",
         "semanas_duracao": 49.0,
-        "h_ha_sem": 199.0,
-        "mes": 8.0
+        "h_ha_sem": 199.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -2764,8 +2630,7 @@
         "kg_h": 24.0,
         "plantacao": "17/04/2023",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 178.0,
-        "mes": 4.0
+        "h_ha_sem": 178.0
     },
     {
         "quinta": "Zambujeira",
@@ -2777,8 +2642,7 @@
         "kg_h": 38.0,
         "plantacao": "06/06/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 175.0,
-        "mes": 6.0
+        "h_ha_sem": 175.0
     },
     {
         "quinta": "CCS",
@@ -2790,8 +2654,7 @@
         "kg_h": 14.0,
         "plantacao": "16/12/2024",
         "semanas_duracao": 48.0,
-        "h_ha_sem": 256.0,
-        "mes": 12.0
+        "h_ha_sem": 256.0
     },
     {
         "quinta": "Campelos",
@@ -2803,8 +2666,7 @@
         "kg_h": 27.0,
         "plantacao": "08/02/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 221.0,
-        "mes": 2.0
+        "h_ha_sem": 221.0
     },
     {
         "quinta": "Horticilha",
@@ -2816,8 +2678,7 @@
         "kg_h": 48.0,
         "plantacao": "19/12/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 139.0,
-        "mes": 12.0
+        "h_ha_sem": 139.0
     },
     {
         "quinta": "Zambujeira",
@@ -2829,8 +2690,7 @@
         "kg_h": 13.0,
         "plantacao": "19/02/2021",
         "semanas_duracao": 47.0,
-        "h_ha_sem": 273.0,
-        "mes": 2.0
+        "h_ha_sem": 273.0
     },
     {
         "quinta": "Horticilha",
@@ -2842,8 +2702,7 @@
         "kg_h": 22.0,
         "plantacao": "05/08/2016",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 193.0,
-        "mes": 8.0
+        "h_ha_sem": 193.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2855,8 +2714,7 @@
         "kg_h": 34.0,
         "plantacao": "04/06/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 133.0,
-        "mes": 6.0
+        "h_ha_sem": 133.0
     },
     {
         "quinta": "Zambujeira",
@@ -2868,8 +2726,7 @@
         "kg_h": 36.0,
         "plantacao": "12/04/2021",
         "semanas_duracao": 20.0,
-        "h_ha_sem": 233.0,
-        "mes": 4.0
+        "h_ha_sem": 233.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -2881,8 +2738,7 @@
         "kg_h": 12.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 53.0,
-        "h_ha_sem": 256.0,
-        "mes": 12.0
+        "h_ha_sem": 256.0
     },
     {
         "quinta": "Horticilha",
@@ -2894,8 +2750,7 @@
         "kg_h": 41.0,
         "plantacao": "05/06/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 167.0,
-        "mes": 6.0
+        "h_ha_sem": 167.0
     },
     {
         "quinta": "Horticilha",
@@ -2907,8 +2762,7 @@
         "kg_h": 37.0,
         "plantacao": "13/12/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 173.0,
-        "mes": 12.0
+        "h_ha_sem": 173.0
     },
     {
         "quinta": "Horticilha",
@@ -2920,8 +2774,7 @@
         "kg_h": 47.0,
         "plantacao": "19/12/2025",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 134.0,
-        "mes": 12.0
+        "h_ha_sem": 134.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2933,8 +2786,7 @@
         "kg_h": 45.0,
         "plantacao": "17/02/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 165.0,
-        "mes": 2.0
+        "h_ha_sem": 165.0
     },
     {
         "quinta": "Campelos",
@@ -2946,8 +2798,7 @@
         "kg_h": 20.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 202.0,
-        "mes": 3.0
+        "h_ha_sem": 202.0
     },
     {
         "quinta": "Sobreiro",
@@ -2959,8 +2810,7 @@
         "kg_h": 15.0,
         "plantacao": "09/02/2024",
         "semanas_duracao": 55.0,
-        "h_ha_sem": 199.0,
-        "mes": 2.0
+        "h_ha_sem": 199.0
     },
     {
         "quinta": "Zambujeira",
@@ -2972,8 +2822,7 @@
         "kg_h": 35.0,
         "plantacao": "30/05/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 196.0,
-        "mes": 5.0
+        "h_ha_sem": 196.0
     },
     {
         "quinta": "Portos Brancos",
@@ -2985,8 +2834,7 @@
         "kg_h": 25.0,
         "plantacao": "28/05/2021",
         "semanas_duracao": 47.0,
-        "h_ha_sem": 137.0,
-        "mes": 5.0
+        "h_ha_sem": 137.0
     },
     {
         "quinta": "CCS",
@@ -2998,8 +2846,7 @@
         "kg_h": 9.0,
         "plantacao": "14/12/2022",
         "semanas_duracao": 56.0,
-        "h_ha_sem": 326.0,
-        "mes": 12.0
+        "h_ha_sem": 326.0
     },
     {
         "quinta": "Horticilha",
@@ -3011,8 +2858,7 @@
         "kg_h": 36.0,
         "plantacao": "12/06/2025",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 165.0,
-        "mes": 6.0
+        "h_ha_sem": 165.0
     },
     {
         "quinta": "CCS",
@@ -3024,8 +2870,7 @@
         "kg_h": 37.0,
         "plantacao": "19/12/2022",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 154.0,
-        "mes": 12.0
+        "h_ha_sem": 154.0
     },
     {
         "quinta": "Horticilha",
@@ -3037,8 +2882,7 @@
         "kg_h": 41.0,
         "plantacao": "05/06/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 166.0,
-        "mes": 6.0
+        "h_ha_sem": 166.0
     },
     {
         "quinta": "Zambujeira",
@@ -3050,8 +2894,7 @@
         "kg_h": 38.0,
         "plantacao": "06/06/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 152.0,
-        "mes": 6.0
+        "h_ha_sem": 152.0
     },
     {
         "quinta": "Horticilha",
@@ -3063,8 +2906,7 @@
         "kg_h": 50.0,
         "plantacao": "20/12/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 126.0,
-        "mes": 12.0
+        "h_ha_sem": 126.0
     },
     {
         "quinta": "Pegões",
@@ -3076,8 +2918,7 @@
         "kg_h": 55.0,
         "plantacao": "19/04/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 137.0,
-        "mes": 4.0
+        "h_ha_sem": 137.0
     },
     {
         "quinta": "Zambujeira",
@@ -3089,8 +2930,7 @@
         "kg_h": 9.0,
         "plantacao": "21/02/2024",
         "semanas_duracao": 56.0,
-        "h_ha_sem": 308.0,
-        "mes": 2.0
+        "h_ha_sem": 308.0
     },
     {
         "quinta": "Campelos",
@@ -3102,8 +2942,7 @@
         "kg_h": 56.0,
         "plantacao": "24/02/2022",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 117.0,
-        "mes": 2.0
+        "h_ha_sem": 117.0
     },
     {
         "quinta": "Zambujeira",
@@ -3115,8 +2954,7 @@
         "kg_h": 10.0,
         "plantacao": "14/12/2022",
         "semanas_duracao": 64.0,
-        "h_ha_sem": 261.0,
-        "mes": 12.0
+        "h_ha_sem": 261.0
     },
     {
         "quinta": "Horticilha",
@@ -3128,8 +2966,7 @@
         "kg_h": 48.0,
         "plantacao": "20/12/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 115.0,
-        "mes": 12.0
+        "h_ha_sem": 115.0
     },
     {
         "quinta": "Horticilha",
@@ -3141,8 +2978,7 @@
         "kg_h": 39.0,
         "plantacao": "12/06/2025",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 151.0,
-        "mes": 6.0
+        "h_ha_sem": 151.0
     },
     {
         "quinta": "Sobreiro",
@@ -3154,8 +2990,7 @@
         "kg_h": 35.0,
         "plantacao": "26/02/2022",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 187.0,
-        "mes": 2.0
+        "h_ha_sem": 187.0
     },
     {
         "quinta": "Sobreiro",
@@ -3167,8 +3002,7 @@
         "kg_h": 21.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 190.0,
-        "mes": 3.0
+        "h_ha_sem": 190.0
     },
     {
         "quinta": "Horticilha",
@@ -3180,8 +3014,7 @@
         "kg_h": 17.0,
         "plantacao": "19/09/2016",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 238.0,
-        "mes": 9.0
+        "h_ha_sem": 238.0
     },
     {
         "quinta": "Campelos",
@@ -3193,8 +3026,7 @@
         "kg_h": 22.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 193.0,
-        "mes": 3.0
+        "h_ha_sem": 193.0
     },
     {
         "quinta": "Horticilha",
@@ -3206,8 +3038,7 @@
         "kg_h": 48.0,
         "plantacao": "22/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 115.0,
-        "mes": 12.0
+        "h_ha_sem": 115.0
     },
     {
         "quinta": "Horticilha",
@@ -3219,8 +3050,7 @@
         "kg_h": 36.0,
         "plantacao": "13/12/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 172.0,
-        "mes": 12.0
+        "h_ha_sem": 172.0
     },
     {
         "quinta": "Sobreiro",
@@ -3232,8 +3062,7 @@
         "kg_h": 35.0,
         "plantacao": "26/02/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 177.0,
-        "mes": 2.0
+        "h_ha_sem": 177.0
     },
     {
         "quinta": "Campelos",
@@ -3245,8 +3074,7 @@
         "kg_h": 23.0,
         "plantacao": "18/07/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 259.0,
-        "mes": 7.0
+        "h_ha_sem": 259.0
     },
     {
         "quinta": "Campelos",
@@ -3258,8 +3086,7 @@
         "kg_h": 19.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 215.0,
-        "mes": 3.0
+        "h_ha_sem": 215.0
     },
     {
         "quinta": "Zambujeira",
@@ -3271,8 +3098,7 @@
         "kg_h": 32.0,
         "plantacao": "29/05/2023",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 105.0,
-        "mes": 5.0
+        "h_ha_sem": 105.0
     },
     {
         "quinta": "Horticilha",
@@ -3284,8 +3110,7 @@
         "kg_h": 16.0,
         "plantacao": "14/08/2018",
         "semanas_duracao": 52.0,
-        "h_ha_sem": 186.0,
-        "mes": 8.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Horticilha",
@@ -3297,8 +3122,7 @@
         "kg_h": 27.0,
         "plantacao": "22/07/2019",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 184.0,
-        "mes": 7.0
+        "h_ha_sem": 184.0
     },
     {
         "quinta": "Horticilha",
@@ -3310,8 +3134,7 @@
         "kg_h": 13.0,
         "plantacao": "30/07/2020",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 226.0,
-        "mes": 7.0
+        "h_ha_sem": 226.0
     },
     {
         "quinta": "Zambujeira",
@@ -3323,8 +3146,7 @@
         "kg_h": 38.0,
         "plantacao": "13/03/2024",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 157.0,
-        "mes": 3.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Zambujeira",
@@ -3336,8 +3158,7 @@
         "kg_h": 36.0,
         "plantacao": "17/04/2024",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 189.0,
-        "mes": 4.0
+        "h_ha_sem": 189.0
     },
     {
         "quinta": "Zambujeira",
@@ -3349,8 +3170,7 @@
         "kg_h": 37.0,
         "plantacao": "29/05/2023",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 105.0,
-        "mes": 5.0
+        "h_ha_sem": 105.0
     },
     {
         "quinta": "Horticilha",
@@ -3362,8 +3182,7 @@
         "kg_h": 14.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 241.0,
-        "mes": 6.0
+        "h_ha_sem": 241.0
     },
     {
         "quinta": "Pegões",
@@ -3375,8 +3194,7 @@
         "kg_h": 27.0,
         "plantacao": "15/04/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 257.0,
-        "mes": 4.0
+        "h_ha_sem": 257.0
     },
     {
         "quinta": "Pegões",
@@ -3388,8 +3206,7 @@
         "kg_h": 45.0,
         "plantacao": "30/04/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 146.0,
-        "mes": 4.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Horticilha",
@@ -3401,8 +3218,7 @@
         "kg_h": 43.0,
         "plantacao": "29/05/2023",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 124.0,
-        "mes": 5.0
+        "h_ha_sem": 124.0
     },
     {
         "quinta": "Horticilha",
@@ -3414,8 +3230,7 @@
         "kg_h": 23.0,
         "plantacao": "13/09/2018",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 150.0,
-        "mes": 9.0
+        "h_ha_sem": 150.0
     },
     {
         "quinta": "Horticilha",
@@ -3427,8 +3242,7 @@
         "kg_h": 40.0,
         "plantacao": "29/06/2022",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 155.0,
-        "mes": 6.0
+        "h_ha_sem": 155.0
     },
     {
         "quinta": "Horticilha",
@@ -3440,8 +3254,7 @@
         "kg_h": 29.0,
         "plantacao": "02/04/2019",
         "semanas_duracao": 19.0,
-        "h_ha_sem": 264.0,
-        "mes": 4.0
+        "h_ha_sem": 264.0
     },
     {
         "quinta": "Horticilha",
@@ -3453,8 +3266,7 @@
         "kg_h": 15.0,
         "plantacao": "30/08/2021",
         "semanas_duracao": 54.0,
-        "h_ha_sem": 179.0,
-        "mes": 8.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Horticilha",
@@ -3466,8 +3278,7 @@
         "kg_h": 26.0,
         "plantacao": "22/07/2019",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 184.0,
-        "mes": 7.0
+        "h_ha_sem": 184.0
     },
     {
         "quinta": "Horticilha",
@@ -3479,8 +3290,7 @@
         "kg_h": 15.0,
         "plantacao": "07/06/2021",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 264.0,
-        "mes": 6.0
+        "h_ha_sem": 264.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3492,8 +3302,7 @@
         "kg_h": 36.0,
         "plantacao": "18/02/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 188.0,
-        "mes": 2.0
+        "h_ha_sem": 188.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3505,8 +3314,7 @@
         "kg_h": 45.0,
         "plantacao": "20/07/2021",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 133.0,
-        "mes": 7.0
+        "h_ha_sem": 133.0
     },
     {
         "quinta": "Pegões",
@@ -3518,8 +3326,7 @@
         "kg_h": 53.0,
         "plantacao": "18/04/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 95.0,
-        "mes": 4.0
+        "h_ha_sem": 95.0
     },
     {
         "quinta": "Horticilha",
@@ -3531,8 +3338,7 @@
         "kg_h": 20.0,
         "plantacao": "05/08/2016",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 192.0,
-        "mes": 8.0
+        "h_ha_sem": 192.0
     },
     {
         "quinta": "Campelos",
@@ -3544,8 +3350,7 @@
         "kg_h": 25.0,
         "plantacao": "16/02/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 222.0,
-        "mes": 2.0
+        "h_ha_sem": 222.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -3557,8 +3362,7 @@
         "kg_h": 9.0,
         "plantacao": "17/02/2023",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 389.0,
-        "mes": 2.0
+        "h_ha_sem": 389.0
     },
     {
         "quinta": "Campelos",
@@ -3570,8 +3374,7 @@
         "kg_h": 24.0,
         "plantacao": "09/02/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 222.0,
-        "mes": 2.0
+        "h_ha_sem": 222.0
     },
     {
         "quinta": "Sobreiro",
@@ -3583,8 +3386,7 @@
         "kg_h": 23.0,
         "plantacao": "16/02/2023",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 214.0,
-        "mes": 2.0
+        "h_ha_sem": 214.0
     },
     {
         "quinta": "CCS",
@@ -3596,8 +3398,7 @@
         "kg_h": 22.0,
         "plantacao": "05/01/2022",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 200.0,
-        "mes": 1.0
+        "h_ha_sem": 200.0
     },
     {
         "quinta": "Horticilha",
@@ -3609,8 +3410,7 @@
         "kg_h": 15.0,
         "plantacao": "30/08/2021",
         "semanas_duracao": 54.0,
-        "h_ha_sem": 179.0,
-        "mes": 8.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Horticilha",
@@ -3622,8 +3422,7 @@
         "kg_h": 53.0,
         "plantacao": "12/08/2021",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 114.0,
-        "mes": 8.0
+        "h_ha_sem": 114.0
     },
     {
         "quinta": "Horticilha",
@@ -3635,8 +3434,7 @@
         "kg_h": 51.0,
         "plantacao": "12/08/2021",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 118.0,
-        "mes": 8.0
+        "h_ha_sem": 118.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3648,8 +3446,7 @@
         "kg_h": 54.0,
         "plantacao": "11/01/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 118.0,
-        "mes": 1.0
+        "h_ha_sem": 118.0
     },
     {
         "quinta": "Pegões",
@@ -3661,8 +3458,7 @@
         "kg_h": 24.0,
         "plantacao": "11/04/2025",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 149.0,
-        "mes": 4.0
+        "h_ha_sem": 149.0
     },
     {
         "quinta": "Horticilha",
@@ -3674,8 +3470,7 @@
         "kg_h": 39.0,
         "plantacao": "29/05/2023",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 133.0,
-        "mes": 5.0
+        "h_ha_sem": 133.0
     },
     {
         "quinta": "CCS",
@@ -3687,8 +3482,7 @@
         "kg_h": 13.0,
         "plantacao": "19/03/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 294.0,
-        "mes": 3.0
+        "h_ha_sem": 294.0
     },
     {
         "quinta": "Horticilha",
@@ -3700,8 +3494,7 @@
         "kg_h": 15.0,
         "plantacao": "30/08/2021",
         "semanas_duracao": 54.0,
-        "h_ha_sem": 179.0,
-        "mes": 8.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Pegões",
@@ -3713,8 +3506,7 @@
         "kg_h": 52.0,
         "plantacao": "24/04/2023",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 125.0,
-        "mes": 4.0
+        "h_ha_sem": 125.0
     },
     {
         "quinta": "CCS",
@@ -3726,8 +3518,7 @@
         "kg_h": 13.0,
         "plantacao": "22/05/2024",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 238.0,
-        "mes": 5.0
+        "h_ha_sem": 238.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -3739,8 +3530,7 @@
         "kg_h": 9.0,
         "plantacao": "08/03/2023",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 372.0,
-        "mes": 3.0
+        "h_ha_sem": 372.0
     },
     {
         "quinta": "Pegões",
@@ -3752,8 +3542,7 @@
         "kg_h": 38.0,
         "plantacao": "24/03/2023",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 131.0,
-        "mes": 3.0
+        "h_ha_sem": 131.0
     },
     {
         "quinta": "Horticilha",
@@ -3765,8 +3554,7 @@
         "kg_h": 23.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 165.0,
-        "mes": 9.0
+        "h_ha_sem": 165.0
     },
     {
         "quinta": "Horticilha",
@@ -3778,8 +3566,7 @@
         "kg_h": 12.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 259.0,
-        "mes": 6.0
+        "h_ha_sem": 259.0
     },
     {
         "quinta": "Zambujeira",
@@ -3791,8 +3578,7 @@
         "kg_h": 38.0,
         "plantacao": "03/09/2021",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 113.0,
-        "mes": 9.0
+        "h_ha_sem": 113.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3804,8 +3590,7 @@
         "kg_h": 52.0,
         "plantacao": "04/01/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 128.0,
-        "mes": 1.0
+        "h_ha_sem": 128.0
     },
     {
         "quinta": "Horticilha",
@@ -3817,8 +3602,7 @@
         "kg_h": 30.0,
         "plantacao": "06/06/2024",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 185.0,
-        "mes": 6.0
+        "h_ha_sem": 185.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3830,8 +3614,7 @@
         "kg_h": 29.0,
         "plantacao": "24/07/2021",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 212.0,
-        "mes": 7.0
+        "h_ha_sem": 212.0
     },
     {
         "quinta": "Horticilha",
@@ -3843,8 +3626,7 @@
         "kg_h": 14.0,
         "plantacao": "22/08/2018",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 206.0,
-        "mes": 8.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Zambujeira",
@@ -3856,8 +3638,7 @@
         "kg_h": 35.0,
         "plantacao": "17/12/2025",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 130.0,
-        "mes": 12.0
+        "h_ha_sem": 130.0
     },
     {
         "quinta": "Horticilha",
@@ -3869,8 +3650,7 @@
         "kg_h": 13.0,
         "plantacao": "18/08/2016",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 238.0,
-        "mes": 8.0
+        "h_ha_sem": 238.0
     },
     {
         "quinta": "Horticilha",
@@ -3882,8 +3662,7 @@
         "kg_h": 34.0,
         "plantacao": "06/06/2024",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 168.0,
-        "mes": 6.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Zambujeira",
@@ -3895,8 +3674,7 @@
         "kg_h": 40.0,
         "plantacao": "12/12/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 137.0,
-        "mes": 12.0
+        "h_ha_sem": 137.0
     },
     {
         "quinta": "CCS",
@@ -3908,8 +3686,7 @@
         "kg_h": 11.0,
         "plantacao": "22/05/2024",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 284.0,
-        "mes": 5.0
+        "h_ha_sem": 284.0
     },
     {
         "quinta": "Zambujeira",
@@ -3921,8 +3698,7 @@
         "kg_h": 39.0,
         "plantacao": "12/12/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 138.0,
-        "mes": 12.0
+        "h_ha_sem": 138.0
     },
     {
         "quinta": "Horticilha",
@@ -3934,8 +3710,7 @@
         "kg_h": 46.0,
         "plantacao": "30/05/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 117.0,
-        "mes": 5.0
+        "h_ha_sem": 117.0
     },
     {
         "quinta": "Zambujeira",
@@ -3947,8 +3722,7 @@
         "kg_h": 37.0,
         "plantacao": "08/06/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 146.0,
-        "mes": 6.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3960,8 +3734,7 @@
         "kg_h": 31.0,
         "plantacao": "17/07/2021",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 188.0,
-        "mes": 7.0
+        "h_ha_sem": 188.0
     },
     {
         "quinta": "Portos Brancos",
@@ -3973,8 +3746,7 @@
         "kg_h": 43.0,
         "plantacao": "18/02/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 147.0,
-        "mes": 2.0
+        "h_ha_sem": 147.0
     },
     {
         "quinta": "Horticilha",
@@ -3986,8 +3758,7 @@
         "kg_h": 44.0,
         "plantacao": "18/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 109.0,
-        "mes": 12.0
+        "h_ha_sem": 109.0
     },
     {
         "quinta": "Horticilha",
@@ -3999,8 +3770,7 @@
         "kg_h": 30.0,
         "plantacao": "22/12/2023",
         "semanas_duracao": 36.0,
-        "h_ha_sem": 128.0,
-        "mes": 12.0
+        "h_ha_sem": 128.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4012,8 +3782,7 @@
         "kg_h": 55.0,
         "plantacao": "11/01/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 113.0,
-        "mes": 1.0
+        "h_ha_sem": 113.0
     },
     {
         "quinta": "Horticilha",
@@ -4025,8 +3794,7 @@
         "kg_h": 14.0,
         "plantacao": "19/09/2019",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 230.0,
-        "mes": 9.0
+        "h_ha_sem": 230.0
     },
     {
         "quinta": "Campelos",
@@ -4038,8 +3806,7 @@
         "kg_h": 27.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 196.0,
-        "mes": 3.0
+        "h_ha_sem": 196.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4051,8 +3818,7 @@
         "kg_h": 32.0,
         "plantacao": "30/12/2021",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 193.0,
-        "mes": 12.0
+        "h_ha_sem": 193.0
     },
     {
         "quinta": "Zambujeira",
@@ -4064,8 +3830,7 @@
         "kg_h": 41.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 133.0,
-        "mes": 12.0
+        "h_ha_sem": 133.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4077,8 +3842,7 @@
         "kg_h": 46.0,
         "plantacao": "18/02/2022",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 135.0,
-        "mes": 2.0
+        "h_ha_sem": 135.0
     },
     {
         "quinta": "Campelos",
@@ -4090,8 +3854,7 @@
         "kg_h": 32.0,
         "plantacao": "13/03/2025",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 190.0,
-        "mes": 3.0
+        "h_ha_sem": 190.0
     },
     {
         "quinta": "Zambujeira",
@@ -4103,8 +3866,7 @@
         "kg_h": 36.0,
         "plantacao": "08/06/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 146.0,
-        "mes": 6.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Horticilha",
@@ -4116,8 +3878,7 @@
         "kg_h": 14.0,
         "plantacao": "19/09/2019",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 230.0,
-        "mes": 9.0
+        "h_ha_sem": 230.0
     },
     {
         "quinta": "Horticilha",
@@ -4129,8 +3890,7 @@
         "kg_h": 12.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 241.0,
-        "mes": 6.0
+        "h_ha_sem": 241.0
     },
     {
         "quinta": "Horticilha",
@@ -4142,8 +3902,7 @@
         "kg_h": 11.0,
         "plantacao": "30/07/2020",
         "semanas_duracao": 51.0,
-        "h_ha_sem": 235.0,
-        "mes": 7.0
+        "h_ha_sem": 235.0
     },
     {
         "quinta": "Horticilha",
@@ -4155,8 +3914,7 @@
         "kg_h": 13.0,
         "plantacao": "30/08/2021",
         "semanas_duracao": 55.0,
-        "h_ha_sem": 194.0,
-        "mes": 8.0
+        "h_ha_sem": 194.0
     },
     {
         "quinta": "Zambujeira",
@@ -4168,8 +3926,7 @@
         "kg_h": 32.0,
         "plantacao": "31/05/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 147.0,
-        "mes": 5.0
+        "h_ha_sem": 147.0
     },
     {
         "quinta": "Zambujeira",
@@ -4181,8 +3938,7 @@
         "kg_h": 43.0,
         "plantacao": "03/09/2021",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 97.0,
-        "mes": 9.0
+        "h_ha_sem": 97.0
     },
     {
         "quinta": "Horticilha",
@@ -4194,8 +3950,7 @@
         "kg_h": 18.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 246.0,
-        "mes": 5.0
+        "h_ha_sem": 246.0
     },
     {
         "quinta": "Horticilha",
@@ -4207,8 +3962,7 @@
         "kg_h": 19.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 174.0,
-        "mes": 9.0
+        "h_ha_sem": 174.0
     },
     {
         "quinta": "Horticilha",
@@ -4220,8 +3974,7 @@
         "kg_h": 39.0,
         "plantacao": "30/05/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 132.0,
-        "mes": 5.0
+        "h_ha_sem": 132.0
     },
     {
         "quinta": "Horticilha",
@@ -4233,8 +3986,7 @@
         "kg_h": 35.0,
         "plantacao": "24/12/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 151.0,
-        "mes": 12.0
+        "h_ha_sem": 151.0
     },
     {
         "quinta": "Horticilha",
@@ -4246,8 +3998,7 @@
         "kg_h": 12.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 241.0,
-        "mes": 6.0
+        "h_ha_sem": 241.0
     },
     {
         "quinta": "Horticilha",
@@ -4259,8 +4010,7 @@
         "kg_h": 18.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 253.0,
-        "mes": 5.0
+        "h_ha_sem": 253.0
     },
     {
         "quinta": "Zambujeira",
@@ -4272,8 +4022,7 @@
         "kg_h": 40.0,
         "plantacao": "20/12/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 125.0,
-        "mes": 12.0
+        "h_ha_sem": 125.0
     },
     {
         "quinta": "Sobreiro",
@@ -4285,8 +4034,7 @@
         "kg_h": 30.0,
         "plantacao": "26/02/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 176.0,
-        "mes": 2.0
+        "h_ha_sem": 176.0
     },
     {
         "quinta": "Horticilha",
@@ -4298,8 +4046,7 @@
         "kg_h": 12.0,
         "plantacao": "30/08/2021",
         "semanas_duracao": 55.0,
-        "h_ha_sem": 194.0,
-        "mes": 8.0
+        "h_ha_sem": 194.0
     },
     {
         "quinta": "Horticilha",
@@ -4311,8 +4058,7 @@
         "kg_h": 17.0,
         "plantacao": "08/06/2021",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 211.0,
-        "mes": 6.0
+        "h_ha_sem": 211.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4324,8 +4070,7 @@
         "kg_h": 41.0,
         "plantacao": "21/07/2021",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 131.0,
-        "mes": 7.0
+        "h_ha_sem": 131.0
     },
     {
         "quinta": "Zambujeira",
@@ -4337,8 +4082,7 @@
         "kg_h": 26.0,
         "plantacao": "19/03/2025",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 165.0,
-        "mes": 3.0
+        "h_ha_sem": 165.0
     },
     {
         "quinta": "Horticilha",
@@ -4350,8 +4094,7 @@
         "kg_h": 11.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 259.0,
-        "mes": 6.0
+        "h_ha_sem": 259.0
     },
     {
         "quinta": "Horticilha",
@@ -4363,8 +4106,7 @@
         "kg_h": 23.0,
         "plantacao": "26/09/2019",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 171.0,
-        "mes": 9.0
+        "h_ha_sem": 171.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4376,8 +4118,7 @@
         "kg_h": 41.0,
         "plantacao": "18/02/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 149.0,
-        "mes": 2.0
+        "h_ha_sem": 149.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4389,8 +4130,7 @@
         "kg_h": 54.0,
         "plantacao": "07/01/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 116.0,
-        "mes": 1.0
+        "h_ha_sem": 116.0
     },
     {
         "quinta": "Horticilha",
@@ -4402,8 +4142,7 @@
         "kg_h": 15.0,
         "plantacao": "18/08/2016",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 203.0,
-        "mes": 8.0
+        "h_ha_sem": 203.0
     },
     {
         "quinta": "Horticilha",
@@ -4415,8 +4154,7 @@
         "kg_h": 36.0,
         "plantacao": "20/12/2025",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 140.0,
-        "mes": 12.0
+        "h_ha_sem": 140.0
     },
     {
         "quinta": "Pegões",
@@ -4428,8 +4166,7 @@
         "kg_h": 50.0,
         "plantacao": "18/04/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 98.0,
-        "mes": 4.0
+        "h_ha_sem": 98.0
     },
     {
         "quinta": "Zambujeira",
@@ -4441,8 +4178,7 @@
         "kg_h": 48.0,
         "plantacao": "21/12/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 110.0,
-        "mes": 12.0
+        "h_ha_sem": 110.0
     },
     {
         "quinta": "Horticilha",
@@ -4454,8 +4190,7 @@
         "kg_h": 11.0,
         "plantacao": "30/07/2020",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 226.0,
-        "mes": 7.0
+        "h_ha_sem": 226.0
     },
     {
         "quinta": "Campelos",
@@ -4467,8 +4202,7 @@
         "kg_h": 6.0,
         "plantacao": "03/03/2022",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 401.0,
-        "mes": 3.0
+        "h_ha_sem": 401.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4480,8 +4214,7 @@
         "kg_h": 39.0,
         "plantacao": "22/07/2021",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 133.0,
-        "mes": 7.0
+        "h_ha_sem": 133.0
     },
     {
         "quinta": "Horticilha",
@@ -4493,8 +4226,7 @@
         "kg_h": 11.0,
         "plantacao": "30/07/2020",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 226.0,
-        "mes": 7.0
+        "h_ha_sem": 226.0
     },
     {
         "quinta": "Pegões",
@@ -4506,8 +4238,7 @@
         "kg_h": 38.0,
         "plantacao": "30/04/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 146.0,
-        "mes": 4.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Zambujeira",
@@ -4519,8 +4250,7 @@
         "kg_h": 38.0,
         "plantacao": "25/06/2025",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 141.0,
-        "mes": 6.0
+        "h_ha_sem": 141.0
     },
     {
         "quinta": "Zambujeira",
@@ -4532,8 +4262,7 @@
         "kg_h": 36.0,
         "plantacao": "19/06/2025",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 146.0,
-        "mes": 6.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Horticilha",
@@ -4545,8 +4274,7 @@
         "kg_h": 28.0,
         "plantacao": "01/04/2019",
         "semanas_duracao": 20.0,
-        "h_ha_sem": 232.0,
-        "mes": 4.0
+        "h_ha_sem": 232.0
     },
     {
         "quinta": "Horticilha",
@@ -4558,8 +4286,7 @@
         "kg_h": 34.0,
         "plantacao": "22/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 124.0,
-        "mes": 12.0
+        "h_ha_sem": 124.0
     },
     {
         "quinta": "Horticilha",
@@ -4571,8 +4298,7 @@
         "kg_h": 30.0,
         "plantacao": "26/12/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 164.0,
-        "mes": 12.0
+        "h_ha_sem": 164.0
     },
     {
         "quinta": "Campelos",
@@ -4584,8 +4310,7 @@
         "kg_h": 8.0,
         "plantacao": "15/02/2023",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 323.0,
-        "mes": 2.0
+        "h_ha_sem": 323.0
     },
     {
         "quinta": "CCS",
@@ -4597,8 +4322,7 @@
         "kg_h": 17.0,
         "plantacao": "24/08/2021",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 186.0,
-        "mes": 8.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Horticilha",
@@ -4610,8 +4334,7 @@
         "kg_h": 16.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 243.0,
-        "mes": 5.0
+        "h_ha_sem": 243.0
     },
     {
         "quinta": "Campelos",
@@ -4623,8 +4346,7 @@
         "kg_h": 37.0,
         "plantacao": "18/07/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 125.0,
-        "mes": 7.0
+        "h_ha_sem": 125.0
     },
     {
         "quinta": "Campelos",
@@ -4636,8 +4358,7 @@
         "kg_h": 18.0,
         "plantacao": "21/02/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 288.0,
-        "mes": 2.0
+        "h_ha_sem": 288.0
     },
     {
         "quinta": "CCS",
@@ -4649,8 +4370,7 @@
         "kg_h": 19.0,
         "plantacao": "17/12/2021",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 202.0,
-        "mes": 12.0
+        "h_ha_sem": 202.0
     },
     {
         "quinta": "Zambujeira",
@@ -4662,8 +4382,7 @@
         "kg_h": 16.0,
         "plantacao": "02/06/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 311.0,
-        "mes": 6.0
+        "h_ha_sem": 311.0
     },
     {
         "quinta": "Horticilha",
@@ -4675,8 +4394,7 @@
         "kg_h": 37.0,
         "plantacao": "20/12/2025",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 121.0,
-        "mes": 12.0
+        "h_ha_sem": 121.0
     },
     {
         "quinta": "Horticilha",
@@ -4688,8 +4406,7 @@
         "kg_h": 21.0,
         "plantacao": "02/02/2022",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 216.0,
-        "mes": 2.0
+        "h_ha_sem": 216.0
     },
     {
         "quinta": "Zambujeira",
@@ -4701,8 +4418,7 @@
         "kg_h": 32.0,
         "plantacao": "03/09/2021",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 117.0,
-        "mes": 9.0
+        "h_ha_sem": 117.0
     },
     {
         "quinta": "Horticilha",
@@ -4714,8 +4430,7 @@
         "kg_h": 12.0,
         "plantacao": "02/06/2020",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 235.0,
-        "mes": 6.0
+        "h_ha_sem": 235.0
     },
     {
         "quinta": "Campelos",
@@ -4727,8 +4442,7 @@
         "kg_h": 21.0,
         "plantacao": "18/07/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 220.0,
-        "mes": 7.0
+        "h_ha_sem": 220.0
     },
     {
         "quinta": "Pegões",
@@ -4740,8 +4454,7 @@
         "kg_h": 35.0,
         "plantacao": "24/04/2023",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 158.0,
-        "mes": 4.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Zambujeira",
@@ -4753,8 +4466,7 @@
         "kg_h": 33.0,
         "plantacao": "21/06/2025",
         "semanas_duracao": 22.0,
-        "h_ha_sem": 164.0,
-        "mes": 6.0
+        "h_ha_sem": 164.0
     },
     {
         "quinta": "Zambujeira",
@@ -4766,8 +4478,7 @@
         "kg_h": 26.0,
         "plantacao": "31/05/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 164.0,
-        "mes": 5.0
+        "h_ha_sem": 164.0
     },
     {
         "quinta": "Horticilha",
@@ -4779,8 +4490,7 @@
         "kg_h": 17.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 174.0,
-        "mes": 9.0
+        "h_ha_sem": 174.0
     },
     {
         "quinta": "Zambujeira",
@@ -4792,8 +4502,7 @@
         "kg_h": 31.0,
         "plantacao": "22/04/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 185.0,
-        "mes": 4.0
+        "h_ha_sem": 185.0
     },
     {
         "quinta": "Horticilha",
@@ -4805,8 +4514,7 @@
         "kg_h": 38.0,
         "plantacao": "19/12/2025",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 111.0,
-        "mes": 12.0
+        "h_ha_sem": 111.0
     },
     {
         "quinta": "Horticilha",
@@ -4818,8 +4526,7 @@
         "kg_h": 27.0,
         "plantacao": "22/12/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 144.0,
-        "mes": 12.0
+        "h_ha_sem": 144.0
     },
     {
         "quinta": "Horticilha",
@@ -4831,8 +4538,7 @@
         "kg_h": 35.0,
         "plantacao": "20/12/2025",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 116.0,
-        "mes": 12.0
+        "h_ha_sem": 116.0
     },
     {
         "quinta": "Pegões",
@@ -4844,8 +4550,7 @@
         "kg_h": 36.0,
         "plantacao": "04/05/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 151.0,
-        "mes": 5.0
+        "h_ha_sem": 151.0
     },
     {
         "quinta": "Horticilha",
@@ -4857,8 +4562,7 @@
         "kg_h": 16.0,
         "plantacao": "05/08/2016",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 189.0,
-        "mes": 8.0
+        "h_ha_sem": 189.0
     },
     {
         "quinta": "Horticilha",
@@ -4870,8 +4574,7 @@
         "kg_h": 10.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 241.0,
-        "mes": 6.0
+        "h_ha_sem": 241.0
     },
     {
         "quinta": "Horticilha",
@@ -4883,8 +4586,7 @@
         "kg_h": 17.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 168.0,
-        "mes": 9.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Horticilha",
@@ -4896,8 +4598,7 @@
         "kg_h": 18.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 168.0,
-        "mes": 9.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Portos Brancos",
@@ -4909,8 +4610,7 @@
         "kg_h": 18.0,
         "plantacao": "28/05/2021",
         "semanas_duracao": 47.0,
-        "h_ha_sem": 137.0,
-        "mes": 5.0
+        "h_ha_sem": 137.0
     },
     {
         "quinta": "CCS",
@@ -4922,8 +4622,7 @@
         "kg_h": 11.0,
         "plantacao": "22/05/2024",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 240.0,
-        "mes": 5.0
+        "h_ha_sem": 240.0
     },
     {
         "quinta": "Zambujeira",
@@ -4935,8 +4634,7 @@
         "kg_h": 27.0,
         "plantacao": "08/06/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 162.0,
-        "mes": 6.0
+        "h_ha_sem": 162.0
     },
     {
         "quinta": "Sobreiro",
@@ -4948,8 +4646,7 @@
         "kg_h": 20.0,
         "plantacao": "20/02/2023",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 191.0,
-        "mes": 2.0
+        "h_ha_sem": 191.0
     },
     {
         "quinta": "Horticilha",
@@ -4961,8 +4658,7 @@
         "kg_h": 14.0,
         "plantacao": "05/08/2016",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 205.0,
-        "mes": 8.0
+        "h_ha_sem": 205.0
     },
     {
         "quinta": "Horticilha",
@@ -4974,8 +4670,7 @@
         "kg_h": 16.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 168.0,
-        "mes": 9.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Zambujeira",
@@ -4987,8 +4682,7 @@
         "kg_h": 26.0,
         "plantacao": "01/09/2022",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 110.0,
-        "mes": 9.0
+        "h_ha_sem": 110.0
     },
     {
         "quinta": "Zambujeira",
@@ -5000,8 +4694,7 @@
         "kg_h": 26.0,
         "plantacao": "15/04/2021",
         "semanas_duracao": 19.0,
-        "h_ha_sem": 216.0,
-        "mes": 4.0
+        "h_ha_sem": 216.0
     },
     {
         "quinta": "CCS",
@@ -5013,8 +4706,7 @@
         "kg_h": 15.0,
         "plantacao": "31/08/2021",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 186.0,
-        "mes": 8.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Portos Brancos",
@@ -5026,8 +4718,7 @@
         "kg_h": 35.0,
         "plantacao": "14/02/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 148.0,
-        "mes": 2.0
+        "h_ha_sem": 148.0
     },
     {
         "quinta": "Campelos",
@@ -5039,8 +4730,7 @@
         "kg_h": 22.0,
         "plantacao": "14/03/2025",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 203.0,
-        "mes": 3.0
+        "h_ha_sem": 203.0
     },
     {
         "quinta": "Horticilha",
@@ -5052,8 +4742,7 @@
         "kg_h": 35.0,
         "plantacao": "05/07/2021",
         "semanas_duracao": 20.0,
-        "h_ha_sem": 158.0,
-        "mes": 7.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Horticilha",
@@ -5065,8 +4754,7 @@
         "kg_h": 25.0,
         "plantacao": "02/10/2019",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 140.0,
-        "mes": 10.0
+        "h_ha_sem": 140.0
     },
     {
         "quinta": "Horticilha",
@@ -5078,8 +4766,7 @@
         "kg_h": 18.0,
         "plantacao": "05/02/2022",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 213.0,
-        "mes": 2.0
+        "h_ha_sem": 213.0
     },
     {
         "quinta": "Sobreiro",
@@ -5091,8 +4778,7 @@
         "kg_h": 15.0,
         "plantacao": "15/02/2023",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 233.0,
-        "mes": 2.0
+        "h_ha_sem": 233.0
     },
     {
         "quinta": "Horticilha",
@@ -5104,8 +4790,7 @@
         "kg_h": 10.0,
         "plantacao": "22/08/2018",
         "semanas_duracao": 49.0,
-        "h_ha_sem": 208.0,
-        "mes": 8.0
+        "h_ha_sem": 208.0
     },
     {
         "quinta": "Zambujeira",
@@ -5117,8 +4802,7 @@
         "kg_h": 20.0,
         "plantacao": "30/04/2025",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 171.0,
-        "mes": 4.0
+        "h_ha_sem": 171.0
     },
     {
         "quinta": "Horticilha",
@@ -5130,8 +4814,7 @@
         "kg_h": 23.0,
         "plantacao": "14/12/2023",
         "semanas_duracao": 36.0,
-        "h_ha_sem": 127.0,
-        "mes": 12.0
+        "h_ha_sem": 127.0
     },
     {
         "quinta": "Horticilha",
@@ -5143,8 +4826,7 @@
         "kg_h": 12.0,
         "plantacao": "07/09/2017",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 225.0,
-        "mes": 9.0
+        "h_ha_sem": 225.0
     },
     {
         "quinta": "Portos Brancos",
@@ -5156,8 +4838,7 @@
         "kg_h": 30.0,
         "plantacao": "16/02/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 161.0,
-        "mes": 2.0
+        "h_ha_sem": 161.0
     },
     {
         "quinta": "Horticilha",
@@ -5169,8 +4850,7 @@
         "kg_h": 15.0,
         "plantacao": "23/08/2019",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 155.0,
-        "mes": 8.0
+        "h_ha_sem": 155.0
     },
     {
         "quinta": "Horticilha",
@@ -5182,8 +4862,7 @@
         "kg_h": 16.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 168.0,
-        "mes": 9.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Pegões",
@@ -5195,8 +4874,7 @@
         "kg_h": 41.0,
         "plantacao": "08/09/2023",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 91.0,
-        "mes": 9.0
+        "h_ha_sem": 91.0
     },
     {
         "quinta": "Horticilha",
@@ -5208,8 +4886,7 @@
         "kg_h": 11.0,
         "plantacao": "07/09/2017",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 222.0,
-        "mes": 9.0
+        "h_ha_sem": 222.0
     },
     {
         "quinta": "Horticilha",
@@ -5221,8 +4898,7 @@
         "kg_h": 9.0,
         "plantacao": "30/07/2020",
         "semanas_duracao": 50.0,
-        "h_ha_sem": 226.0,
-        "mes": 7.0
+        "h_ha_sem": 226.0
     },
     {
         "quinta": "Horticilha",
@@ -5234,8 +4910,7 @@
         "kg_h": 9.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 241.0,
-        "mes": 6.0
+        "h_ha_sem": 241.0
     },
     {
         "quinta": "CCS",
@@ -5247,8 +4922,7 @@
         "kg_h": 7.0,
         "plantacao": "22/05/2024",
         "semanas_duracao": 45.0,
-        "h_ha_sem": 305.0,
-        "mes": 5.0
+        "h_ha_sem": 305.0
     },
     {
         "quinta": "Horticilha",
@@ -5260,8 +4934,7 @@
         "kg_h": 21.0,
         "plantacao": "02/02/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 204.0,
-        "mes": 2.0
+        "h_ha_sem": 204.0
     },
     {
         "quinta": "Horticilha",
@@ -5273,8 +4946,7 @@
         "kg_h": 8.0,
         "plantacao": "12/06/2020",
         "semanas_duracao": 46.0,
-        "h_ha_sem": 259.0,
-        "mes": 6.0
+        "h_ha_sem": 259.0
     },
     {
         "quinta": "Campelos",
@@ -5286,8 +4958,7 @@
         "kg_h": 18.0,
         "plantacao": "25/07/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 201.0,
-        "mes": 7.0
+        "h_ha_sem": 201.0
     },
     {
         "quinta": "Campelos",
@@ -5299,8 +4970,7 @@
         "kg_h": 19.0,
         "plantacao": "14/02/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 195.0,
-        "mes": 2.0
+        "h_ha_sem": 195.0
     },
     {
         "quinta": "Zambujeira",
@@ -5312,8 +4982,7 @@
         "kg_h": 12.0,
         "plantacao": "01/09/2021",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 207.0,
-        "mes": 9.0
+        "h_ha_sem": 207.0
     },
     {
         "quinta": "Horticilha",
@@ -5325,8 +4994,7 @@
         "kg_h": 10.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 227.0,
-        "mes": 5.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "Horticilha",
@@ -5338,8 +5006,7 @@
         "kg_h": 12.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 186.0,
-        "mes": 5.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Zambujeira",
@@ -5351,8 +5018,7 @@
         "kg_h": 30.0,
         "plantacao": "29/08/2021",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 92.0,
-        "mes": 8.0
+        "h_ha_sem": 92.0
     },
     {
         "quinta": "Campelos",
@@ -5364,8 +5030,7 @@
         "kg_h": 18.0,
         "plantacao": "14/02/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 206.0,
-        "mes": 2.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Horticilha",
@@ -5377,8 +5042,7 @@
         "kg_h": 13.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 168.0,
-        "mes": 9.0
+        "h_ha_sem": 168.0
     },
     {
         "quinta": "Horticilha",
@@ -5390,8 +5054,7 @@
         "kg_h": 14.0,
         "plantacao": "13/06/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 252.0,
-        "mes": 6.0
+        "h_ha_sem": 252.0
     },
     {
         "quinta": "Zambujeira",
@@ -5403,8 +5066,7 @@
         "kg_h": 12.0,
         "plantacao": "02/06/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 311.0,
-        "mes": 6.0
+        "h_ha_sem": 311.0
     },
     {
         "quinta": "Horticilha",
@@ -5416,8 +5078,7 @@
         "kg_h": 9.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 232.0,
-        "mes": 5.0
+        "h_ha_sem": 232.0
     },
     {
         "quinta": "Horticilha",
@@ -5429,8 +5090,7 @@
         "kg_h": 15.0,
         "plantacao": "04/09/2019",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 157.0,
-        "mes": 9.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Horticilha",
@@ -5442,8 +5102,7 @@
         "kg_h": 14.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 37.0,
-        "h_ha_sem": 167.0,
-        "mes": 9.0
+        "h_ha_sem": 167.0
     },
     {
         "quinta": "Zambujeira",
@@ -5455,8 +5114,7 @@
         "kg_h": 11.0,
         "plantacao": "02/06/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 311.0,
-        "mes": 6.0
+        "h_ha_sem": 311.0
     },
     {
         "quinta": "Sobreiro",
@@ -5468,8 +5126,7 @@
         "kg_h": 12.0,
         "plantacao": "13/06/2023",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 261.0,
-        "mes": 6.0
+        "h_ha_sem": 261.0
     },
     {
         "quinta": "Zambujeira",
@@ -5481,8 +5138,7 @@
         "kg_h": 13.0,
         "plantacao": "21/08/2021",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 166.0,
-        "mes": 8.0
+        "h_ha_sem": 166.0
     },
     {
         "quinta": "Horticilha",
@@ -5494,8 +5150,7 @@
         "kg_h": 12.0,
         "plantacao": "27/07/2017",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 179.0,
-        "mes": 7.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Zambujeira",
@@ -5507,8 +5162,7 @@
         "kg_h": 13.0,
         "plantacao": "21/08/2021",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 166.0,
-        "mes": 8.0
+        "h_ha_sem": 166.0
     },
     {
         "quinta": "Pegões",
@@ -5520,8 +5174,7 @@
         "kg_h": 46.0,
         "plantacao": "08/09/2023",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 72.0,
-        "mes": 9.0
+        "h_ha_sem": 72.0
     },
     {
         "quinta": "CCS",
@@ -5533,8 +5186,7 @@
         "kg_h": 12.0,
         "plantacao": "24/08/2021",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 186.0,
-        "mes": 8.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Sobreiro",
@@ -5546,8 +5198,7 @@
         "kg_h": 23.0,
         "plantacao": "25/02/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 146.0,
-        "mes": 2.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Sobreiro",
@@ -5559,8 +5210,7 @@
         "kg_h": 16.0,
         "plantacao": "20/07/2022",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 194.0,
-        "mes": 7.0
+        "h_ha_sem": 194.0
     },
     {
         "quinta": "Pegões",
@@ -5572,8 +5222,7 @@
         "kg_h": 49.0,
         "plantacao": "13/09/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 71.0,
-        "mes": 9.0
+        "h_ha_sem": 71.0
     },
     {
         "quinta": "Horticilha",
@@ -5585,8 +5234,7 @@
         "kg_h": 9.0,
         "plantacao": "27/08/2017",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 214.0,
-        "mes": 8.0
+        "h_ha_sem": 214.0
     },
     {
         "quinta": "Sobreiro",
@@ -5598,8 +5246,7 @@
         "kg_h": 12.0,
         "plantacao": "16/02/2023",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 249.0,
-        "mes": 2.0
+        "h_ha_sem": 249.0
     },
     {
         "quinta": "Zambujeira",
@@ -5611,8 +5258,7 @@
         "kg_h": 25.0,
         "plantacao": "25/08/2022",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 98.0,
-        "mes": 8.0
+        "h_ha_sem": 98.0
     },
     {
         "quinta": "Horticilha",
@@ -5624,8 +5270,7 @@
         "kg_h": 9.0,
         "plantacao": "07/09/2017",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 222.0,
-        "mes": 9.0
+        "h_ha_sem": 222.0
     },
     {
         "quinta": "Horticilha",
@@ -5637,8 +5282,7 @@
         "kg_h": 13.0,
         "plantacao": "07/09/2017",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 162.0,
-        "mes": 9.0
+        "h_ha_sem": 162.0
     },
     {
         "quinta": "Horticilha",
@@ -5650,8 +5294,7 @@
         "kg_h": 12.0,
         "plantacao": "23/08/2019",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 153.0,
-        "mes": 8.0
+        "h_ha_sem": 153.0
     },
     {
         "quinta": "Campelos",
@@ -5663,8 +5306,7 @@
         "kg_h": 14.0,
         "plantacao": "21/02/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 250.0,
-        "mes": 2.0
+        "h_ha_sem": 250.0
     },
     {
         "quinta": "Sobreiro",
@@ -5676,8 +5318,7 @@
         "kg_h": 13.0,
         "plantacao": "31/05/2022",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 207.0,
-        "mes": 5.0
+        "h_ha_sem": 207.0
     },
     {
         "quinta": "Horticilha",
@@ -5689,8 +5330,7 @@
         "kg_h": 12.0,
         "plantacao": "23/08/2019",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 153.0,
-        "mes": 8.0
+        "h_ha_sem": 153.0
     },
     {
         "quinta": "Horticilha",
@@ -5702,8 +5342,7 @@
         "kg_h": 12.0,
         "plantacao": "27/07/2017",
         "semanas_duracao": 41.0,
-        "h_ha_sem": 169.0,
-        "mes": 7.0
+        "h_ha_sem": 169.0
     },
     {
         "quinta": "Zambujeira",
@@ -5715,8 +5354,7 @@
         "kg_h": 27.0,
         "plantacao": "29/08/2021",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 89.0,
-        "mes": 8.0
+        "h_ha_sem": 89.0
     },
     {
         "quinta": "CCS",
@@ -5728,8 +5366,7 @@
         "kg_h": 13.0,
         "plantacao": "06/11/2025",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 208.0,
-        "mes": 11.0
+        "h_ha_sem": 208.0
     },
     {
         "quinta": "CCS",
@@ -5741,8 +5378,7 @@
         "kg_h": 15.0,
         "plantacao": "25/05/2022",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 180.0,
-        "mes": 5.0
+        "h_ha_sem": 180.0
     },
     {
         "quinta": "Horticilha",
@@ -5754,8 +5390,7 @@
         "kg_h": 8.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 44.0,
-        "h_ha_sem": 216.0,
-        "mes": 5.0
+        "h_ha_sem": 216.0
     },
     {
         "quinta": "Sobreiro",
@@ -5767,8 +5402,7 @@
         "kg_h": 18.0,
         "plantacao": "09/01/2025",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 151.0,
-        "mes": 1.0
+        "h_ha_sem": 151.0
     },
     {
         "quinta": "Horticilha",
@@ -5780,8 +5414,7 @@
         "kg_h": 17.0,
         "plantacao": "05/02/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 191.0,
-        "mes": 2.0
+        "h_ha_sem": 191.0
     },
     {
         "quinta": "Horticilha",
@@ -5793,8 +5426,7 @@
         "kg_h": 13.0,
         "plantacao": "04/09/2019",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 157.0,
-        "mes": 9.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Horticilha",
@@ -5806,8 +5438,7 @@
         "kg_h": 9.0,
         "plantacao": "07/09/2017",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 222.0,
-        "mes": 9.0
+        "h_ha_sem": 222.0
     },
     {
         "quinta": "Horticilha",
@@ -5819,8 +5450,7 @@
         "kg_h": 13.0,
         "plantacao": "14/06/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 230.0,
-        "mes": 6.0
+        "h_ha_sem": 230.0
     },
     {
         "quinta": "Pegões",
@@ -5832,8 +5462,7 @@
         "kg_h": 22.0,
         "plantacao": "10/09/2022",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 121.0,
-        "mes": 9.0
+        "h_ha_sem": 121.0
     },
     {
         "quinta": "Zambujeira",
@@ -5845,8 +5474,7 @@
         "kg_h": 20.0,
         "plantacao": "29/08/2021",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 114.0,
-        "mes": 8.0
+        "h_ha_sem": 114.0
     },
     {
         "quinta": "Horticilha",
@@ -5858,8 +5486,7 @@
         "kg_h": 13.0,
         "plantacao": "04/09/2019",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 158.0,
-        "mes": 9.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Campelos",
@@ -5871,8 +5498,7 @@
         "kg_h": 11.0,
         "plantacao": "05/05/2023",
         "semanas_duracao": 36.0,
-        "h_ha_sem": 186.0,
-        "mes": 5.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Horticilha",
@@ -5884,8 +5510,7 @@
         "kg_h": 15.0,
         "plantacao": "13/07/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 240.0,
-        "mes": 7.0
+        "h_ha_sem": 240.0
     },
     {
         "quinta": "Horticilha",
@@ -5897,8 +5522,7 @@
         "kg_h": 8.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 43.0,
-        "h_ha_sem": 222.0,
-        "mes": 5.0
+        "h_ha_sem": 222.0
     },
     {
         "quinta": "Campelos",
@@ -5910,8 +5534,7 @@
         "kg_h": 16.0,
         "plantacao": "09/08/2024",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 147.0,
-        "mes": 8.0
+        "h_ha_sem": 147.0
     },
     {
         "quinta": "Zambujeira",
@@ -5923,8 +5546,7 @@
         "kg_h": 11.0,
         "plantacao": "21/08/2021",
         "semanas_duracao": 40.0,
-        "h_ha_sem": 166.0,
-        "mes": 8.0
+        "h_ha_sem": 166.0
     },
     {
         "quinta": "Pegões",
@@ -5936,8 +5558,7 @@
         "kg_h": 22.0,
         "plantacao": "30/04/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 146.0,
-        "mes": 4.0
+        "h_ha_sem": 146.0
     },
     {
         "quinta": "Pegões",
@@ -5949,8 +5570,7 @@
         "kg_h": 43.0,
         "plantacao": "20/09/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 61.0,
-        "mes": 9.0
+        "h_ha_sem": 61.0
     },
     {
         "quinta": "Campelos",
@@ -5962,8 +5582,7 @@
         "kg_h": 13.0,
         "plantacao": "28/07/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 227.0,
-        "mes": 7.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "Horticilha",
@@ -5975,8 +5594,7 @@
         "kg_h": 12.0,
         "plantacao": "04/09/2019",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 157.0,
-        "mes": 9.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Sobreiro",
@@ -5988,8 +5606,7 @@
         "kg_h": 11.0,
         "plantacao": "12/08/2025",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 236.0,
-        "mes": 8.0
+        "h_ha_sem": 236.0
     },
     {
         "quinta": "Campelos",
@@ -6001,8 +5618,7 @@
         "kg_h": 23.0,
         "plantacao": "22/08/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 110.0,
-        "mes": 8.0
+        "h_ha_sem": 110.0
     },
     {
         "quinta": "Horticilha",
@@ -6014,8 +5630,7 @@
         "kg_h": 11.0,
         "plantacao": "12/09/2019",
         "semanas_duracao": 38.0,
-        "h_ha_sem": 165.0,
-        "mes": 9.0
+        "h_ha_sem": 165.0
     },
     {
         "quinta": "Zambujeira",
@@ -6027,8 +5642,7 @@
         "kg_h": 29.0,
         "plantacao": "29/08/2021",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 73.0,
-        "mes": 8.0
+        "h_ha_sem": 73.0
     },
     {
         "quinta": "Horticilha",
@@ -6040,8 +5654,7 @@
         "kg_h": 7.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 227.0,
-        "mes": 5.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "CCS",
@@ -6053,8 +5666,7 @@
         "kg_h": 12.0,
         "plantacao": "01/06/2022",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 203.0,
-        "mes": 6.0
+        "h_ha_sem": 203.0
     },
     {
         "quinta": "Campelos",
@@ -6066,8 +5678,7 @@
         "kg_h": 17.0,
         "plantacao": "22/08/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 140.0,
-        "mes": 8.0
+        "h_ha_sem": 140.0
     },
     {
         "quinta": "Campelos",
@@ -6079,8 +5690,7 @@
         "kg_h": 11.0,
         "plantacao": "08/08/2025",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 224.0,
-        "mes": 8.0
+        "h_ha_sem": 224.0
     },
     {
         "quinta": "Horticilha",
@@ -6092,8 +5702,7 @@
         "kg_h": 18.0,
         "plantacao": "13/07/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 164.0,
-        "mes": 7.0
+        "h_ha_sem": 164.0
     },
     {
         "quinta": "Pegões",
@@ -6105,8 +5714,7 @@
         "kg_h": 39.0,
         "plantacao": "15/09/2022",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 57.0,
-        "mes": 9.0
+        "h_ha_sem": 57.0
     },
     {
         "quinta": "Zambujeira",
@@ -6118,8 +5726,7 @@
         "kg_h": 24.0,
         "plantacao": "20/09/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 99.0,
-        "mes": 9.0
+        "h_ha_sem": 99.0
     },
     {
         "quinta": "Horticilha",
@@ -6131,8 +5738,7 @@
         "kg_h": 7.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 42.0,
-        "h_ha_sem": 227.0,
-        "mes": 5.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "Horticilha",
@@ -6144,8 +5750,7 @@
         "kg_h": 10.0,
         "plantacao": "04/08/2017",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 204.0,
-        "mes": 8.0
+        "h_ha_sem": 204.0
     },
     {
         "quinta": "Sobreiro",
@@ -6157,8 +5762,7 @@
         "kg_h": 11.0,
         "plantacao": "31/05/2022",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 179.0,
-        "mes": 5.0
+        "h_ha_sem": 179.0
     },
     {
         "quinta": "Sobreiro",
@@ -6170,8 +5774,7 @@
         "kg_h": 10.0,
         "plantacao": "31/05/2022",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 206.0,
-        "mes": 5.0
+        "h_ha_sem": 206.0
     },
     {
         "quinta": "Pegões",
@@ -6183,8 +5786,7 @@
         "kg_h": 29.0,
         "plantacao": "14/09/2022",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 71.0,
-        "mes": 9.0
+        "h_ha_sem": 71.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -6196,8 +5798,7 @@
         "kg_h": 26.0,
         "plantacao": "26/08/2022",
         "semanas_duracao": 21.0,
-        "h_ha_sem": 112.0,
-        "mes": 8.0
+        "h_ha_sem": 112.0
     },
     {
         "quinta": "Pegões",
@@ -6209,8 +5810,7 @@
         "kg_h": 34.0,
         "plantacao": "28/08/2023",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 71.0,
-        "mes": 8.0
+        "h_ha_sem": 71.0
     },
     {
         "quinta": "Sobreiro",
@@ -6222,8 +5822,7 @@
         "kg_h": 9.0,
         "plantacao": "12/06/2023",
         "semanas_duracao": 30.0,
-        "h_ha_sem": 227.0,
-        "mes": 6.0
+        "h_ha_sem": 227.0
     },
     {
         "quinta": "Sobreiro",
@@ -6235,8 +5834,7 @@
         "kg_h": 10.0,
         "plantacao": "05/08/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 242.0,
-        "mes": 8.0
+        "h_ha_sem": 242.0
     },
     {
         "quinta": "Campelos",
@@ -6248,8 +5846,7 @@
         "kg_h": 11.0,
         "plantacao": "15/08/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 225.0,
-        "mes": 8.0
+        "h_ha_sem": 225.0
     },
     {
         "quinta": "Pegões",
@@ -6261,8 +5858,7 @@
         "kg_h": 43.0,
         "plantacao": "20/09/2024",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 49.0,
-        "mes": 9.0
+        "h_ha_sem": 49.0
     },
     {
         "quinta": "Campelos",
@@ -6274,8 +5870,7 @@
         "kg_h": 6.0,
         "plantacao": "09/06/2023",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 266.0,
-        "mes": 6.0
+        "h_ha_sem": 266.0
     },
     {
         "quinta": "Horticilha",
@@ -6287,8 +5882,7 @@
         "kg_h": 9.0,
         "plantacao": "14/09/2017",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 202.0,
-        "mes": 9.0
+        "h_ha_sem": 202.0
     },
     {
         "quinta": "Campelos",
@@ -6300,8 +5894,7 @@
         "kg_h": 20.0,
         "plantacao": "22/08/2024",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 90.0,
-        "mes": 8.0
+        "h_ha_sem": 90.0
     },
     {
         "quinta": "Horticilha",
@@ -6313,8 +5906,7 @@
         "kg_h": 9.0,
         "plantacao": "31/08/2017",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 183.0,
-        "mes": 8.0
+        "h_ha_sem": 183.0
     },
     {
         "quinta": "Horticilha",
@@ -6326,8 +5918,7 @@
         "kg_h": 6.0,
         "plantacao": "23/05/2019",
         "semanas_duracao": 39.0,
-        "h_ha_sem": 243.0,
-        "mes": 5.0
+        "h_ha_sem": 243.0
     },
     {
         "quinta": "Pegões",
@@ -6339,8 +5930,7 @@
         "kg_h": 17.0,
         "plantacao": "20/04/2021",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 108.0,
-        "mes": 4.0
+        "h_ha_sem": 108.0
     },
     {
         "quinta": "Pegões",
@@ -6352,8 +5942,7 @@
         "kg_h": 14.0,
         "plantacao": "06/09/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 145.0,
-        "mes": 9.0
+        "h_ha_sem": 145.0
     },
     {
         "quinta": "Zambujeira",
@@ -6365,8 +5954,7 @@
         "kg_h": 11.0,
         "plantacao": "06/09/2022",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 144.0,
-        "mes": 9.0
+        "h_ha_sem": 144.0
     },
     {
         "quinta": "Zambujeira",
@@ -6378,8 +5966,7 @@
         "kg_h": 21.0,
         "plantacao": "20/09/2024",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 90.0,
-        "mes": 9.0
+        "h_ha_sem": 90.0
     },
     {
         "quinta": "Zambujeira",
@@ -6391,8 +5978,7 @@
         "kg_h": 10.0,
         "plantacao": "31/08/2024",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 158.0,
-        "mes": 8.0
+        "h_ha_sem": 158.0
     },
     {
         "quinta": "Zambujeira",
@@ -6404,8 +5990,7 @@
         "kg_h": 9.0,
         "plantacao": "07/09/2022",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 160.0,
-        "mes": 9.0
+        "h_ha_sem": 160.0
     },
     {
         "quinta": "Zambujeira",
@@ -6417,8 +6002,7 @@
         "kg_h": 10.0,
         "plantacao": "07/09/2022",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 157.0,
-        "mes": 9.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Pegões",
@@ -6430,8 +6014,7 @@
         "kg_h": 20.0,
         "plantacao": "15/09/2022",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 83.0,
-        "mes": 9.0
+        "h_ha_sem": 83.0
     },
     {
         "quinta": "Sobreiro",
@@ -6443,8 +6026,7 @@
         "kg_h": 5.0,
         "plantacao": "10/06/2023",
         "semanas_duracao": 33.0,
-        "h_ha_sem": 264.0,
-        "mes": 6.0
+        "h_ha_sem": 264.0
     },
     {
         "quinta": "Sobreiro",
@@ -6456,8 +6038,7 @@
         "kg_h": 5.0,
         "plantacao": "18/08/2024",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 261.0,
-        "mes": 8.0
+        "h_ha_sem": 261.0
     },
     {
         "quinta": "Zambujeira",
@@ -6469,8 +6050,7 @@
         "kg_h": 9.0,
         "plantacao": "06/09/2022",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 164.0,
-        "mes": 9.0
+        "h_ha_sem": 164.0
     },
     {
         "quinta": "Zambujeira",
@@ -6482,8 +6062,7 @@
         "kg_h": 12.0,
         "plantacao": "08/09/2022",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 115.0,
-        "mes": 9.0
+        "h_ha_sem": 115.0
     },
     {
         "quinta": "Portos Brancos",
@@ -6495,8 +6074,7 @@
         "kg_h": 7.0,
         "plantacao": "28/05/2021",
         "semanas_duracao": 47.0,
-        "h_ha_sem": 138.0,
-        "mes": 5.0
+        "h_ha_sem": 138.0
     },
     {
         "quinta": "Zambujeira",
@@ -6508,8 +6086,7 @@
         "kg_h": 28.0,
         "plantacao": "30/10/2025",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 66.0,
-        "mes": 10.0
+        "h_ha_sem": 66.0
     },
     {
         "quinta": "Pegões",
@@ -6521,8 +6098,7 @@
         "kg_h": 8.0,
         "plantacao": "16/09/2021",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 173.0,
-        "mes": 9.0
+        "h_ha_sem": 173.0
     },
     {
         "quinta": "Pegões",
@@ -6534,8 +6110,7 @@
         "kg_h": 12.0,
         "plantacao": "16/04/2021",
         "semanas_duracao": 29.0,
-        "h_ha_sem": 120.0,
-        "mes": 4.0
+        "h_ha_sem": 120.0
     },
     {
         "quinta": "Pegões",
@@ -6547,8 +6122,7 @@
         "kg_h": 11.0,
         "plantacao": "06/09/2023",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 145.0,
-        "mes": 9.0
+        "h_ha_sem": 145.0
     },
     {
         "quinta": "Pegões",
@@ -6560,8 +6134,7 @@
         "kg_h": 9.0,
         "plantacao": "04/09/2021",
         "semanas_duracao": 32.0,
-        "h_ha_sem": 144.0,
-        "mes": 9.0
+        "h_ha_sem": 144.0
     },
     {
         "quinta": "Horticilha",
@@ -6573,8 +6146,7 @@
         "kg_h": 9.0,
         "plantacao": "02/09/2022",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 134.0,
-        "mes": 9.0
+        "h_ha_sem": 134.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -6586,8 +6158,7 @@
         "kg_h": 12.0,
         "plantacao": "01/09/2022",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 125.0,
-        "mes": 9.0
+        "h_ha_sem": 125.0
     },
     {
         "quinta": "Horticilha",
@@ -6599,8 +6170,7 @@
         "kg_h": 7.0,
         "plantacao": "02/09/2022",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 157.0,
-        "mes": 9.0
+        "h_ha_sem": 157.0
     },
     {
         "quinta": "Sobreiro",
@@ -6612,8 +6182,7 @@
         "kg_h": 11.0,
         "plantacao": "05/08/2022",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 144.0,
-        "mes": 8.0
+        "h_ha_sem": 144.0
     },
     {
         "quinta": "Pegões",
@@ -6625,8 +6194,7 @@
         "kg_h": 37.0,
         "plantacao": "29/10/2025",
         "semanas_duracao": 23.0,
-        "h_ha_sem": 43.0,
-        "mes": 10.0
+        "h_ha_sem": 43.0
     },
     {
         "quinta": "Pegões",
@@ -6638,8 +6206,7 @@
         "kg_h": 12.0,
         "plantacao": "20/04/2021",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 106.0,
-        "mes": 4.0
+        "h_ha_sem": 106.0
     },
     {
         "quinta": "Horticilha",
@@ -6651,8 +6218,7 @@
         "kg_h": 7.0,
         "plantacao": "02/09/2022",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 152.0,
-        "mes": 9.0
+        "h_ha_sem": 152.0
     },
     {
         "quinta": "Zambujeira",
@@ -6664,8 +6230,7 @@
         "kg_h": 18.0,
         "plantacao": "28/10/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 81.0,
-        "mes": 10.0
+        "h_ha_sem": 81.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -6677,8 +6242,7 @@
         "kg_h": 15.0,
         "plantacao": "26/08/2022",
         "semanas_duracao": 26.0,
-        "h_ha_sem": 84.0,
-        "mes": 8.0
+        "h_ha_sem": 84.0
     },
     {
         "quinta": "Campelos",
@@ -6690,8 +6254,7 @@
         "kg_h": 8.0,
         "plantacao": "15/08/2025",
         "semanas_duracao": 25.0,
-        "h_ha_sem": 171.0,
-        "mes": 8.0
+        "h_ha_sem": 171.0
     },
     {
         "quinta": "Campelos",
@@ -6703,8 +6266,7 @@
         "kg_h": 8.0,
         "plantacao": "07/08/2025",
         "semanas_duracao": 27.0,
-        "h_ha_sem": 156.0,
-        "mes": 8.0
+        "h_ha_sem": 156.0
     },
     {
         "quinta": "Campelos",
@@ -6716,8 +6278,7 @@
         "kg_h": 4.0,
         "plantacao": "09/08/2024",
         "semanas_duracao": 48.0,
-        "h_ha_sem": 161.0,
-        "mes": 8.0
+        "h_ha_sem": 161.0
     },
     {
         "quinta": "Horticilha",
@@ -6729,8 +6290,7 @@
         "kg_h": 7.0,
         "plantacao": "02/09/2022",
         "semanas_duracao": 34.0,
-        "h_ha_sem": 143.0,
-        "mes": 9.0
+        "h_ha_sem": 143.0
     },
     {
         "quinta": "Sobreiro",
@@ -6742,8 +6302,7 @@
         "kg_h": 8.0,
         "plantacao": "20/08/2025",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 176.0,
-        "mes": 8.0
+        "h_ha_sem": 176.0
     },
     {
         "quinta": "Campelos",
@@ -6755,8 +6314,7 @@
         "kg_h": 4.0,
         "plantacao": "08/08/2024",
         "semanas_duracao": 31.0,
-        "h_ha_sem": 251.0,
-        "mes": 8.0
+        "h_ha_sem": 251.0
     },
     {
         "quinta": "Pegões",
@@ -6768,8 +6326,7 @@
         "kg_h": 30.0,
         "plantacao": "24/10/2025",
         "semanas_duracao": 24.0,
-        "h_ha_sem": 45.0,
-        "mes": 10.0
+        "h_ha_sem": 45.0
     },
     {
         "quinta": "Portos Brancos",
@@ -6781,8 +6338,7 @@
         "kg_h": 5.0,
         "plantacao": "28/05/2021",
         "semanas_duracao": 47.0,
-        "h_ha_sem": 138.0,
-        "mes": 5.0
+        "h_ha_sem": 138.0
     },
     {
         "quinta": "Caminhos da Cotovia",
@@ -6794,8 +6350,7 @@
         "kg_h": 8.0,
         "plantacao": "02/09/2022",
         "semanas_duracao": 19.0,
-        "h_ha_sem": 186.0,
-        "mes": 9.0
+        "h_ha_sem": 186.0
     },
     {
         "quinta": "Pegões",
@@ -6807,12 +6362,21 @@
         "kg_h": 5.0,
         "plantacao": "20/04/2021",
         "semanas_duracao": 28.0,
-        "h_ha_sem": 97.0,
-        "mes": 4.0
+        "h_ha_sem": 97.0
     }
 ];
 
-        // Segunda fonte de dados (kg/m²/ano)
+        // Garantir que d.mes é derivado automaticamente de d.plantacao se não estiver presente
+        rawData.forEach(d => {
+            if (!d.mes && d.plantacao) {
+                const parts = d.plantacao.split('/');
+                if (parts.length >= 2) {
+                    d.mes = parseInt(parts[1], 10);
+                }
+            }
+        });
+
+        /////////////////// Segunda fonte de dados (kg/m²/ano)////////////////
         const secondRawData = [
             { ano: 2016, quinta: "Horticilha", kg_m2_ano: 15.00 },
             { ano: 2017, quinta: "Horticilha", kg_m2_ano: 8.00 },

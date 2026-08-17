@@ -468,7 +468,7 @@
 
         <div class="filter-section">
             <div class="filter-title">Cultura</div>
-            <input type="text" id="culture-search" class="search-input" placeholder="Pesquisar cultura..." oninput="updateDashboard()">
+            <input type="text" id="culture-search" class="search-input" placeholder="Filtrar cultura..." oninput="updateDashboard()">
         </div>
 
         <div class="filter-section">
@@ -486,9 +486,9 @@
         <section class="tabs-container">
             <h2 class="section-title" style="border:none; margin-bottom:8px;">Análise gráfica</h2>
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('tab-quinta', this)">Por quinta</button>
-                <button class="tab-btn" onclick="switchTab('tab-ano', this)">Por ano</button>
-                <button class="tab-btn" onclick="switchTab('tab-cultura', this)">Por cultura</button>
+                <button class="tab-btn active" onclick="switchTab('tab-quinta', this)">Quintas</button>
+                <button class="tab-btn" onclick="switchTab('tab-ano', this)">Anos</button>
+                <button class="tab-btn" onclick="switchTab('tab-cultura', this)">Culturas</button>
                 <button class="tab-btn" onclick="switchTab('tab-kgm2ano', this)">kg/m²/ano</button>
             </div>
 
@@ -524,7 +524,7 @@
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                         <div>
                             <div class="chart-box-title" style="margin-bottom:2px;">kg/m²/ano</div>
-                            <div style="font-size: 0.75rem; font-style: italic; color: var(--text-muted);">Total de kg produzidos na área da quinta, não tem em conta filtros de cultura/tipo</div>
+                            <div style="font-size: 0.75rem; font-style: italic; color: var(--text-muted);">Total de kg produzidos na área da quinta (não tem em conta filtros de cultura/tipo)</div>
                         </div>
                         <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
                             <input type="checkbox" id="ungroupYearsToggle" onchange="updateDashboard()" style="width: 16px; height: 16px; cursor: pointer;">

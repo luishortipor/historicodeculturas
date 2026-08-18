@@ -510,14 +510,28 @@
                 </div>
             </div>
 
-            <div id="tab-cultura" class="tab-content">
-                <div class="charts-grid-2x2">
-                    <div class="chart-box"><div class="chart-box-title">Top 10 - kg/m²/sem </div><div class="chart-container"><canvas id="chartC1"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">Top 10 - kg/h de trabalho </div><div class="chart-container"><canvas id="chartC2"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">Top 10 - h/ha/sem </div><div class="chart-container"><canvas id="chartC3"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">Top 10 - kg/m²/cultura </div><div class="chart-container"><canvas id="chartC4"></canvas></div></div>
-                </div>
-            </div>
+<div id="tab-cultura" class="tab-content">
+    <!-- Checkboxes de Filtro e Ordenação -->
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 12px; padding: 0 4px;">
+        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0d7de;">
+            <input type="checkbox" id="chkTop10Culturas" checked onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
+            Top 10
+        </label>
+
+        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0d7de;">
+            <input type="checkbox" id="chkInvertCulturas" onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
+            Inverter Ordem
+        </label>
+    </div>
+
+    <!-- Grelha de Gráficos -->
+    <div class="charts-grid-2x2">
+        <div class="chart-box"><div class="chart-box-title">Top 10 - kg/m²/sem </div><div class="chart-container"><canvas id="chartC1"></canvas></div></div>
+        <div class="chart-box"><div class="chart-box-title">Top 10 - kg/h de trabalho </div><div class="chart-container"><canvas id="chartC2"></canvas></div></div>
+        <div class="chart-box"><div class="chart-box-title">Top 10 - h/ha/sem </div><div class="chart-container"><canvas id="chartC3"></canvas></div></div>
+        <div class="chart-box"><div class="chart-box-title">Top 10 - kg/m²/cultura </div><div class="chart-container"><canvas id="chartC4"></canvas></div></div>
+    </div>
+</div>
 
             <div id="tab-kgm2ano" class="tab-content">
                 <div class="chart-box" style="width: 100%;">
@@ -6894,8 +6908,67 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
             renderBarChart('chartP4', years, yearTotals, yearBarColor, false, yearWeeks, yearBorderColor);
         }
 
+let showOnlyTop10Culturas = true;
+
+function handleTop10CulturasChange() {
+    // 1. Tenta obter os dados filtrados atuais das variáveis mais comuns
+    let dataToUse = null;
+    if (typeof lastFilteredData !== 'undefined' && Array.isArray(lastFilteredData) && lastFilteredData.length > 0) {
+        dataToUse = lastFilteredData;
+    } else if (typeof filteredData !== 'undefined' && Array.isArray(filteredData) && filteredData.length > 0) {
+        dataToUse = filteredData;
+    } else if (typeof currentData !== 'undefined' && Array.isArray(currentData) && currentData.length > 0) {
+        dataToUse = currentData;
+    } else if (typeof globalData !== 'undefined' && Array.isArray(globalData) && globalData.length > 0) {
+        dataToUse = globalData;
+    }
+
+    // 2. Atualiza os títulos dos cards dinamicamente
+    const chk = document.getElementById('chkTop10Culturas');
+    const isTop10 = chk ? chk.checked : true;
+    const prefix = isTop10 ? 'Top 10' : 'Todas as Culturas';
+    
+    const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
+    if (titles.length >= 4) {
+        titles[0].textContent = `${prefix} kg/m²/sem`;
+        titles[1].textContent = `${prefix} kg/h de trabalho`;
+        titles[2].textContent = `${prefix} h/ha/sem`;
+        titles[3].textContent = `${prefix} kg/m²/cultura`;
+    }
+
+    // 3. Re-executa o desenho da aba se existirem dados
+    if (dataToUse) {
+        updateTabCulturas(dataToUse);
+    } else {
+        console.warn('Aviso: Nenhuma variável de dados filtrados encontrada (lastFilteredData/filteredData).');
+    }
+}
+
 function updateTabCulturas(data) {
-    const getTop10List = (key, lowerIsBetter = false, roundToUnit = false, valSelector = null) => {
+    if (!data || !Array.isArray(data)) return;
+
+    window.lastFilteredData = data;
+
+    // Estado dos dois checkboxes
+    const chkTop10 = document.getElementById('chkTop10Culturas');
+    const chkInvert = document.getElementById('chkInvertCulturas');
+
+    const isTop10 = chkTop10 ? chkTop10.checked : true;
+    const isInverted = chkInvert ? chkInvert.checked : false;
+
+    // Atualiza os títulos dinamicamente
+    const orderPrefix = isInverted ? '' : 'Top 10';
+    const prefix = isTop10 ? `${orderPrefix}` : '';
+
+    const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
+    if (titles.length >= 4) {
+        titles[0].textContent = `${prefix} kg/m²/sem`;
+        titles[1].textContent = `${prefix} kg/h de trabalho`;
+        titles[2].textContent = `${prefix} h/ha/sem`;
+        titles[3].textContent = `${prefix} kg/m²/cultura`;
+    }
+
+    const getCulturasList = (key, lowerIsBetter = false, roundToUnit = false, valSelector = null) => {
         let list = [];
         data.forEach(d => {
             const name = d.cultura;
@@ -6904,68 +6977,42 @@ function updateTabCulturas(data) {
 
             const yearNum = d.ano ? Math.floor(d.ano) : '';
             const yearShort = yearNum ? String(yearNum).slice(-2) : '';
-
-            let displayName = name;
-            if(yearShort) {
-                displayName = `${name} (${yearShort})`;
-            }
+            const displayName = yearShort ? `${name} (${yearShort})` : name;
 
             list.push({
                 nameLabel: displayName,
                 avg: roundToUnit ? Math.round(val) : +val.toFixed(2),
                 farm: d.quinta,
-                semanas: Math.round(d.semanas_duracao || 0), // Puxa as semanas de duração para todos
+                semanas: Math.round(d.semanas_duracao || 0),
                 inicio: d.plantacao || ''
             });
         });
 
+        // 1. Ordenação padrão (Melhores primeiro)
         list.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-        return list.slice(0, 10);
+
+        // 2. Se "Inverter Ordem" estiver ativo, inverte a lista (Piores primeiro)
+        if (isInverted) {
+            list.reverse();
+        }
+
+        // 3. Aplica o filtro de 10 elementos se o "Top 10" estiver marcado
+        return isTop10 ? list.slice(0, 10) : list;
     };
 
-    const c1 = getTop10List('kg_m2_sem', false);
-    renderBarChart(
-        'chartC1', 
-        c1.map(d => d.nameLabel), 
-        c1.map(d => d.avg), 
-        c1.map(d => farmColors[d.farm] || '#4a7c36'), 
-        false, 
-        c1.map(d => d.semanas), // 6.º parâmetro: Semanas (wk)
-        c1.map(d => d.inicio)
-    );
+    const colors = (typeof farmColors !== 'undefined') ? farmColors : {};
 
-    const c2 = getTop10List('kg_h', false);
-    renderBarChart(
-        'chartC2', 
-        c2.map(d => d.nameLabel), 
-        c2.map(d => d.avg), 
-        c2.map(d => farmColors[d.farm] || '#4a7c36'), 
-        false, 
-        c2.map(d => d.semanas), // 6.º parâmetro: Semanas (wk)
-        c2.map(d => d.inicio)
-    );
+    const c1 = getCulturasList('kg_m2_sem', false);
+    renderBarChart('chartC1', c1.map(d => d.nameLabel), c1.map(d => d.avg), c1.map(d => colors[d.farm] || '#4a7c36'), false, c1.map(d => d.semanas), c1.map(d => d.inicio));
 
-    const c3 = getTop10List('h_ha_sem', true, true);
-    renderBarChart(
-        'chartC3', 
-        c3.map(d => d.nameLabel), 
-        c3.map(d => d.avg), 
-        c3.map(d => farmColors[d.farm] || '#4a7c36'), 
-        true, 
-        c3.map(d => d.semanas), // 6.º parâmetro: Semanas (wk)
-        c3.map(d => d.inicio)
-    );
+    const c2 = getCulturasList('kg_h', false);
+    renderBarChart('chartC2', c2.map(d => d.nameLabel), c2.map(d => d.avg), c2.map(d => colors[d.farm] || '#4a7c36'), false, c2.map(d => d.semanas), c2.map(d => d.inicio));
 
-    const c4 = getTop10List('kg_m2_totais', false, false);
-    renderBarChart(
-        'chartC4', 
-        c4.map(d => d.nameLabel), 
-        c4.map(d => d.avg), 
-        c4.map(d => farmColors[d.farm] || '#4a7c36'), 
-        false, 
-        c4.map(d => d.semanas), // 6.º parâmetro: Semanas (wk)
-        c4.map(d => d.inicio)
-    );
+    const c3 = getCulturasList('h_ha_sem', true, true);
+    renderBarChart('chartC3', c3.map(d => d.nameLabel), c3.map(d => d.avg), c3.map(d => colors[d.farm] || '#4a7c36'), true, c3.map(d => d.semanas), c3.map(d => d.inicio));
+
+    const c4 = getCulturasList('kg_m2_totais', false, false);
+    renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => colors[d.farm] || '#4a7c36'), false, c4.map(d => d.semanas), c4.map(d => d.inicio));
 }
 
         function updateTabKgM2Ano() {

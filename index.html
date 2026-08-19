@@ -6666,7 +6666,7 @@
             });
         }
 
-        function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null) {
+        function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null, xTickFontSize = 12) {
             if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
 
             let fullUnit = '';
@@ -6807,22 +6807,22 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
-                duration: 1000,
-                easing: 'easeOutQuart'
-            },
-            animations: {
-                y: {
-                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
-                },
-                base: {
-                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
-                },
-                x: false,
-                color: false
-            },
-            layout: {
-                padding: { top: 30 } // Adiciona espaço no topo para evitar corte dos rótulos
-            },
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    },
+                    animations: {
+                        y: {
+                            from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
+                        },
+                        base: {
+                            from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
+                        },
+                        x: false,
+                        color: false
+                    },
+                    layout: {
+                        padding: { top: 30 }
+                    },
                     plugins: pluginsConfig,
                     scales: {
                         y: { 
@@ -6833,7 +6833,7 @@
                         },
                         x: { 
                             ticks: { 
-                                font: { size: 12, weight: '500' }
+                                font: { size: xTickFontSize, weight: '500' } // <--- Usa o tamanho de fonte passado no parâmetro
                             },
                             grid: { display: false }
                         }
@@ -6971,7 +6971,10 @@
 
                     const yearNum = d.ano ? Math.floor(d.ano) : '';
                     const yearShort = yearNum ? String(yearNum).slice(-2) : '';
-                    const displayName = yearShort ? `${name} (${yearShort})` : name;
+                    
+                    const farmAbbr = farmAbbreviations[d.quinta] || d.quinta || '';
+                    const yearPart = yearShort ? ` (${yearShort})` : '';
+                    const displayName = farmAbbr ? `${farmAbbr}-${name}${yearPart}` : `${name}${yearPart}`;
 
                     list.push({
                         nameLabel: displayName,
@@ -6993,17 +6996,20 @@
 
             const colors = (typeof farmColors !== 'undefined') ? farmColors : {};
 
+            // Defina o tamanho da fonte do eixo X apenas para estes gráficos (ex: 9)
+            const fontSizeX = 9;
+
             const c1 = getCulturasList('kg_m2_sem', false);
-            renderBarChart('chartC1', c1.map(d => d.nameLabel), c1.map(d => d.avg), c1.map(d => colors[d.farm] || '#4a7c36'), false, c1.map(d => d.semanas), c1.map(d => d.inicio));
+            renderBarChart('chartC1', c1.map(d => d.nameLabel), c1.map(d => d.avg), c1.map(d => colors[d.farm] || '#4a7c36'), false, c1.map(d => d.semanas), c1.map(d => d.inicio), fontSizeX);
 
             const c2 = getCulturasList('kg_h', false);
-            renderBarChart('chartC2', c2.map(d => d.nameLabel), c2.map(d => d.avg), c2.map(d => colors[d.farm] || '#4a7c36'), false, c2.map(d => d.semanas), c2.map(d => d.inicio));
+            renderBarChart('chartC2', c2.map(d => d.nameLabel), c2.map(d => d.avg), c2.map(d => colors[d.farm] || '#4a7c36'), false, c2.map(d => d.semanas), c2.map(d => d.inicio), fontSizeX);
 
             const c3 = getCulturasList('h_ha_sem', true, true);
-            renderBarChart('chartC3', c3.map(d => d.nameLabel), c3.map(d => d.avg), c3.map(d => colors[d.farm] || '#4a7c36'), true, c3.map(d => d.semanas), c3.map(d => d.inicio));
+            renderBarChart('chartC3', c3.map(d => d.nameLabel), c3.map(d => d.avg), c3.map(d => colors[d.farm] || '#4a7c36'), true, c3.map(d => d.semanas), c3.map(d => d.inicio), fontSizeX);
 
             const c4 = getCulturasList('kg_m2_totais', false, false);
-            renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => colors[d.farm] || '#4a7c36'), false, c4.map(d => d.semanas), c4.map(d => d.inicio));
+            renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => colors[d.farm] || '#4a7c36'), false, c4.map(d => d.semanas), c4.map(d => d.inicio), fontSizeX);
         }
 
         function updateTabKgM2Ano() {

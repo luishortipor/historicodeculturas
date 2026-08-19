@@ -570,7 +570,6 @@
         }
 
         window.addEventListener('resize', checkMobileDevice);
-        window.addEventListener('DOMContentLoaded', checkMobileDevice);
 
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -593,26 +592,26 @@
         }
 
         const farmColors = {
-    'Horticilha': '#A9DFBF',          // Verde Hortelã/Menta (mais vivo que o pastel desbotado)
-    'CCS': '#FFD2B8',
-    'Portos Brancos': '#FFDF4D',
-    'Zambujeira': '#B2BABB',          // Cinza Prata/Mineral (com mais corpo e densidade)
-    'Pegões': '#85C1E9',              // Azul Céu/Piscina (ganha identidade e afasta-se do cinza)
-    'Sobreiro': '#E882B4',
-    'Campelos': '#CC99FF',
-    'Caminhos da Cotovia': '#D97036'
-};
+            'Horticilha': '#A9DFBF',
+            'CCS': '#FFD2B8',
+            'Portos Brancos': '#FFDF4D',
+            'Zambujeira': '#B2BABB',
+            'Pegões': '#85C1E9',
+            'Sobreiro': '#E882B4',
+            'Campelos': '#CC99FF',
+            'Caminhos da Cotovia': '#D97036'
+        };
 
-const farmBorderColors = {
-    'Horticilha': '#27AE60',          // Verde Escuro Vibrante
-    'CCS': '#E06B20',
-    'Portos Brancos': '#D4A000',
-    'Zambujeira': '#5D6D7E',          // Cinza Grafite Escuro
-    'Pegões': '#2980B9',              // Azul Forte/Cobalto
-    'Sobreiro': '#B84D80',
-    'Campelos': '#7030A0',
-    'Caminhos da Cotovia': '#A04515'
-};
+        const farmBorderColors = {
+            'Horticilha': '#27AE60',
+            'CCS': '#E06B20',
+            'Portos Brancos': '#D4A000',
+            'Zambujeira': '#5D6D7E',
+            'Pegões': '#2980B9',
+            'Sobreiro': '#B84D80',
+            'Campelos': '#7030A0',
+            'Caminhos da Cotovia': '#A04515'
+        };
 
         const farmAbbreviations = {
             'Horticilha': 'HAI',
@@ -627,7 +626,6 @@ const farmBorderColors = {
 
         const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
-        ////////////////// Primeira fonte de dados (Culturas) /////////////////////
         const rawData = [
     {
         "quinta": "Caminhos da Cotovia",
@@ -6391,7 +6389,6 @@ const farmBorderColors = {
     }
 ];
 
-        // Garantir que d.mes é derivado automaticamente de d.plantacao se não estiver presente
         rawData.forEach(d => {
             if (!d.mes && d.plantacao) {
                 const parts = d.plantacao.split('/');
@@ -6401,7 +6398,6 @@ const farmBorderColors = {
             }
         });
 
-        /////////////////// Segunda fonte de dados (kg/m²/ano)////////////////
         const secondRawData = [
             { ano: 2016, quinta: "Horticilha", kg_m2_ano: 15.00 },
             { ano: 2017, quinta: "Horticilha", kg_m2_ano: 8.00 },
@@ -6450,8 +6446,11 @@ const farmBorderColors = {
         let chartInstances = {};
 
         window.addEventListener('DOMContentLoaded', () => {
+            checkMobileDevice();
             initFilters();
-            updateDashboard();
+            setTimeout(() => {
+                updateDashboard();
+            }, 100);
         });
 
         function initFilters() {
@@ -6667,107 +6666,88 @@ const farmBorderColors = {
             });
         }
 
-function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null) {
-    if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
+        function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null) {
+            if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
 
-    let fullUnit = '';
-    let shortUnit = '';
+            let fullUnit = '';
+            let shortUnit = '';
 
-    if (canvasId.includes('1') || canvasId === 'chartKgM2Ano') {
-        fullUnit = canvasId === 'chartKgM2Ano' ? ' kg/m²/ano' : ' kg/m²/sem';
-        shortUnit = ' kg';
-    } else if (canvasId.includes('2')) {
-        fullUnit = ' kg/h';
-        shortUnit = ' kg';
-    } else if (canvasId.includes('3')) {
-        fullUnit = ' h/ha/sem';
-        shortUnit = ' h';
-    } else if (canvasId.includes('4')) {
-        fullUnit = ' kg/m²';
-        shortUnit = ' kg';
-    }
-
-    const validVals = dataVals.filter(v => typeof v === 'number' && v > 0);
-    const bestVal = validVals.length > 0 
-        ? (lowerIsBetter ? Math.min(...validVals) : Math.max(...validVals))
-        : 0;
-
-    const variations = dataVals.map(v => {
-        if (!v || v === 0) return '';
-        if (v === bestVal) return '(Melhor)';
-        if (!bestVal || bestVal === 0) return '';
-        
-        const diff = ((v - bestVal) / bestVal) * 100;
-        return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
-    });
-
-    const hasWeeks = weeksVals !== null && weeksVals !== undefined;
-
-    let borderColors;
-    if (Array.isArray(colors)) {
-        borderColors = colors.map((col, idx) => {
-            const currentLabel = labels[idx];
-            let farmName = Object.keys(farmBorderColors).find(f => f === currentLabel || farmAbbreviations[f] === currentLabel);
-            if (!farmName && col) {
-                farmName = Object.keys(farmColors).find(f => farmColors[f].toLowerCase() === col.toLowerCase());
+            if (canvasId.includes('1') || canvasId === 'chartKgM2Ano') {
+                fullUnit = canvasId === 'chartKgM2Ano' ? ' kg/m²/ano' : ' kg/m²/sem';
+                shortUnit = ' kg';
+            } else if (canvasId.includes('2')) {
+                fullUnit = ' kg/h';
+                shortUnit = ' kg';
+            } else if (canvasId.includes('3')) {
+                fullUnit = ' h/ha/sem';
+                shortUnit = ' h';
+            } else if (canvasId.includes('4')) {
+                fullUnit = ' kg/m²';
+                shortUnit = ' kg';
             }
-            return farmName ? farmBorderColors[farmName] : '#7F7F7F';
-        });
-    } else {
-        let farmName = Object.keys(farmBorderColors).find(f => f === labels || farmAbbreviations[f] === labels);
-        if (!farmName && colors) {
-            farmName = Object.keys(farmColors).find(f => farmColors[f].toLowerCase() === colors.toLowerCase());
-        }
-        borderColors = farmName ? farmBorderColors[farmName] : '#7F7F7F';
-    }
 
-    const isCulturasTab = canvasId.startsWith('chartC') || canvasId.toLowerCase().includes('cultura');
+            const validVals = dataVals.filter(v => typeof v === 'number' && v > 0);
+            const bestVal = validVals.length > 0 
+                ? (lowerIsBetter ? Math.min(...validVals) : Math.max(...validVals))
+                : 0;
 
-    let pluginsConfig = {
-        legend: { display: false },
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    let value = context.raw || 0;
-                    let mainText = ` ${value}${fullUnit}`;
-                    
-                    if (isCulturasTab && Array.isArray(inicioVals)) {
-                        const valInicio = inicioVals[context.dataIndex];
-                        if (valInicio && typeof valInicio === 'string' && !valInicio.startsWith('#')) {
-                            return [mainText, ` Início: ${valInicio}`];
-                        } else if (valInicio && typeof valInicio !== 'string') {
-                            return [mainText, ` Início: ${valInicio}`];
+            const variations = dataVals.map(v => {
+                if (!v || v === 0) return '';
+                if (v === bestVal) return '(Melhor)';
+                if (!bestVal || bestVal === 0) return '';
+                
+                const diff = ((v - bestVal) / bestVal) * 100;
+                return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
+            });
+
+            const hasWeeks = weeksVals !== null && weeksVals !== undefined;
+
+            let borderColors;
+            if (Array.isArray(colors)) {
+                borderColors = colors.map((col, idx) => {
+                    const currentLabel = labels[idx];
+                    let farmName = Object.keys(farmBorderColors).find(f => f === currentLabel || farmAbbreviations[f] === currentLabel);
+                    if (!farmName && col) {
+                        farmName = Object.keys(farmColors).find(f => farmColors[f].toLowerCase() === col.toLowerCase());
+                    }
+                    return farmName ? farmBorderColors[farmName] : '#7F7F7F';
+                });
+            } else {
+                let farmName = Object.keys(farmBorderColors).find(f => f === labels || farmAbbreviations[f] === labels);
+                if (!farmName && colors) {
+                    farmName = Object.keys(farmColors).find(f => farmColors[f].toLowerCase() === colors.toLowerCase());
+                }
+                borderColors = farmName ? farmBorderColors[farmName] : '#7F7F7F';
+            }
+
+            const isCulturasTab = canvasId.startsWith('chartC') || canvasId.toLowerCase().includes('cultura');
+
+            let pluginsConfig = {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let value = context.raw || 0;
+                            let mainText = ` ${value}${fullUnit}`;
+                            
+                            if (isCulturasTab && Array.isArray(inicioVals)) {
+                                const valInicio = inicioVals[context.dataIndex];
+                                if (valInicio && typeof valInicio === 'string' && !valInicio.startsWith('#')) {
+                                    return [mainText, ` Início: ${valInicio}`];
+                                } else if (valInicio && typeof valInicio !== 'string') {
+                                    return [mainText, ` Início: ${valInicio}`];
+                                }
+                            }
+                            
+                            return mainText;
                         }
                     }
-                    
-                    return mainText;
-                }
-            }
-        },
-        datalabels: {
-            anchor: 'end',
-            align: 'top',
-            offset: 2,
-            font: { size: 11, weight: 'bold' },
-            textAlign: 'center',
-            color: '#555555',
-            formatter: (val, ctx) => {
-                if (!val || val === 0) return '';
-                const varStr = variations[ctx.dataIndex];
-                const valWithUnit = `${val}${shortUnit}`;
-                return varStr ? `${valWithUnit}\n${varStr}` : `${valWithUnit}`;
-            }
-        }
-    };
-
-    if (hasWeeks) {
-        pluginsConfig.datalabels = {
-            labels: {
-                topLabel: {
+                },
+                datalabels: {
                     anchor: 'end',
                     align: 'top',
                     offset: 2,
-                    font: { size: 11, weight: 'bold' }, // IGUALADO A 11PX
+                    font: { size: 11, weight: 'bold' },
                     textAlign: 'center',
                     color: '#555555',
                     formatter: (val, ctx) => {
@@ -6776,62 +6756,91 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
                         const valWithUnit = `${val}${shortUnit}`;
                         return varStr ? `${valWithUnit}\n${varStr}` : `${valWithUnit}`;
                     }
-                },
-                insideLabel: {
-                    anchor: 'center',
-                    align: 'center',
-                    color: '#2b2b2b',
-                    font: { size: 10, weight: 'normal' },
-                    formatter: (val, ctx) => {
-                        const wk = weeksVals[ctx.dataIndex];
-                        return (wk !== undefined && wk !== null && val > 0) ? `${wk} wk` : '';
-                    }
                 }
-            }
-        };
-    }
+            };
 
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    chartInstances[canvasId] = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: dataVals,
-                backgroundColor: colors,
-                borderColor: borderColors,
-                borderWidth: 1.5,
-                borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 }
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: {
-                duration: 600,
+            if (hasWeeks) {
+                pluginsConfig.datalabels = {
+                    labels: {
+                        topLabel: {
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 2,
+                            font: { size: 11, weight: 'bold' },
+                            textAlign: 'center',
+                            color: '#555555',
+                            formatter: (val, ctx) => {
+                                if (!val || val === 0) return '';
+                                const varStr = variations[ctx.dataIndex];
+                                const valWithUnit = `${val}${shortUnit}`;
+                                return varStr ? `${valWithUnit}\n${varStr}` : `${valWithUnit}`;
+                            }
+                        },
+                        insideLabel: {
+                            anchor: 'center',
+                            align: 'center',
+                            color: '#2b2b2b',
+                            font: { size: 10, weight: 'normal' },
+                            formatter: (val, ctx) => {
+                                const wk = weeksVals[ctx.dataIndex];
+                                return (wk !== undefined && wk !== null && val > 0) ? `${wk} wk` : '';
+                            }
+                        }
+                    }
+                };
+            }
+
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            chartInstances[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataVals,
+                        backgroundColor: colors,
+                        borderColor: borderColors,
+                        borderWidth: 1.5,
+                        borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                duration: 1000,
                 easing: 'easeOutQuart'
             },
-            layout: {
-                padding: { top: 30 }
-            },
-            plugins: pluginsConfig,
-            scales: {
-                y: { 
-                    beginAtZero: true, 
-                    grace: '15%',
-                    grid: { color: '#f0ebd9' },
-                    ticks: { font: { size: 11 } }
+            animations: {
+                y: {
+                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
                 },
-                x: { 
-                    ticks: { 
-                        font: { size: 10, weight: '500' }
-                    },
-                    grid: { display: false }
+                base: {
+                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
+                },
+                x: false,
+                color: false
+            },
+            layout: {
+                padding: { top: 30 } // Adiciona espaço no topo para evitar corte dos rótulos
+            },
+                    plugins: pluginsConfig,
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            grace: '15%',
+                            grid: { color: '#f0ebd9' },
+                            ticks: { font: { size: 11 } }
+                        },
+                        x: { 
+                            ticks: { 
+                                font: { size: 10, weight: '500' }
+                            },
+                            grid: { display: false }
+                        }
+                    }
                 }
-            }
+            });
         }
-    });
-}
 
         function updateTabQuintas(data) {
             const calcFarmAvg = (key, lowerIsBetter = false, roundToUnit = false) => {
@@ -6908,112 +6917,94 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
             renderBarChart('chartP4', years, yearTotals, yearBarColor, false, yearWeeks, yearBorderColor);
         }
 
-let showOnlyTop10Culturas = true;
+        function handleTop10CulturasChange() {
+            let dataToUse = null;
+            if (typeof lastFilteredData !== 'undefined' && Array.isArray(lastFilteredData) && lastFilteredData.length > 0) {
+                dataToUse = lastFilteredData;
+            }
 
-function handleTop10CulturasChange() {
-    // 1. Tenta obter os dados filtrados atuais das variáveis mais comuns
-    let dataToUse = null;
-    if (typeof lastFilteredData !== 'undefined' && Array.isArray(lastFilteredData) && lastFilteredData.length > 0) {
-        dataToUse = lastFilteredData;
-    } else if (typeof filteredData !== 'undefined' && Array.isArray(filteredData) && filteredData.length > 0) {
-        dataToUse = filteredData;
-    } else if (typeof currentData !== 'undefined' && Array.isArray(currentData) && currentData.length > 0) {
-        dataToUse = currentData;
-    } else if (typeof globalData !== 'undefined' && Array.isArray(globalData) && globalData.length > 0) {
-        dataToUse = globalData;
-    }
+            const chk = document.getElementById('chkTop10Culturas');
+            const isTop10 = chk ? chk.checked : true;
+            const prefix = isTop10 ? 'Top 10' : 'Todas as Culturas';
+            
+            const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
+            if (titles.length >= 4) {
+                titles[0].textContent = `${prefix} kg/m²/sem`;
+                titles[1].textContent = `${prefix} kg/h de trabalho`;
+                titles[2].textContent = `${prefix} h/ha/sem`;
+                titles[3].textContent = `${prefix} kg/m²/cultura`;
+            }
 
-    // 2. Atualiza os títulos dos cards dinamicamente
-    const chk = document.getElementById('chkTop10Culturas');
-    const isTop10 = chk ? chk.checked : true;
-    const prefix = isTop10 ? 'Top 10' : 'Todas as Culturas';
-    
-    const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
-    if (titles.length >= 4) {
-        titles[0].textContent = `${prefix} kg/m²/sem`;
-        titles[1].textContent = `${prefix} kg/h de trabalho`;
-        titles[2].textContent = `${prefix} h/ha/sem`;
-        titles[3].textContent = `${prefix} kg/m²/cultura`;
-    }
-
-    // 3. Re-executa o desenho da aba se existirem dados
-    if (dataToUse) {
-        updateTabCulturas(dataToUse);
-    } else {
-        console.warn('Aviso: Nenhuma variável de dados filtrados encontrada (lastFilteredData/filteredData).');
-    }
-}
-
-function updateTabCulturas(data) {
-    if (!data || !Array.isArray(data)) return;
-
-    window.lastFilteredData = data;
-
-    // Estado dos dois checkboxes
-    const chkTop10 = document.getElementById('chkTop10Culturas');
-    const chkInvert = document.getElementById('chkInvertCulturas');
-
-    const isTop10 = chkTop10 ? chkTop10.checked : true;
-    const isInverted = chkInvert ? chkInvert.checked : false;
-
-    // Atualiza os títulos dinamicamente
-    const orderPrefix = isInverted ? '' : 'Top 10';
-    const prefix = isTop10 ? `${orderPrefix}` : '';
-
-    const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
-    if (titles.length >= 4) {
-        titles[0].textContent = `${prefix} kg/m²/sem`;
-        titles[1].textContent = `${prefix} kg/h de trabalho`;
-        titles[2].textContent = `${prefix} h/ha/sem`;
-        titles[3].textContent = `${prefix} kg/m²/cultura`;
-    }
-
-    const getCulturasList = (key, lowerIsBetter = false, roundToUnit = false, valSelector = null) => {
-        let list = [];
-        data.forEach(d => {
-            const name = d.cultura;
-            const val = valSelector ? valSelector(d) : d[key];
-            if(!name || val === undefined || val === null || val <= 0) return;
-
-            const yearNum = d.ano ? Math.floor(d.ano) : '';
-            const yearShort = yearNum ? String(yearNum).slice(-2) : '';
-            const displayName = yearShort ? `${name} (${yearShort})` : name;
-
-            list.push({
-                nameLabel: displayName,
-                avg: roundToUnit ? Math.round(val) : +val.toFixed(2),
-                farm: d.quinta,
-                semanas: Math.round(d.semanas_duracao || 0),
-                inicio: d.plantacao || ''
-            });
-        });
-
-        // 1. Ordenação padrão (Melhores primeiro)
-        list.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-
-        // 2. Se "Inverter Ordem" estiver ativo, inverte a lista (Piores primeiro)
-        if (isInverted) {
-            list.reverse();
+            if (dataToUse) {
+                updateTabCulturas(dataToUse);
+            }
         }
 
-        // 3. Aplica o filtro de 10 elementos se o "Top 10" estiver marcado
-        return isTop10 ? list.slice(0, 10) : list;
-    };
+        function updateTabCulturas(data) {
+            if (!data || !Array.isArray(data)) return;
 
-    const colors = (typeof farmColors !== 'undefined') ? farmColors : {};
+            window.lastFilteredData = data;
 
-    const c1 = getCulturasList('kg_m2_sem', false);
-    renderBarChart('chartC1', c1.map(d => d.nameLabel), c1.map(d => d.avg), c1.map(d => colors[d.farm] || '#4a7c36'), false, c1.map(d => d.semanas), c1.map(d => d.inicio));
+            const chkTop10 = document.getElementById('chkTop10Culturas');
+            const chkInvert = document.getElementById('chkInvertCulturas');
 
-    const c2 = getCulturasList('kg_h', false);
-    renderBarChart('chartC2', c2.map(d => d.nameLabel), c2.map(d => d.avg), c2.map(d => colors[d.farm] || '#4a7c36'), false, c2.map(d => d.semanas), c2.map(d => d.inicio));
+            const isTop10 = chkTop10 ? chkTop10.checked : true;
+            const isInverted = chkInvert ? chkInvert.checked : false;
 
-    const c3 = getCulturasList('h_ha_sem', true, true);
-    renderBarChart('chartC3', c3.map(d => d.nameLabel), c3.map(d => d.avg), c3.map(d => colors[d.farm] || '#4a7c36'), true, c3.map(d => d.semanas), c3.map(d => d.inicio));
+            const orderPrefix = isInverted ? '' : 'Top 10';
+            const prefix = isTop10 ? `${orderPrefix}` : '';
 
-    const c4 = getCulturasList('kg_m2_totais', false, false);
-    renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => colors[d.farm] || '#4a7c36'), false, c4.map(d => d.semanas), c4.map(d => d.inicio));
-}
+            const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
+            if (titles.length >= 4) {
+                titles[0].textContent = `${prefix} kg/m²/sem`;
+                titles[1].textContent = `${prefix} kg/h de trabalho`;
+                titles[2].textContent = `${prefix} h/ha/sem`;
+                titles[3].textContent = `${prefix} kg/m²/cultura`;
+            }
+
+            const getCulturasList = (key, lowerIsBetter = false, roundToUnit = false, valSelector = null) => {
+                let list = [];
+                data.forEach(d => {
+                    const name = d.cultura;
+                    const val = valSelector ? valSelector(d) : d[key];
+                    if(!name || val === undefined || val === null || val <= 0) return;
+
+                    const yearNum = d.ano ? Math.floor(d.ano) : '';
+                    const yearShort = yearNum ? String(yearNum).slice(-2) : '';
+                    const displayName = yearShort ? `${name} (${yearShort})` : name;
+
+                    list.push({
+                        nameLabel: displayName,
+                        avg: roundToUnit ? Math.round(val) : +val.toFixed(2),
+                        farm: d.quinta,
+                        semanas: Math.round(d.semanas_duracao || 0),
+                        inicio: d.plantacao || ''
+                    });
+                });
+
+                list.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+
+                if (isInverted) {
+                    list.reverse();
+                }
+
+                return isTop10 ? list.slice(0, 10) : list;
+            };
+
+            const colors = (typeof farmColors !== 'undefined') ? farmColors : {};
+
+            const c1 = getCulturasList('kg_m2_sem', false);
+            renderBarChart('chartC1', c1.map(d => d.nameLabel), c1.map(d => d.avg), c1.map(d => colors[d.farm] || '#4a7c36'), false, c1.map(d => d.semanas), c1.map(d => d.inicio));
+
+            const c2 = getCulturasList('kg_h', false);
+            renderBarChart('chartC2', c2.map(d => d.nameLabel), c2.map(d => d.avg), c2.map(d => colors[d.farm] || '#4a7c36'), false, c2.map(d => d.semanas), c2.map(d => d.inicio));
+
+            const c3 = getCulturasList('h_ha_sem', true, true);
+            renderBarChart('chartC3', c3.map(d => d.nameLabel), c3.map(d => d.avg), c3.map(d => colors[d.farm] || '#4a7c36'), true, c3.map(d => d.semanas), c3.map(d => d.inicio));
+
+            const c4 = getCulturasList('kg_m2_totais', false, false);
+            renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => colors[d.farm] || '#4a7c36'), false, c4.map(d => d.semanas), c4.map(d => d.inicio));
+        }
 
         function updateTabKgM2Ano() {
             const canvasId = 'chartKgM2Ano';
@@ -7099,6 +7090,13 @@ function updateTabCulturas(data) {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        animations: {
+                            y: {
+                                duration: 1000,
+                                easing: 'easeOutQuart',
+                                from: 0
+                            }
+                        },
                         plugins: {
                             legend: { display: false },
                             datalabels: {

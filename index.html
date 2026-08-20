@@ -515,7 +515,7 @@
     <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 12px; padding: 0 4px;">
         <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0d7de;">
             <input type="checkbox" id="chkTop10Culturas" checked onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
-            Top 10
+            
         </label>
 
         <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0d7de;">
@@ -527,19 +527,19 @@
     <!-- Grelha de Gráficos -->
     <div class="charts-grid-2x2">
         <div class="chart-box">
-            <div class="chart-box-title">Top 10 - kg/m²/sem</div>
+            <div class="chart-box-title"> - kg/m²/sem</div>
             <div class="chart-container"><canvas id="chartC1"></canvas></div>
         </div>
 
         <div class="chart-box">
-            <div class="chart-box-title">Top 10 - kg/h de trabalho</div>
+            <div class="chart-box-title"> - kg/h de trabalho</div>
             <div class="chart-container"><canvas id="chartC2"></canvas></div>
         </div>
 
         <!-- Gráfico 3 (Apenas texto no filtro de kg/m² mínimos) -->
         <div class="chart-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div class="chart-box-title" style="margin-bottom:0;">Top 10 - h/ha/sem</div>
+                <div class="chart-box-title" style="margin-bottom:0;"> - h/ha/sem</div>
                 <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
                     Mín. kg/m²:
                     <input type="number" id="numMinKgM2" value="0" min="0" step="0.5" oninput="updateDashboard()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
@@ -551,7 +551,7 @@
         <!-- Gráfico 4 (Apenas texto no filtro de máx. semanas) -->
         <div class="chart-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div class="chart-box-title" style="margin-bottom:0;">Top 10 - kg/m²/cultura</div>
+                <div class="chart-box-title" style="margin-bottom:0;"> - kg/m²/cultura</div>
                 <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
                     Máx. semanas:
                     <input type="number" id="numMaxSemanas" value="" placeholder="∞" min="1" oninput="updateDashboard()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
@@ -7087,7 +7087,7 @@ function handleTop10CulturasChange() {
 
     const chk = document.getElementById('chkTop10Culturas');
     const isTop10 = chk ? chk.checked : true;
-    const prefix = isTop10 ? 'Top 10' : 'Todas as Culturas';
+    const prefix = isTop10 ? 'Top 10 -' : 'Todas as Culturas';
     
     const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
     if (titles.length >= 4) {

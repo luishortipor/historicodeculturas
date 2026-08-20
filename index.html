@@ -542,7 +542,7 @@
                 <div class="chart-box-title" style="margin-bottom:0;">Top 10 - h/ha/sem</div>
                 <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
                     Mín. kg/m²:
-                    <input type="number" id="numMinKgM2" value="0" min="0" step="0.5" oninput="handleTop10CulturasChange()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                    <input type="number" id="numMinKgM2" value="0" min="0" step="0.5" oninput="updateDashboard()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
                 </label>
             </div>
             <div class="chart-container"><canvas id="chartC3"></canvas></div>
@@ -554,7 +554,7 @@
                 <div class="chart-box-title" style="margin-bottom:0;">Top 10 - kg/m²/cultura</div>
                 <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
                     Máx. semanas:
-                    <input type="number" id="numMaxSemanas" value="" placeholder="∞" min="1" oninput="handleTop10CulturasChange()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                    <input type="number" id="numMaxSemanas" value="" placeholder="∞" min="1" oninput="updateDashboard()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
                 </label>
             </div>
             <div class="chart-container"><canvas id="chartC4"></canvas></div>
@@ -6668,106 +6668,144 @@
         }
 
         function updateDashboard() {
-            const data = getFilteredData();
-            updateStats(data);
-            
-            if (activeTabId === 'tab-quinta') updateTabQuintas(data);
-            if (activeTabId === 'tab-ano') updateTabAnos(data);
-            if (activeTabId === 'tab-cultura') updateTabCulturas(data);
-            if (activeTabId === 'tab-kgm2ano') updateTabKgM2Ano();
+    const data = getFilteredData();
+    
+    // Lê os valores dos inputs de Mín. kg/m² e Máx. semanas
+    const inputMinKg = document.getElementById('numMinKgM2');
+    const minKgM2 = inputMinKg ? (parseFloat(inputMinKg.value) || 0) : 0;
+
+    const inputMaxSem = document.getElementById('numMaxSemanas');
+    const maxSemanasVal = inputMaxSem && inputMaxSem.value !== '' ? parseInt(inputMaxSem.value, 10) : null;
+
+    // Passa os dados e os valores dos filtros para a função de estatísticas
+    updateStats(data, minKgM2, maxSemanasVal);
+    
+    if (activeTabId === 'tab-quinta') updateTabQuintas(data);
+    if (activeTabId === 'tab-ano') updateTabAnos(data);
+    if (activeTabId === 'tab-cultura') updateTabCulturas(data);
+    if (activeTabId === 'tab-kgm2ano') updateTabKgM2Ano();
+}
+
+function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
+    const container = document.getElementById('stats-container');
+    container.innerHTML = '';
+
+    Object.keys(farmColors).forEach(farm => {
+        if (!selectedFarms.includes(farm)) return;
+
+        // 1. Aplica a filtragem base da quinta
+        let farmData = data.filter(d => d.quinta === farm);
+
+        // 2. Filtra por Mín. kg/m² totais e por Máx. de semanas
+        farmData = farmData.filter(d => {
+            // Valida Mínimo kg/m² totais
+            if ((d.kg_m2_totais || 0) < minKgM2) return false;
+
+            // Calcula o número real de semanas da cultura
+            let semanasCalculadas = 0;
+            const dataInicioStr = d.inicio || d.plantacao;
+            const dataFimStr = d.fim;
+
+            if (dataInicioStr && dataFimStr) {
+                const [d1, m1, y1] = dataInicioStr.split('/').map(Number);
+                const [d2, m2, y2] = dataFimStr.split('/').map(Number);
+                const dtInicio = new Date(y1, m1 - 1, d1);
+                const dtFim = new Date(y2, m2 - 1, d2);
+                const diffMs = dtFim - dtInicio;
+                semanasCalculadas = Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
+            } else if (d.semanas_duracao) {
+                semanasCalculadas = Math.round(d.semanas_duracao);
+            }
+
+            // Valida Máximo de semanas (se definido)
+            if (maxSemanasVal !== null && semanasCalculadas > maxSemanasVal) return false;
+
+            return true;
+        });
+
+        const card = document.createElement('div');
+        card.className = 'farm-stat-card';
+        card.style.setProperty('--farm-color', farmColors[farm] || '#ccc');
+
+        const farmYearMatches = secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0);
+        const kgM2AnoAvg = farmYearMatches.length > 0 ? (farmYearMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmYearMatches.length).toFixed(2) : '-';
+        
+        let bestKgM2Ano = '-';
+        let bestKgM2AnoYear = '-';
+        if (farmYearMatches.length > 0) {
+            let bestObj = farmYearMatches.reduce((max, curr) => curr.kg_m2_ano > max.kg_m2_ano ? curr : max, farmYearMatches[0]);
+            bestKgM2Ano = bestObj.kg_m2_ano.toFixed(2);
+            bestKgM2AnoYear = bestObj.ano;
         }
 
-        function updateStats(data) {
-            const container = document.getElementById('stats-container');
-            container.innerHTML = '';
+        if(farmData.length === 0 && farmYearMatches.length === 0) {
+            card.innerHTML = `
+                <div class="farm-stat-header"><span>${farm}</span></div>
+                <div class="no-data-text">Sem dados</div>
+                <div></div>
+            `;
+        } else {
+            const getMetrics = (key, lowerIsBetter = false, roundToUnit = false) => {
+                let sum = 0, count = 0, best = null;
+                farmData.forEach(d => {
+                    const val = d[key];
+                    if(val !== undefined && val !== null && val > 0) {
+                        sum += val;
+                        count++;
+                        if(!best || (lowerIsBetter ? val < best[key] : val > best[key])) best = d;
+                    }
+                });
 
-            Object.keys(farmColors).forEach(farm => {
-                if (!selectedFarms.includes(farm)) return;
-
-                const farmData = data.filter(d => d.quinta === farm);
-                const card = document.createElement('div');
-                card.className = 'farm-stat-card';
-                card.style.setProperty('--farm-color', farmColors[farm] || '#ccc');
-
-                const farmYearMatches = secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0);
-                const kgM2AnoAvg = farmYearMatches.length > 0 ? (farmYearMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmYearMatches.length).toFixed(2) : '-';
-                
-                let bestKgM2Ano = '-';
-                let bestKgM2AnoYear = '-';
-                if (farmYearMatches.length > 0) {
-                    let bestObj = farmYearMatches.reduce((max, curr) => curr.kg_m2_ano > max.kg_m2_ano ? curr : max, farmYearMatches[0]);
-                    bestKgM2Ano = bestObj.kg_m2_ano.toFixed(2);
-                    bestKgM2AnoYear = bestObj.ano;
+                if(!count || !best) {
+                    return { avg: '-', bestVal: '-', cultura: 'N/A', mesAno: 'N/A' };
                 }
 
-                if(farmData.length === 0 && farmYearMatches.length === 0) {
-                    card.innerHTML = `
-                        <div class="farm-stat-header"><span>${farm}</span></div>
-                        <div class="no-data-text">Sem dados</div>
-                        <div></div>
-                    `;
-                } else {
-                    const getMetrics = (key, lowerIsBetter = false, roundToUnit = false) => {
-                        let sum = 0, count = 0, best = null;
-                        farmData.forEach(d => {
-                            const val = d[key];
-                            if(val !== undefined && val !== null && val > 0) {
-                                sum += val;
-                                count++;
-                                if(!best || (lowerIsBetter ? val < best[key] : val > best[key])) best = d;
-                            }
-                        });
+                const rawAvg = sum / count;
+                const avgFormatted = roundToUnit ? Math.round(rawAvg).toString() : rawAvg.toFixed(2);
+                const bestValFormatted = roundToUnit ? Math.round(best[key]).toString() : best[key].toFixed(2);
+                const mesStr = best.mes ? String(best.mes).padStart(2, '0') : '--';
+                const mesAnoStr = `${mesStr}/${best.ano || ''}`;
 
-                        if(!count || !best) {
-                            return { avg: '-', bestVal: '-', cultura: 'N/A', mesAno: 'N/A' };
-                        }
+                return { avg: avgFormatted, bestVal: bestValFormatted, cultura: best.cultura || 'N/A', mesAno: mesAnoStr };
+            };
 
-                        const rawAvg = sum / count;
-                        const avgFormatted = roundToUnit ? Math.round(rawAvg).toString() : rawAvg.toFixed(2);
-                        const bestValFormatted = roundToUnit ? Math.round(best[key]).toString() : best[key].toFixed(2);
-                        const mesStr = best.mes ? String(best.mes).padStart(2, '0') : '--';
-                        const mesAnoStr = `${mesStr}/${best.ano || ''}`;
+            const m1 = getMetrics('kg_m2_sem', false, false);
+            const m2 = getMetrics('kg_h', false, true);
+            const m3 = getMetrics('h_ha_sem', true, true);
+            const m4 = getMetrics('kg_m2_totais', false, false);
 
-                        return { avg: avgFormatted, bestVal: bestValFormatted, cultura: best.cultura || 'N/A', mesAno: mesAnoStr };
-                    };
-
-                    const m1 = getMetrics('kg_m2_sem', false, false);
-                    const m2 = getMetrics('kg_h', false, true);
-                    const m3 = getMetrics('h_ha_sem', true, true);
-                    const m4 = getMetrics('kg_m2_totais', false, false);
-
-                    card.innerHTML = `
-                        <div class="farm-stat-header"><span>${farm}</span></div>
-                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                            <div class="metric-row"><span class="metric-label">kg/m²/ano (Média)</span><span class="metric-val" style="color: #2d4a22;">${kgM2AnoAvg}</span></div>
-                            <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${bestKgM2Ano}</span></div>
-                            <div class="metric-sub">${bestKgM2AnoYear}</div>
-                        </div>
-                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                            <div class="metric-row"><span class="metric-label">kg/m²/sem (Média)</span><span class="metric-val">${m1.avg}</span></div>
-                            <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m1.bestVal}</span></div>
-                            <div class="metric-sub">${m1.cultura} (${m1.mesAno})</div>
-                        </div>
-                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                            <div class="metric-row"><span class="metric-label">kg/h trabalho (Média)</span><span class="metric-val">${m2.avg}</span></div>
-                            <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m2.bestVal}</span></div>
-                            <div class="metric-sub">${m2.cultura} (${m2.mesAno})</div>
-                        </div>
-                        <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                            <div class="metric-row"><span class="metric-label">h/ha/sem (Média)</span><span class="metric-val">${m3.avg}</span></div>
-                            <div class="metric-row"><span class="metric-label">(Mínimo)</span><span class="metric-val">${m3.bestVal}</span></div>
-                            <div class="metric-sub">${m3.cultura} (${m3.mesAno})</div>
-                        </div>
-                        <div>
-                            <div class="metric-row"><span class="metric-label">kg/m²/cultura (Média)</span><span class="metric-val">${m4.avg}</span></div>
-                            <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m4.bestVal}</span></div>
-                            <div class="metric-sub">${m4.cultura} (${m4.mesAno})</div>
-                        </div>
-                    `;
-                }
-                container.appendChild(card);
-            });
+            card.innerHTML = `
+                <div class="farm-stat-header"><span>${farm}</span></div>
+                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
+                    <div class="metric-row"><span class="metric-label">kg/m²/ano (Média)</span><span class="metric-val" style="color: #2d4a22;">${kgM2AnoAvg}</span></div>
+                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${bestKgM2Ano}</span></div>
+                    <div class="metric-sub">${bestKgM2AnoYear}</div>
+                </div>
+                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
+                    <div class="metric-row"><span class="metric-label">kg/m²/sem (Média)</span><span class="metric-val">${m1.avg}</span></div>
+                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m1.bestVal}</span></div>
+                    <div class="metric-sub">${m1.cultura} (${m1.mesAno})</div>
+                </div>
+                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
+                    <div class="metric-row"><span class="metric-label">kg/h trabalho (Média)</span><span class="metric-val">${m2.avg}</span></div>
+                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m2.bestVal}</span></div>
+                    <div class="metric-sub">${m2.cultura} (${m2.mesAno})</div>
+                </div>
+                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
+                    <div class="metric-row"><span class="metric-label">h/ha/sem (Média)</span><span class="metric-val">${m3.avg}</span></div>
+                    <div class="metric-row"><span class="metric-label">(Mínimo)</span><span class="metric-val">${m3.bestVal}</span></div>
+                    <div class="metric-sub">${m3.cultura} (${m3.mesAno})</div>
+                </div>
+                <div>
+                    <div class="metric-row"><span class="metric-label">kg/m²/cultura (Média)</span><span class="metric-val">${m4.avg}</span></div>
+                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m4.bestVal}</span></div>
+                    <div class="metric-sub">${m4.cultura} (${m4.mesAno})</div>
+                </div>
+            `;
         }
+        container.appendChild(card);
+    });
+}
 
 function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null, xTickFontSize = 12) {
     if(chartInstances[canvasId]) chartInstances[canvasId].destroy();

@@ -7087,7 +7087,7 @@ function handleTop10CulturasChange() {
 
     const chk = document.getElementById('chkTop10Culturas');
     const isTop10 = chk ? chk.checked : true;
-    const prefix = isTop10 ? 'Top 10 -' : 'Todas as Culturas';
+    const prefix = isTop10 ? 'Top 10' : 'Todas as Culturas';
     
     const titles = document.querySelectorAll('#tab-cultura .chart-box-title');
     if (titles.length >= 4) {
@@ -7120,7 +7120,7 @@ function updateTabCulturas(data) {
     const isTop10 = chkTop10 ? chkTop10.checked : true;
     const isInverted = chkInvert ? chkInvert.checked : false;
 
-    const orderPrefix = isInverted ? '' : 'Top 10';
+    const orderPrefix = isInverted ? '' : 'Top 10 -';
     const prefix = isTop10 ? `${orderPrefix}` : '';
 
     const titles = document.querySelectorAll('#tab-cultura .chart-box-title');

@@ -6833,13 +6833,17 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
         : 0;
 
     const variations = dataVals.map(v => {
-        if (!v || v === 0) return '';
-        if (v === bestVal) return '(Melhor)';
-        if (!bestVal || bestVal === 0) return '';
-        
-        const diff = ((v - bestVal) / bestVal) * 100;
-        return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
-    });
+    if (!v || v === 0) return '';
+    
+    // Se houver apenas 1 ou 0 valores válidos, não exibe o texto "(Melhor)" nem a variação percentual
+    if (validVals.length <= 1) return '';
+
+    if (v === bestVal) return '(Melhor)';
+    if (!bestVal || bestVal === 0) return '';
+    
+    const diff = ((v - bestVal) / bestVal) * 100;
+    return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
+});
 
     const hasWeeks = weeksVals !== null && weeksVals !== undefined;
 
@@ -7003,6 +7007,8 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
     });
 }
 
+//////////////GRÁFICO DAS QUINTAS///////////////
+
 function updateTabQuintas(data) {
     const calcFarmAvg = (key, lowerIsBetter = false, roundToUnit = false) => {
         let stats = [];
@@ -7039,6 +7045,8 @@ function updateTabQuintas(data) {
     q4Stats.sort((a,b) => b.avg - a.avg);
     renderBarChart('chartQ4', q4Stats.map(d => d.farmLabel), q4Stats.map(d => d.avg), q4Stats.map(d => farmColors[d.farm]), false, q4Stats.map(d => d.weeks), null);
 }
+
+//////////////GRÁFICO DOS ANOS///////////////
 
 function updateTabAnos(data) {
     const years = [...selectedYears].sort((a,b) => a - b);
@@ -7098,6 +7106,8 @@ function handleTop10CulturasChange() {
         updateTabCulturas(dataToUse);
     }
 }
+
+//////////////GRÁFICO DAS CULTURAS///////////////
 
 function updateTabCulturas(data) {
     if (!data || !Array.isArray(data)) return;
@@ -7207,6 +7217,8 @@ function updateTabCulturas(data) {
     renderBarChart('chartC4', c4.map(d => d.nameLabel), c4.map(d => d.avg), c4.map(d => colors[d.farm] || '#4a7c36'), false, c4.map(d => d.semanas), c4.map(d => d.inicio), fontSizeX);
 }
 
+//////////////GRÁFICO DOS KG/M2/ANO///////////////
+
         function updateTabKgM2Ano() {
             const canvasId = 'chartKgM2Ano';
             const ungrouped = document.getElementById('ungroupYearsToggle').checked;
@@ -7263,16 +7275,18 @@ function updateTabCulturas(data) {
                         flatColors.push(baseColor);
                         flatBorders.push(borderColor);
 
-                        let varStr = '';
-                        if (item.val > 0) {
-                            if (item.val === bestYearVal) {
-                                varStr = '(Melhor)';
-                            } else if (bestYearVal > 0) {
-                                const diff = ((item.val - bestYearVal) / bestYearVal) * 100;
-                                varStr = isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
-                            }
-                        }
-                        variations.push(varStr);
+                        // CÓDIGO NOVO:
+let varStr = '';
+// Só calcula/exibe "(Melhor)" e porcentagens se houver mais de uma barra com valor > 0 no ano
+if (item.val > 0 && validYearVals.length > 1) {
+    if (item.val === bestYearVal) {
+        varStr = '(Melhor)';
+    } else if (bestYearVal > 0) {
+        const diff = ((item.val - bestYearVal) / bestYearVal) * 100;
+        varStr = isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
+    }
+}
+variations.push(varStr);
                     });
                 });
 

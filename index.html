@@ -7043,7 +7043,7 @@ function updateTabQuintas(data) {
         }
     });
     q4Stats.sort((a,b) => b.avg - a.avg);
-    renderBarChart('chartQ4', q4Stats.map(d => d.farmLabel), q4Stats.map(d => d.avg), q4Stats.map(d => farmColors[d.farm]), false, q4Stats.map(d => d.weeks), null);
+    renderBarChart('chartQ4', q4Stats.map(d => d.farmLabel), q4Stats.map(d => d.avg), q4Stats.map(d => farmColors[d.farm]), false, null, null);
 }
 
 //////////////GRÁFICO DOS ANOS///////////////

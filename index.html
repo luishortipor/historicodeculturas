@@ -135,7 +135,7 @@
         }
 
         .filter-title {
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -272,9 +272,9 @@
             line-height: 1.1;
         }
 
-        .metric-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; }
-        .metric-val { font-size: 0.68rem; font-weight: 700; color: var(--sidebar-bg); }
-        .metric-sub { font-size: 0.60rem; color: #888; text-align: right; margin-bottom: 2px; line-height: 1; }
+        .metric-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+        .metric-val { font-size: 0.95rem; font-weight: 700; color: var(--sidebar-bg); }
+        .metric-sub { font-size: 0.7rem; color: #888; text-align: right; margin-bottom: 2px; line-height: 1; }
         
         .no-data-text {
             text-align: center;
@@ -6238,7 +6238,7 @@
   },
   {
     "quinta": "Horticilha",
-    "cultura": "Yarimaru D",
+    "cultura": "Delicia D",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 18.71,
@@ -6250,7 +6250,7 @@
   },
   {
     "quinta": "Horticilha",
-    "cultura": "Yarimaru C",
+    "cultura": "Delicia C",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 16.26,
@@ -6262,7 +6262,7 @@
   },
   {
     "quinta": "Horticilha",
-    "cultura": "Yarimaru B",
+    "cultura": "Delicia B",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 12.26,
@@ -6274,7 +6274,7 @@
   },
   {
     "quinta": "Sobreiro",
-    "cultura": "Yarimaru 12",
+    "cultura": "Delicia 12",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 23.13,
@@ -6286,7 +6286,7 @@
   },
   {
     "quinta": "Horticilha",
-    "cultura": "Yarimaru A",
+    "cultura": "Delicia A",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 12.75,
@@ -6310,7 +6310,7 @@
   },
   {
     "quinta": "Campelos",
-    "cultura": "Yarimaru 24+27",
+    "cultura": "Delicia 24+27",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 13.31,
@@ -6334,7 +6334,7 @@
   },
   {
     "quinta": "Campelos",
-    "cultura": "Yarimaru 22",
+    "cultura": "Delicia 22",
     "ano": 2026.0,
     "tipo": "Beef",
     "kg_m2_totais": 22.2,
@@ -6722,10 +6722,8 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
 
         // 2. Filtra por Mín. kg/m² totais e por Máx. de semanas
         farmData = farmData.filter(d => {
-            // Valida Mínimo kg/m² totais
             if ((d.kg_m2_totais || 0) < minKgM2) return false;
 
-            // Calcula o número real de semanas da cultura
             let semanasCalculadas = 0;
             const dataInicioStr = d.inicio || d.plantacao;
             const dataFimStr = d.fim;
@@ -6741,7 +6739,6 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
                 semanasCalculadas = Math.round(d.semanas_duracao);
             }
 
-            // Valida Máximo de semanas (se definido)
             if (maxSemanasVal !== null && semanasCalculadas > maxSemanasVal) return false;
 
             return true;
@@ -6752,14 +6749,11 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
         card.style.setProperty('--farm-color', farmColors[farm] || '#ccc');
 
         const farmYearMatches = secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0);
-        const kgM2AnoAvg = farmYearMatches.length > 0 ? (farmYearMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmYearMatches.length).toFixed(2) : '-';
         
-        let bestKgM2Ano = '-';
-        let bestKgM2AnoYear = '-';
+        let kgM2AnoAvgStr = '-';
         if (farmYearMatches.length > 0) {
-            let bestObj = farmYearMatches.reduce((max, curr) => curr.kg_m2_ano > max.kg_m2_ano ? curr : max, farmYearMatches[0]);
-            bestKgM2Ano = bestObj.kg_m2_ano.toFixed(2);
-            bestKgM2AnoYear = bestObj.ano;
+            const val = (farmYearMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmYearMatches.length).toFixed(2);
+            kgM2AnoAvgStr = `${val}<span style="font-size: 0.75em; color: #777; font-weight: normal; margin-left: 2px;">kg</span>`;
         }
 
         if(farmData.length === 0 && farmYearMatches.length === 0) {
@@ -6769,61 +6763,45 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
                 <div></div>
             `;
         } else {
-            const getMetrics = (key, lowerIsBetter = false, roundToUnit = false) => {
-                let sum = 0, count = 0, best = null;
+            // Função auxiliar para calcular a média e anexar a unidade com formatação pequena/cinzenta
+            const getAvgFormatted = (key, unit, roundToUnit = false) => {
+                let sum = 0, count = 0;
                 farmData.forEach(d => {
                     const val = d[key];
                     if(val !== undefined && val !== null && val > 0) {
                         sum += val;
                         count++;
-                        if(!best || (lowerIsBetter ? val < best[key] : val > best[key])) best = d;
                     }
                 });
 
-                if(!count || !best) {
-                    return { avg: '-', bestVal: '-', cultura: 'N/A', mesAno: 'N/A' };
-                }
+                if(!count) return '-';
 
                 const rawAvg = sum / count;
-                const avgFormatted = roundToUnit ? Math.round(rawAvg).toString() : rawAvg.toFixed(2);
-                const bestValFormatted = roundToUnit ? Math.round(best[key]).toString() : best[key].toFixed(2);
-                const mesStr = best.mes ? String(best.mes).padStart(2, '0') : '--';
-                const mesAnoStr = `${mesStr}/${best.ano || ''}`;
-
-                return { avg: avgFormatted, bestVal: bestValFormatted, cultura: best.cultura || 'N/A', mesAno: mesAnoStr };
+                const formattedVal = roundToUnit ? Math.round(rawAvg).toString() : rawAvg.toFixed(2);
+                return `${formattedVal}<span style="font-size: 0.75em; color: #777; font-weight: normal; margin-left: 2px;">${unit}</span>`;
             };
 
-            const m1 = getMetrics('kg_m2_sem', false, false);
-            const m2 = getMetrics('kg_h', false, true);
-            const m3 = getMetrics('h_ha_sem', true, true);
-            const m4 = getMetrics('kg_m2_totais', false, false);
+            const m1Avg = getAvgFormatted('kg_m2_sem', 'kg', false);
+            const m2Avg = getAvgFormatted('kg_h', 'kg', true);
+            const m3Avg = getAvgFormatted('h_ha_sem', 'h', true);
+            const m4Avg = getAvgFormatted('kg_m2_totais', 'kg', false);
 
             card.innerHTML = `
                 <div class="farm-stat-header"><span>${farm}</span></div>
-                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                    <div class="metric-row"><span class="metric-label">kg/m²/ano (Média)</span><span class="metric-val" style="color: #2d4a22;">${kgM2AnoAvg}</span></div>
-                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${bestKgM2Ano}</span></div>
-                    <div class="metric-sub">${bestKgM2AnoYear}</div>
+                <div style="margin-bottom: 4px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 3px;">
+                    <div class="metric-row"><span class="metric-label">kg/m²/ano</span><span class="metric-val" style="color: #2d4a22;">${kgM2AnoAvgStr}</span></div>
                 </div>
-                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                    <div class="metric-row"><span class="metric-label">kg/m²/sem (Média)</span><span class="metric-val">${m1.avg}</span></div>
-                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m1.bestVal}</span></div>
-                    <div class="metric-sub">${m1.cultura} (${m1.mesAno})</div>
+                <div style="margin-bottom: 4px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 3px;">
+                    <div class="metric-row"><span class="metric-label">kg/m²/sem</span><span class="metric-val">${m1Avg}</span></div>
                 </div>
-                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                    <div class="metric-row"><span class="metric-label">kg/h trabalho (Média)</span><span class="metric-val">${m2.avg}</span></div>
-                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m2.bestVal}</span></div>
-                    <div class="metric-sub">${m2.cultura} (${m2.mesAno})</div>
+                <div style="margin-bottom: 4px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 3px;">
+                    <div class="metric-row"><span class="metric-label">kg/h trabalho</span><span class="metric-val">${m2Avg}</span></div>
                 </div>
-                <div style="margin-bottom: 2px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 1px;">
-                    <div class="metric-row"><span class="metric-label">h/ha/sem (Média)</span><span class="metric-val">${m3.avg}</span></div>
-                    <div class="metric-row"><span class="metric-label">(Mínimo)</span><span class="metric-val">${m3.bestVal}</span></div>
-                    <div class="metric-sub">${m3.cultura} (${m3.mesAno})</div>
+                <div style="margin-bottom: 4px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 3px;">
+                    <div class="metric-row"><span class="metric-label">h/ha/sem</span><span class="metric-val">${m3Avg}</span></div>
                 </div>
                 <div>
-                    <div class="metric-row"><span class="metric-label">kg/m²/cultura (Média)</span><span class="metric-val">${m4.avg}</span></div>
-                    <div class="metric-row"><span class="metric-label">(Máximo)</span><span class="metric-val">${m4.bestVal}</span></div>
-                    <div class="metric-sub">${m4.cultura} (${m4.mesAno})</div>
+                    <div class="metric-row"><span class="metric-label">kg/m²/cultura</span><span class="metric-val">${m4Avg}</span></div>
                 </div>
             `;
         }

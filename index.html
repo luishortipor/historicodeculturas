@@ -6821,6 +6821,65 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
     });
 }
 
+// Variável auxiliar para evitar re-renderizações desnecessárias
+let isHoverSyncing = false;
+let currentHoveredLabel = null;
+
+function syncChartHover(sourceChartId, dataIndex) {
+    if (isHoverSyncing) return;
+
+    const culturaChartIds = ['chartC1', 'chartC2', 'chartC3', 'chartC4'];
+    const sourceChart = chartInstances[sourceChartId];
+
+    // Se o rato saiu do gráfico ou a barra é inválida
+    if (!sourceChart || dataIndex === null || dataIndex === undefined) {
+        if (currentHoveredLabel !== null) {
+            currentHoveredLabel = null;
+            isHoverSyncing = true;
+            culturaChartIds.forEach(id => {
+                const chart = chartInstances[id];
+                if (chart) {
+                    chart.setActiveElements([]);
+                    chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+                    chart.update('none');
+                }
+            });
+            isHoverSyncing = false;
+        }
+        return;
+    }
+
+    const targetLabel = sourceChart.data.labels[dataIndex];
+
+    if (currentHoveredLabel === targetLabel) return;
+
+    currentHoveredLabel = targetLabel;
+    isHoverSyncing = true;
+
+    culturaChartIds.forEach(id => {
+        const chart = chartInstances[id];
+        if (!chart) return;
+
+        if (id === sourceChartId) {
+            // No gráfico onde está o rato: ativa a barra E o tooltip
+            chart.setActiveElements([{ datasetIndex: 0, index: dataIndex }]);
+            chart.tooltip.setActiveElements([{ datasetIndex: 0, index: dataIndex }], { x: 0, y: 0 });
+        } else {
+            // Nos outros gráficos: destaca a barra mas LIMPA o tooltip
+            const matchingIndex = chart.data.labels.indexOf(targetLabel);
+            if (matchingIndex !== -1) {
+                chart.setActiveElements([{ datasetIndex: 0, index: matchingIndex }]);
+            } else {
+                chart.setActiveElements([]);
+            }
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+        }
+        chart.update('none');
+    });
+
+    isHoverSyncing = false;
+}
+
 function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null, xTickFontSize = 12) {
     if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
 
@@ -6847,17 +6906,13 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
         : 0;
 
     const variations = dataVals.map(v => {
-    if (!v || v === 0) return '';
-    
-    // Se houver apenas 1 ou 0 valores válidos, não exibe o texto "(Melhor)" nem a variação percentual
-    if (validVals.length <= 1) return '';
-
-    if (v === bestVal) return '(Melhor)';
-    if (!bestVal || bestVal === 0) return '';
-    
-    const diff = ((v - bestVal) / bestVal) * 100;
-    return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
-});
+        if (!v || v === 0) return '';
+        if (validVals.length <= 1) return '';
+        if (v === bestVal) return '(Melhor)';
+        if (!bestVal || bestVal === 0) return '';
+        const diff = ((v - bestVal) / bestVal) * 100;
+        return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
+    });
 
     const hasWeeks = weeksVals !== null && weeksVals !== undefined;
 
@@ -6884,47 +6939,44 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
     let pluginsConfig = {
         legend: { display: false },
         tooltip: {
-    callbacks: {
-        label: function(context) {
-            let value = context.raw || 0;
-            let mainText = ` ${value}${fullUnit}`;
-            
-            if (isCulturasTab) {
-                const idx = context.dataIndex;
-                const currentLabel = context.label;
-                let tooltipLines = [mainText];
+            callbacks: {
+                label: function(context) {
+                    let value = context.raw || 0;
+                    let mainText = ` ${value}${fullUnit}`;
+                    
+                    if (isCulturasTab) {
+                        const idx = context.dataIndex;
+                        const currentLabel = context.label;
+                        let tooltipLines = [mainText];
 
-                // Procura o item correspondente em lastFilteredData através da correspondência de rótulo
-                let currentItem = null;
-                if (window.lastFilteredData && Array.isArray(window.lastFilteredData)) {
-                    currentItem = window.lastFilteredData.find(d => {
-                        const farmAbbr = (typeof farmAbbreviations !== 'undefined' && farmAbbreviations[d.quinta]) ? farmAbbreviations[d.quinta] : (d.quinta || '');
-                        const yearNum = d.ano ? Math.floor(d.ano) : '';
-                        const yearShort = yearNum ? String(yearNum).slice(-2) : '';
-                        const yearPart = yearShort ? ` (${yearShort})` : '';
-                        const nameLabel = farmAbbr ? `${farmAbbr}-${d.cultura}${yearPart}` : `${d.cultura}${yearPart}`;
-                        return nameLabel === currentLabel;
-                    });
+                        let currentItem = null;
+                        if (window.lastFilteredData && Array.isArray(window.lastFilteredData)) {
+                            currentItem = window.lastFilteredData.find(d => {
+                                const farmAbbr = (typeof farmAbbreviations !== 'undefined' && farmAbbreviations[d.quinta]) ? farmAbbreviations[d.quinta] : (d.quinta || '');
+                                const yearNum = d.ano ? Math.floor(d.ano) : '';
+                                const yearShort = yearNum ? String(yearNum).slice(-2) : '';
+                                const yearPart = yearShort ? ` (${yearShort})` : '';
+                                const nameLabel = farmAbbr ? `${farmAbbr}-${d.cultura}${yearPart}` : `${d.cultura}${yearPart}`;
+                                return nameLabel === currentLabel;
+                            });
+                        }
+
+                        if (currentItem) {
+                            const dataInicio = currentItem.inicio || currentItem.plantacao;
+                            if (dataInicio) tooltipLines.push(` Início: ${dataInicio}`);
+                            if (currentItem.fim) tooltipLines.push(` Fim: ${currentItem.fim}`);
+                            if (currentItem.kg_m2_totais !== undefined) tooltipLines.push(` Total: ${currentItem.kg_m2_totais} kg/m²`);
+                        } else if (Array.isArray(inicioVals) && inicioVals[idx]) {
+                            tooltipLines.push(` Início: ${inicioVals[idx]}`);
+                        }
+
+                        return tooltipLines;
+                    }
+                    
+                    return mainText;
                 }
-
-                // Se encontrou o item, exibe as datas corretas de Início e Fim
-                if (currentItem) {
-                    const dataInicio = currentItem.inicio || currentItem.plantacao;
-                    if (dataInicio) tooltipLines.push(` Início: ${dataInicio}`);
-                    if (currentItem.fim) tooltipLines.push(` Fim: ${currentItem.fim}`);
-                    if (currentItem.kg_m2_totais !== undefined) tooltipLines.push(` Total: ${currentItem.kg_m2_totais} kg/m²`);
-                } else if (Array.isArray(inicioVals) && inicioVals[idx]) {
-                    // Fallback caso não encontre por rótulo
-                    tooltipLines.push(` Início: ${inicioVals[idx]}`);
-                }
-
-                return tooltipLines;
             }
-            
-            return mainText;
-        }
-    }
-},
+        },
         datalabels: {
             anchor: 'end',
             align: 'top',
@@ -6988,7 +7040,16 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            
+            onHover: (event, activeElements) => {
+                if (!canvasId.startsWith('chartC')) return;
+
+                if (activeElements && activeElements.length > 0) {
+                    const hoveredIndex = activeElements[0].index;
+                    syncChartHover(canvasId, hoveredIndex);
+                } else {
+                    syncChartHover(canvasId, null);
+                }
+            },
             animation: {
                 y: {
                     from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)

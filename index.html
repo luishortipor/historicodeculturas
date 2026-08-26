@@ -6681,15 +6681,27 @@
         }
 
         function getFilteredData() {
-            const textFilter = document.getElementById('culture-search').value.toLowerCase().trim();
-            return rawData.filter(d => 
-                selectedYears.includes(d.ano) &&
-                selectedMonths.includes(d.mes) &&
-                selectedTypes.includes(d.tipo) &&
-                selectedFarms.includes(d.quinta) &&
-                (textFilter === '' || (d.cultura && d.cultura.toLowerCase().includes(textFilter)))
-            );
-        }
+    const rawFilter = document.getElementById('culture-search').value.toLowerCase().trim();
+    
+    // Separa por: vírgula, ponto e vírgula, barra, hífen, a palavra "ou", ou espaços
+    const terms = rawFilter
+        ? rawFilter.split(/,|;|\/|-|\sou\s|\s+/).map(t => t.trim()).filter(Boolean)
+        : [];
+
+    return rawData.filter(d => {
+        const matchesFilters = 
+            selectedYears.includes(d.ano) &&
+            selectedMonths.includes(d.mes) &&
+            selectedTypes.includes(d.tipo) &&
+            selectedFarms.includes(d.quinta);
+
+        if (!matchesFilters) return false;
+        if (terms.length === 0) return true;
+
+        const culturaNome = (d.cultura || '').toLowerCase();
+        return terms.some(term => culturaNome.includes(term));
+    });
+}
 
         function updateDashboard() {
     const data = getFilteredData();

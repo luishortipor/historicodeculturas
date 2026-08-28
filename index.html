@@ -7050,16 +7050,14 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
                     syncChartHover(canvasId, null);
                 }
             },
-            animation: {
-                y: {
-                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
-                },
-                base: {
-                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
-                },
-                x: false,
-                color: false
-            },
+            animations: {
+    numbers: {
+        type: 'number',
+        properties: ['x', 'y', 'base', 'height'],
+        duration: 1000,
+        easing: 'easeOutQuart'
+    }
+},
             layout: {
                 padding: { top: 30 }
             },

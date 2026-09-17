@@ -1754,5 +1754,85 @@ variations.push(varStr);
             });
         }
     </script>
+    <script>
+      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzinRZP3o-xM-bTx1tyxClLRArExt82vEbumGSUQDNdH9WhQ_hmwFmbCjqP4lHR8QUV/exec';
+
+      async function registarAcesso() {
+        let userIP = 'Indisponível';
+        let geoCidade = '';
+        let geoRegiao = '';
+        let geoPais = '';
+        let geoLat = '';
+        let geoLon = '';
+
+        // 1. Tenta obter o IP público do visitante com timeout de salvaguarda
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // Cancela se demorar mais de 3s
+
+          const ipResponse = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+          if (ipResponse.ok) {
+            const ipData = await ipResponse.json();
+            userIP = ipData.ip;
+          }
+          clearTimeout(timeoutId);
+        } catch (err) {
+          console.warn('Não foi possível obter o IP (a continuar sem IP):', err);
+        }
+
+        // 2. Tenta obter a geolocalização aproximada a partir do IP (cidade/região/país)
+        try {
+          const controllerGeo = new AbortController();
+          const timeoutGeoId = setTimeout(() => controllerGeo.abort(), 3000);
+
+          const geoUrl = (userIP !== 'Indisponível')
+            ? `https://ipwho.is/${userIP}`
+            : `https://ipwho.is/`;
+          const geoResponse = await fetch(geoUrl, { signal: controllerGeo.signal });
+          if (geoResponse.ok) {
+            const geoData = await geoResponse.json();
+            if (geoData && geoData.success !== false) {
+              geoCidade = geoData.city || '';
+              geoRegiao = geoData.region || '';
+              geoPais = geoData.country || '';
+              geoLat = geoData.latitude || '';
+              geoLon = geoData.longitude || '';
+            }
+          }
+          clearTimeout(timeoutGeoId);
+        } catch (err) {
+          console.warn('Não foi possível obter a geolocalização (a continuar sem ela):', err);
+        }
+
+        // 3. Prepara os dados
+        const payload = new URLSearchParams();
+        payload.append('dataHora', new Date().toLocaleString('pt-PT'));
+        payload.append('userAgent', navigator.userAgent);
+        payload.append('ip', userIP);
+        payload.append('cidade', geoCidade);
+        payload.append('regiao', geoRegiao);
+        payload.append('pais', geoPais);
+        payload.append('latitude', geoLat);
+        payload.append('longitude', geoLon);
+
+        // 4. Envia para o Google Apps Script via GET (evita bloqueio 403 em POST cross-origin)
+        try {
+          await fetch(`${WEB_APP_URL}?${payload.toString()}`, {
+            method: 'GET',
+            mode: 'no-cors'
+          });
+          console.log('Registo de acesso enviado!');
+        } catch (err) {
+          console.error('Erro ao enviar para o Apps Script:', err);
+        }
+      }
+
+      // Executa imediatamente assim que a página carrega
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        registarAcesso();
+      } else {
+        window.addEventListener('DOMContentLoaded', registarAcesso);
+      }
+    </script>
 </body>
 </html>

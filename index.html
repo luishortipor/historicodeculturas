@@ -1029,6 +1029,15 @@ let rawData = rawDataDefault;
     });
 }
 
+        // Devolve true quando os filtros de Tipo ou Cultura estão a restringir os dados
+        function isTypeOrCultureFiltering() {
+            const allTypes = [...new Set(rawData.map(d => d.tipo).filter(Boolean))];
+            const typeFiltered = allTypes.some(tp => !selectedTypes.includes(tp));
+            const searchEl = document.getElementById('culture-search');
+            const cultureFiltered = !!(searchEl && searchEl.value.trim() !== '');
+            return typeFiltered || cultureFiltered;
+        }
+
         function updateDashboard() {
     const data = getFilteredData();
     
@@ -1086,7 +1095,11 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
         card.className = 'farm-stat-card';
         card.style.setProperty('--farm-color', farmColors[farm] || '#ccc');
 
-        const farmYearMatches = secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0);
+        // kg/m²/ano só aparece quando os filtros de Tipo e Cultura não estão a filtrar nada
+        const showKgM2Ano = !isTypeOrCultureFiltering();
+        const farmYearMatches = showKgM2Ano
+            ? secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0)
+            : [];
         
         let kgM2AnoAvgStr = '-';
         if (farmYearMatches.length > 0) {

@@ -498,8 +498,30 @@
                 <div class="charts-grid-2x2">
                     <div class="chart-box"><div class="chart-box-title">kg/m²/sem </div><div class="chart-container"><canvas id="chartQ1"></canvas></div></div>
                     <div class="chart-box"><div class="chart-box-title">kg/h de trabalho </div><div class="chart-container"><canvas id="chartQ2"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">h/ha/sem </div><div class="chart-container"><canvas id="chartQ3"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">kg/m²/cultura </div><div class="chart-container"><canvas id="chartQ4"></canvas></div></div>
+                    <div class="chart-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="chart-box-title" style="margin-bottom:0;">h/ha/sem</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                        <input type="checkbox" class="chk-h2pl" onchange="syncH2plCheckbox(this)" style="cursor: pointer; width: 13px; height: 13px; margin: 0;">
+                        2pl/m²
+                    </label>
+                    <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
+                    Mín. kg/m²:
+                    <input type="number" class="flt-min-kg" value="0" min="0" step="0.5" oninput="syncFilterInputs('flt-min-kg', this)" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                </label>
+                </div>
+            </div>
+            <div class="chart-container"><canvas id="chartQ3"></canvas></div></div>
+                    <div class="chart-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="chart-box-title" style="margin-bottom:0;">kg/m²/cultura</div>
+                <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
+                    Máx. semanas:
+                    <input type="number" class="flt-max-sem" value="" placeholder="∞" min="1" oninput="syncFilterInputs('flt-max-sem', this)" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                </label>
+            </div>
+            <div class="chart-container"><canvas id="chartQ4"></canvas></div></div>
                 </div>
             </div>
 
@@ -507,8 +529,30 @@
                 <div class="charts-grid-2x2">
                     <div class="chart-box"><div class="chart-box-title">kg/m²/sem</div><div class="chart-container"><canvas id="chartP1"></canvas></div></div>
                     <div class="chart-box"><div class="chart-box-title">kg/h de trabalho</div><div class="chart-container"><canvas id="chartP2"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">h/ha/sem</div><div class="chart-container"><canvas id="chartP3"></canvas></div></div>
-                    <div class="chart-box"><div class="chart-box-title">kg/m²/cultura </div><div class="chart-container"><canvas id="chartP4"></canvas></div></div>
+                    <div class="chart-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="chart-box-title" style="margin-bottom:0;">h/ha/sem</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                        <input type="checkbox" class="chk-h2pl" onchange="syncH2plCheckbox(this)" style="cursor: pointer; width: 13px; height: 13px; margin: 0;">
+                        2pl/m²
+                    </label>
+                    <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
+                    Mín. kg/m²:
+                    <input type="number" class="flt-min-kg" value="0" min="0" step="0.5" oninput="syncFilterInputs('flt-min-kg', this)" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                </label>
+                </div>
+            </div>
+            <div class="chart-container"><canvas id="chartP3"></canvas></div></div>
+                    <div class="chart-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="chart-box-title" style="margin-bottom:0;">kg/m²/cultura</div>
+                <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
+                    Máx. semanas:
+                    <input type="number" class="flt-max-sem" value="" placeholder="∞" min="1" oninput="syncFilterInputs('flt-max-sem', this)" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                </label>
+            </div>
+            <div class="chart-container"><canvas id="chartP4"></canvas></div></div>
                 </div>
             </div>
 
@@ -542,10 +586,16 @@
         <div class="chart-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <div class="chart-box-title" style="margin-bottom:0;">Top 10 - h/ha/sem</div>
-                <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                        <input type="checkbox" class="chk-h2pl" onchange="syncH2plCheckbox(this)" style="cursor: pointer; width: 13px; height: 13px; margin: 0;">
+                        2pl/m²
+                    </label>
+                    <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
                     Mín. kg/m²:
-                    <input type="number" id="numMinKgM2" value="0" min="0" step="0.5" oninput="updateDashboard()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                    <input type="number" id="numMinKgM2" class="flt-min-kg" value="0" min="0" step="0.5" oninput="syncFilterInputs('flt-min-kg', this)" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
                 </label>
+                </div>
             </div>
             <div class="chart-container"><canvas id="chartC3"></canvas></div>
         </div>
@@ -556,7 +606,7 @@
                 <div class="chart-box-title" style="margin-bottom:0;">Top 10 - kg/m²/cultura</div>
                 <label style="font-size: 11px; font-weight: 600; color: #555; display: flex; align-items: center; gap: 4px;">
                     Máx. semanas:
-                    <input type="number" id="numMaxSemanas" value="" placeholder="∞" min="1" oninput="updateDashboard()" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
+                    <input type="number" id="numMaxSemanas" class="flt-max-sem" value="" placeholder="∞" min="1" oninput="syncFilterInputs('flt-max-sem', this)" style="width: 48px; padding: 1px 3px; border: 1px solid #ccc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px;">
                 </label>
             </div>
             <div class="chart-container"><canvas id="chartC4"></canvas></div>
@@ -680,7 +730,8 @@
 
            Colunas esperadas em cada aba:
            - Histórico de culturas (rawData): quinta, cultura, ano, tipo,
-             kg_m2_totais, kg_m2_sem, kg_h, inicio, fim, h_ha_sem
+             kg_m2_totais, kg_m2_sem, kg_h, inicio, fim, h_ha_sem,
+             h_ha_sem_2pl_m2
            - Produtividade anual por quinta (secondRawData): Ano,
              Horticilha, Portos Brancos, Zambujeira, Pegões, CCS,
              Sobreiro, Campelos, Caminhos da Cotovia
@@ -775,7 +826,8 @@
                 kg_h: toNumberOrNull(row['kg_h']),
                 inicio: excelValueToDateDDMMYYYY(row['inicio']),
                 fim: excelValueToDateDDMMYYYY(row['fim']),
-                h_ha_sem: toNumberOrNull(row['h_ha_sem'])
+                h_ha_sem: toNumberOrNull(row['h_ha_sem']),
+                h_ha_sem_2pl_m2: toNumberOrNull(row['h_ha_sem_2pl_m2'])
             };
         }
 
@@ -1135,6 +1187,7 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
             const m1Avg = getAvgFormatted('kg_m2_sem', 'kg', false);
             const m2Avg = getAvgFormatted('kg_h', 'kg', true);
             const m3Avg = getAvgFormatted('h_ha_sem', 'h', true);
+            const m3Avg2pl = getAvgFormatted('h_ha_sem_2pl_m2', 'h', true);
             const m4Avg = getAvgFormatted('kg_m2_totais', 'kg', false);
 
             card.innerHTML = `
@@ -1150,6 +1203,7 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
                 </div>
                 <div style="margin-bottom: 4px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 3px;">
                     <div class="metric-row"><span class="metric-label">h/ha/sem</span><span class="metric-val">${m3Avg}</span></div>
+                    <div class="metric-row" style="margin-top: 2px;"><span class="metric-label">h/ha/sem (2pl/m²)</span><span class="metric-val">${m3Avg2pl}</span></div>
                 </div>
                 <div>
                     <div class="metric-row"><span class="metric-label">kg/m²/cultura</span><span class="metric-val">${m4Avg}</span></div>
@@ -1419,13 +1473,63 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
     });
 }
 
+// Mantém os filtros (Mín. kg/m² / Máx. semanas) iguais em todas as abas
+function syncFilterInputs(cls, src) {
+    document.querySelectorAll('.' + cls).forEach(el => { if (el !== src) el.value = src.value; });
+    updateDashboard();
+}
+
+function getMinKgM2Filter() {
+    const el = document.getElementById('numMinKgM2');
+    return el ? (parseFloat(el.value) || 0) : 0;
+}
+
+function getMaxSemanasFilter() {
+    const el = document.getElementById('numMaxSemanas');
+    return el && el.value !== '' ? parseInt(el.value, 10) : null;
+}
+
+function calcSemanasCultura(d) {
+    const dataInicioStr = d.inicio || d.plantacao;
+    const dataFimStr = d.fim;
+    if (dataInicioStr && dataFimStr) {
+        const [d1, m1, y1] = dataInicioStr.split('/').map(Number);
+        const [d2, m2, y2] = dataFimStr.split('/').map(Number);
+        const diffMs = new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
+        return Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
+    }
+    return d.semanas_duracao ? Math.round(d.semanas_duracao) : 0;
+}
+
+function filterByMinKgM2(data) {
+    const minKg = getMinKgM2Filter();
+    return data.filter(d => (d.kg_m2_totais || 0) >= minKg);
+}
+
+function filterByMaxSemanas(data) {
+    const maxSem = getMaxSemanasFilter();
+    if (maxSem === null) return data;
+    return data.filter(d => calcSemanasCultura(d) <= maxSem);
+}
+
+// Checkbox "2pl/m²": mostra h/ha/sem ajustadas a 2 plantas/m² (igual nos 3 gráficos)
+function syncH2plCheckbox(src) {
+    document.querySelectorAll('.chk-h2pl').forEach(el => { el.checked = src.checked; });
+    updateDashboard();
+}
+
+function getHhaKey() {
+    const el = document.querySelector('.chk-h2pl');
+    return (el && el.checked) ? 'h_ha_sem_2pl_m2' : 'h_ha_sem';
+}
+
 //////////////GRÁFICO DAS QUINTAS///////////////
 
 function updateTabQuintas(data) {
-    const calcFarmAvg = (key, lowerIsBetter = false, roundToUnit = false) => {
+    const calcFarmAvg = (key, lowerIsBetter = false, roundToUnit = false, src = data) => {
         let stats = [];
         Object.keys(farmColors).forEach(f => {
-            const fData = data.filter(d => d.quinta === f && d[key] > 0);
+            const fData = src.filter(d => d.quinta === f && d[key] > 0);
             if(fData.length) {
                 const avg = fData.reduce((a,b) => a + b[key], 0) / fData.length;
                 stats.push({ farm: f, avg: roundToUnit ? Math.round(avg) : +avg.toFixed(2) });
@@ -1441,12 +1545,13 @@ function updateTabQuintas(data) {
     const q2 = calcFarmAvg('kg_h', false, true);
     renderBarChart('chartQ2', q2.map(d => farmAbbreviations[d.farm] || d.farm), q2.map(d=>d.avg), q2.map(d=>farmColors[d.farm]), false, null, null);
 
-    const q3 = calcFarmAvg('h_ha_sem', true, true);
+    const q3 = calcFarmAvg(getHhaKey(), true, true, filterByMinKgM2(data));
     renderBarChart('chartQ3', q3.map(d => farmAbbreviations[d.farm] || d.farm), q3.map(d=>d.avg), q3.map(d=>farmColors[d.farm]), true, null, null);
 
+    const dataQ4 = filterByMaxSemanas(data);
     let q4Stats = [];
     Object.keys(farmColors).forEach(f => {
-        const fData = data.filter(d => d.quinta === f && d.kg_m2_totais > 0);
+        const fData = dataQ4.filter(d => d.quinta === f && d.kg_m2_totais > 0);
         if(fData.length) {
             const avgTotal = fData.reduce((a,b) => a + b.kg_m2_totais, 0) / fData.length;
             const avgWeeks = Math.round(fData.reduce((a, b) => a + (b.semanas_duracao || 0), 0) / fData.length);
@@ -1467,9 +1572,9 @@ function updateTabAnos(data) {
         yearBarColor = farmColors[selectedFarms[0]] || '#75b35c';
     }
 
-    const calcYearAvg = (key, roundToUnit = false) => {
+    const calcYearAvg = (key, roundToUnit = false, src = data) => {
         return years.map(yr => {
-            const yData = data.filter(d => d.ano === yr && d[key] > 0);
+            const yData = src.filter(d => d.ano === yr && d[key] > 0);
             if(!yData.length) return 0;
             const avg = yData.reduce((a,b)=>a+b[key],0) / yData.length;
             return roundToUnit ? Math.round(avg) : +avg.toFixed(2);
@@ -1478,16 +1583,17 @@ function updateTabAnos(data) {
 
     renderBarChart('chartP1', years, calcYearAvg('kg_m2_sem'), yearBarColor, false, null, null);
     renderBarChart('chartP2', years, calcYearAvg('kg_h'), yearBarColor, false, null, null);
-    renderBarChart('chartP3', years, calcYearAvg('h_ha_sem', true), yearBarColor, true, null, null);
+    renderBarChart('chartP3', years, calcYearAvg(getHhaKey(), true, filterByMinKgM2(data)), yearBarColor, true, null, null);
 
+    const dataP4 = filterByMaxSemanas(data);
     const yearTotals = years.map(yr => {
-        const yData = data.filter(d => d.ano === yr && d.kg_m2_totais > 0);
+        const yData = dataP4.filter(d => d.ano === yr && d.kg_m2_totais > 0);
         if (!yData.length) return 0;
         return +(yData.reduce((a, b) => a + b.kg_m2_totais, 0) / yData.length).toFixed(2);
     });
 
     const yearWeeks = years.map(yr => {
-        const yData = data.filter(d => d.ano === yr && d.kg_m2_totais > 0);
+        const yData = dataP4.filter(d => d.ano === yr && d.kg_m2_totais > 0);
         if (!yData.length) return 0;
         const sumWeeks = yData.reduce((a, b) => a + (b.semanas_duracao || 0), 0);
         return Math.round(sumWeeks / yData.length);
@@ -1618,7 +1724,7 @@ function updateTabCulturas(data) {
     renderBarChart('chartC2', c2.map(d => d.nameLabel), c2.map(d => d.avg), c2.map(d => colors[d.farm] || '#4a7c36'), false, c2.map(d => d.semanas), c2.map(d => d.inicio), fontSizeX);
 
     // 3. h/ha/sem: Filtra culturas com kg/m² totais >= minKgM2
-    const c3 = getCulturasList('h_ha_sem', true, true, (d, sem) => (d.kg_m2_totais || 0) >= minKgM2);
+    const c3 = getCulturasList(getHhaKey(), true, true, (d, sem) => (d.kg_m2_totais || 0) >= minKgM2);
     renderBarChart('chartC3', c3.map(d => d.nameLabel), c3.map(d => d.avg), c3.map(d => colors[d.farm] || '#4a7c36'), true, c3.map(d => d.semanas), c3.map(d => d.inicio), fontSizeX);
 
     // 4. kg/m²/cultura: Filtra culturas com semanas_duracao <= maxSemanas

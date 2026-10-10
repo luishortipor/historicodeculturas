@@ -1276,7 +1276,7 @@ function syncChartHover(sourceChartId, dataIndex) {
 // kg/m² com 2 casas decimais (só para tooltips); texto/valores não numéricos ficam como estão
 function fmtKgTooltip(v) {
     const n = (typeof v === 'number') ? v : Number(String(v).trim().replace(',', '.'));
-    return (v === null || v === undefined || String(v).trim() === '' || isNaN(n)) ? v : n.toFixed(2);
+    return (v === null || v === undefined || String(v).trim() === '' || isNaN(n)) ? v : n.toFixed(2).replace('.', ',');
 }
 
 function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null, xTickFontSize = 12) {
@@ -1843,7 +1843,7 @@ variations.push(varStr);
                                 callbacks: {
                                     label: function(context) {
                                         const v = context.raw;
-                                        return ` ${typeof v === 'number' ? v.toFixed(2) : v}`;
+                                        return ` ${typeof v === 'number' ? v.toFixed(2).replace('.', ',') : v}`;
                                     }
                                 }
                             },

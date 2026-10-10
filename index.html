@@ -1273,6 +1273,12 @@ function syncChartHover(sourceChartId, dataIndex) {
     isHoverSyncing = false;
 }
 
+// kg/m² com 2 casas decimais (só para tooltips); texto/valores não numéricos ficam como estão
+function fmtKgTooltip(v) {
+    const n = (typeof v === 'number') ? v : Number(String(v).trim().replace(',', '.'));
+    return (v === null || v === undefined || String(v).trim() === '' || isNaN(n)) ? v : n.toFixed(2);
+}
+
 function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = false, weeksVals = null, inicioVals = null, xTickFontSize = 12) {
     if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
 
@@ -1335,6 +1341,7 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
             callbacks: {
                 label: function(context) {
                     let value = context.raw || 0;
+                    if (fullUnit.includes('kg/m²')) value = fmtKgTooltip(value);
                     let mainText = ` ${value}${fullUnit}`;
                     
                     if (isCulturasTab) {
@@ -1358,7 +1365,7 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
                             const dataInicio = currentItem.inicio || currentItem.plantacao;
                             if (dataInicio) tooltipLines.push(` Início: ${dataInicio}`);
                             if (currentItem.fim) tooltipLines.push(` Fim: ${currentItem.fim}`);
-                            if (currentItem.kg_m2_totais !== undefined) tooltipLines.push(` Total: ${currentItem.kg_m2_totais} kg/m²`);
+                            if (currentItem.kg_m2_totais !== undefined) tooltipLines.push(` Total: ${fmtKgTooltip(currentItem.kg_m2_totais)} kg/m²`);
                         } else if (Array.isArray(inicioVals) && inicioVals[idx]) {
                             tooltipLines.push(` Início: ${inicioVals[idx]}`);
                         }
@@ -1832,6 +1839,14 @@ variations.push(varStr);
                         },
                         plugins: {
                             legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const v = context.raw;
+                                        return ` ${typeof v === 'number' ? v.toFixed(2) : v}`;
+                                    }
+                                }
+                            },
                             datalabels: {
                                 anchor: 'end',
                                 align: 'top',

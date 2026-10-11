@@ -1266,20 +1266,7 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
         farmData = farmData.filter(d => {
             if ((d.kg_m2_totais || 0) < minKgM2) return false;
 
-            let semanasCalculadas = 0;
-            const dataInicioStr = d.inicio || d.plantacao;
-            const dataFimStr = d.fim;
-
-            if (dataInicioStr && dataFimStr) {
-                const [d1, m1, y1] = dataInicioStr.split('/').map(Number);
-                const [d2, m2, y2] = dataFimStr.split('/').map(Number);
-                const dtInicio = new Date(y1, m1 - 1, d1);
-                const dtFim = new Date(y2, m2 - 1, d2);
-                const diffMs = dtFim - dtInicio;
-                semanasCalculadas = Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
-            } else if (d.semanas_duracao) {
-                semanasCalculadas = Math.round(d.semanas_duracao);
-            }
+            const semanasCalculadas = calcSemanasCultura(d);
 
             if (maxSemanasVal !== null && semanasCalculadas > maxSemanasVal) return false;
 
@@ -1507,7 +1494,7 @@ function renderBarChart(canvasId, labels, dataVals, colors, lowerIsBetter = fals
                         if (currentItem) {
                             const dataInicio = currentItem.inicio || currentItem.plantacao;
                             if (dataInicio) tooltipLines.push(` Início: ${dataInicio}`);
-                            if (currentItem.fim) tooltipLines.push(` Fim: ${currentItem.fim}`);
+                            tooltipLines.push(` Fim: ${(currentItem.fim && String(currentItem.fim).trim() !== '') ? currentItem.fim : 'Em curso'}`);
                             if (currentItem.kg_m2_totais !== undefined) tooltipLines.push(` Total: ${fmtKgTooltip(currentItem.kg_m2_totais)} kg/m²`);
                         } else if (Array.isArray(inicioVals) && inicioVals[idx]) {
                             tooltipLines.push(` Início: ${inicioVals[idx]}`);
@@ -1639,14 +1626,23 @@ function getMaxSemanasFilter() {
     return el && el.value !== '' ? parseInt(el.value, 10) : null;
 }
 
+// Nº de semanas da cultura: (fim - início); se não houver data de fim (em curso), usa a data de hoje como fim
 function calcSemanasCultura(d) {
     const dataInicioStr = d.inicio || d.plantacao;
-    const dataFimStr = d.fim;
-    if (dataInicioStr && dataFimStr) {
+    const dataFimStr = d.fim && String(d.fim).trim() !== '' ? d.fim : null;
+    if (dataInicioStr) {
         const [d1, m1, y1] = dataInicioStr.split('/').map(Number);
-        const [d2, m2, y2] = dataFimStr.split('/').map(Number);
-        const diffMs = new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
-        return Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
+        const dtInicio = new Date(y1, m1 - 1, d1);
+        let dtFim;
+        if (dataFimStr) {
+            const [d2, m2, y2] = dataFimStr.split('/').map(Number);
+            dtFim = new Date(y2, m2 - 1, d2);
+        } else {
+            const hoje = new Date();
+            dtFim = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+        }
+        const diffMs = dtFim - dtInicio;
+        if (!isNaN(diffMs)) return Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
     }
     return d.semanas_duracao ? Math.round(d.semanas_duracao) : 0;
 }
@@ -1813,23 +1809,9 @@ function updateTabCulturas(data) {
             const name = d.cultura;
             const val = d[key];
 
-            // --- CÁLCULO DINÂMICO DO Nº DE SEMANAS (fim - inicio) ---
-            let semanasCalculadas = 0;
+            // --- Nº DE SEMANAS (fim - início; sem fim = até hoje) ---
+            const semanasCalculadas = calcSemanasCultura(d);
             const dataInicioStr = d.inicio || d.plantacao;
-            const dataFimStr = d.fim;
-
-            if (dataInicioStr && dataFimStr) {
-                const [d1, m1, y1] = dataInicioStr.split('/').map(Number);
-                const [d2, m2, y2] = dataFimStr.split('/').map(Number);
-                
-                const dtInicio = new Date(y1, m1 - 1, d1);
-                const dtFim = new Date(y2, m2 - 1, d2);
-                
-                const diffMs = dtFim - dtInicio;
-                semanasCalculadas = Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
-            } else if (d.semanas_duracao) {
-                semanasCalculadas = Math.round(d.semanas_duracao);
-            }
             // ---------------------------------------------------
 
             if (!name || val === undefined || val === null || val <= 0) return;

@@ -1046,8 +1046,8 @@ let rawData = rawDataDefault;
 
         function initFilters() {
             const allYears = [...new Set([...rawData.map(d => d.ano), ...secondRawData.map(d => d.ano)])].sort((a,b) => a - b);
-            selectedYears = allYears.filter(y => y >= 2023);
-            if(selectedYears.length === 0) selectedYears = [...allYears];
+            // Predefinição: apenas os 2 anos mais recentes
+            selectedYears = allYears.slice(-2);
 
             const yearsGrid = document.getElementById('years-grid');
             yearsGrid.innerHTML = '';

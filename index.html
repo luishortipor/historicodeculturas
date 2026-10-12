@@ -1956,10 +1956,11 @@ variations.push(varStr);
                         responsive: true,
                         maintainAspectRatio: false,
                         animations: {
-                            y: {
+                            numbers: {
+                                type: 'number',
+                                properties: ['x', 'y', 'base', 'height'],
                                 duration: 1000,
-                                easing: 'easeOutQuart',
-                                from: 0
+                                easing: 'easeOutQuart'
                             }
                         },
                         plugins: {

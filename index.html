@@ -1974,16 +1974,18 @@ variations.push(varStr);
                                 }
                             },
                             datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                font: { size: 11, weight: 'bold' },
-                                formatter: (val, ctx) => {
-                                    if (!val || val === 0) return '';
-                                    const varStr = variations[ctx.dataIndex];
-                                    const valStr = typeof val === 'number' ? val.toFixed(2) : val;
-                                    return varStr ? `${valStr}\n${varStr}` : `${valStr}`;
-                                }
-                            }
+    anchor: 'end',
+    align: 'top',
+    font: { size: 11, weight: 'bold' },
+    textAlign: 'center',
+    formatter: (val, ctx) => {
+        if (!val || val === 0) return '';
+        const varStr = variations[ctx.dataIndex];
+        const valStr = typeof val === 'number' ? val.toFixed(2) : val;
+        const valWithUnit = `${valStr} kg`;
+        return varStr ? `${valWithUnit}\n${varStr}` : `${valWithUnit}`;
+    }
+}
                         },
                         scales: {
                             y: { beginAtZero: true, grace: '25%', ticks: { font: { size: 11 } } },

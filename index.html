@@ -465,6 +465,20 @@
         body.is-mobile .main-content {
             padding-top: 60px;
         }
+
+        /* ===== Filtro de período (slider duplo mês/ano) ===== */
+        .period-values { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: 2px 0 2px; }
+        .period-values span { flex: 1; text-align: center; font-size: 0.82rem; font-weight: 700; color: #ffffff; background: var(--btn-active-bg); border: 1px solid var(--btn-active-border); border-radius: 6px; padding: 4px 6px; white-space: nowrap; }
+        .period-values i { font-style: normal; color: #7a9c6d; font-size: 0.85rem; }
+        .period-slider { position: relative; height: 16px; margin: 0 2px; }
+        .period-slider .ps-track { position: absolute; left: 8px; right: 8px; top: 6px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.18); }
+        .period-slider .ps-fill { position: absolute; top: 0; bottom: 0; border-radius: 2px; background: var(--btn-active-border); }
+        .period-slider input[type=range] { position: absolute; left: 0; top: 0; width: 100%; height: 16px; margin: 0; padding: 0; background: transparent; pointer-events: none; -webkit-appearance: none; appearance: none; outline: none; }
+        .period-slider input[type=range]::-webkit-slider-runnable-track { background: transparent; height: 16px; -webkit-appearance: none; }
+        .period-slider input[type=range]::-moz-range-track { background: transparent; height: 16px; }
+        .period-slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; box-sizing: border-box; pointer-events: auto; width: 16px; height: 16px; margin-top: 0; border-radius: 50%; background: #ffffff; border: 3px solid var(--btn-active-border); box-shadow: 0 1px 3px rgba(0,0,0,0.4); cursor: grab; }
+        .period-slider input[type=range]::-moz-range-thumb { box-sizing: border-box; pointer-events: auto; width: 16px; height: 16px; border-radius: 50%; background: #ffffff; border: 3px solid var(--btn-active-border); box-shadow: 0 1px 3px rgba(0,0,0,0.4); cursor: grab; }
+        .period-slider input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; }
     </style>
 </head>
 <body>
@@ -520,6 +534,21 @@
             <button class="sidebar-close-btn" onclick="toggleMobileSidebar()">&times;</button>
         </div>
 
+        <div class="filter-section" id="period-filter">
+            <div class="filter-title">Período</div>
+            <div class="period-values"><span id="period-start-label">–</span><i>→</i><span id="period-end-label">–</span></div>
+            <div class="period-slider">
+                <div class="ps-track"><div class="ps-fill" id="period-fill"></div></div>
+                <input type="range" id="period-start" min="0" max="0" value="0" step="1" aria-label="Mês/ano de início" oninput="onPeriodInput('start')">
+                <input type="range" id="period-end" min="0" max="0" value="0" step="1" aria-label="Mês/ano de fim" oninput="onPeriodInput('end')">
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-title">Ano de início de colheita</div>
+            <div class="btn-grid" id="years-grid"></div>
+        </div>
+
         <div class="filter-section">
             <div class="filter-title">Época de plantação</div>
             <div class="btn-grid-1">
@@ -531,11 +560,6 @@
         <div class="filter-section">
             <div class="filter-title">Mês de plantação</div>
             <div class="btn-grid-3" id="months-grid"></div>
-        </div>
-
-        <div class="filter-section">
-            <div class="filter-title">Ano de início de colheita</div>
-            <div class="btn-grid" id="years-grid"></div>
         </div>
 
         <div class="filter-section">
@@ -1066,6 +1090,7 @@ let rawData = rawDataDefault;
                     btn.classList.toggle('active');
                     if(selectedYears.includes(yr)) selectedYears = selectedYears.filter(y => y !== yr);
                     else selectedYears.push(yr);
+                    syncPeriodFromFilters();
                     updateDashboard();
                 };
                 yearsGrid.appendChild(btn);
@@ -1103,13 +1128,184 @@ let rawData = rawDataDefault;
                     btn.classList.toggle('active');
                     if(selectedMonths.includes(mNum)) selectedMonths = selectedMonths.filter(x => x !== mNum);
                     else selectedMonths.push(mNum);
+                    syncPeriodFromFilters();
                     updateDashboard();
                 };
                 monthsGrid.appendChild(btn);
             });
 
             renderFarmButtons();
+            initPeriodSliderFromData();
         }
+
+
+        // ===== Filtro de período (mês/ano de início → mês/ano de fim) =====
+        // Índice de mês = ano*12 + (mês-1). Por predefinição o período cobre todo o histórico
+        // e o filtro fica inativo (periodLo/periodHi infinitos = nada é filtrado).
+        const PERIOD_MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        let periodMinIdx = 0;
+        let periodMaxIdx = 0;
+        let periodLo = -Infinity;
+        let periodHi = Infinity;
+        let periodTimer = null;
+
+        function periodFmt(idx) { return PERIOD_MONTHS[idx % 12] + '/' + Math.floor(idx / 12); }
+        function periodInactive() { return periodLo === -Infinity && periodHi === Infinity; }
+
+        function periodIdxFromDateStr(s) {
+            if (!s) return null;
+            const p = String(s).split('/');
+            if (p.length < 3) return null;
+            const m = parseInt(p[1], 10);
+            let y = parseInt(p[2], 10);
+            if (isNaN(m) || isNaN(y)) return null;
+            if (y < 100) y += 2000;
+            return y * 12 + (m - 1);
+        }
+
+        function inPeriodIdx(i) {
+            if (periodInactive()) return true;
+            if (i === null || i === undefined || isNaN(i)) return false;
+            return i >= periodLo && i <= periodHi;
+        }
+
+        // Um ano conta se pelo menos um dos seus meses cai dentro do período
+        function periodYearInRange(y) {
+            if (periodInactive()) return true;
+            const loY = periodLo === -Infinity ? -Infinity : Math.floor(periodLo / 12);
+            const hiY = periodHi === Infinity ? Infinity : Math.floor(periodHi / 12);
+            return y >= loY && y <= hiY;
+        }
+
+        function getActiveYears() { return selectedYears.filter(periodYearInRange); }
+
+        function initPeriodSlider(minIdx, maxIdx) {
+            const a = document.getElementById('period-start');
+            const b = document.getElementById('period-end');
+            const box = document.getElementById('period-filter');
+            if (!a || !b || !box) return;
+            periodLo = -Infinity;
+            periodHi = Infinity;
+            if (!isFinite(minIdx) || !isFinite(maxIdx)) { box.style.display = 'none'; return; }
+            box.style.display = '';
+            periodMinIdx = minIdx;
+            [a, b].forEach(el => { el.min = 0; el.max = maxIdx - minIdx; el.step = 1; });
+            periodMaxIdx = maxIdx;
+            a.value = 0;
+            b.value = maxIdx - minIdx;
+            renderPeriodSlider();
+            syncPeriodFromFilters();
+        }
+
+        // Limites atuais do período em índices absolutos (extremos abertos ficam nos limites dos dados)
+        function periodBoundsIdx() {
+            return [periodLo === -Infinity ? periodMinIdx : periodLo,
+                    periodHi === Infinity ? periodMaxIdx : periodHi];
+        }
+
+        // Meses (1-12) cobertos pelo período; 12 meses ou mais = todos
+        function periodCoveredMonths() {
+            const [loI, hiI] = periodBoundsIdx();
+            if (hiI - loI + 1 >= 12) return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            const ms = [];
+            for (let i = loI; i <= hiI; i++) ms.push(i % 12 + 1);
+            return ms;
+        }
+
+        // Posiciona o slider em [lo, hi] (índices absolutos), limitado aos dados disponíveis
+        function setPeriodRange(lo, hi) {
+            const a = document.getElementById('period-start');
+            const b = document.getElementById('period-end');
+            if (!a || !b) return;
+            const max = +b.max;
+            let s = Math.min(max, Math.max(0, lo - periodMinIdx));
+            let e = Math.min(max, Math.max(0, hi - periodMinIdx));
+            if (e < s) e = s;
+            a.value = s;
+            b.value = e;
+            periodLo = (s === 0) ? -Infinity : periodMinIdx + s;
+            periodHi = (e === max) ? Infinity : periodMinIdx + e;
+            renderPeriodSlider();
+        }
+
+        function onPeriodInput(which) {
+            const a = document.getElementById('period-start');
+            const b = document.getElementById('period-end');
+            let s = +a.value, e = +b.value;
+            if (which === 'start' && s > e) { s = e; a.value = s; }
+            if (which === 'end' && e < s) { e = s; b.value = e; }
+            periodLo = (s === 0) ? -Infinity : periodMinIdx + s;
+            periodHi = (e === +b.max) ? Infinity : periodMinIdx + e;
+            renderPeriodSlider();
+            applyPeriodToFilters();
+            clearTimeout(periodTimer);
+            periodTimer = setTimeout(periodChanged, 80);
+        }
+
+        function renderPeriodSlider() {
+            const a = document.getElementById('period-start');
+            const b = document.getElementById('period-end');
+            const max = +b.max;
+            const s = +a.value, e = +b.value;
+            document.getElementById('period-start-label').innerText = periodFmt(periodMinIdx + s);
+            document.getElementById('period-end-label').innerText = periodFmt(periodMinIdx + e);
+            const fill = document.getElementById('period-fill');
+            fill.style.left = (max ? (s / max) * 100 : 0) + '%';
+            fill.style.right = (max ? (100 - (e / max) * 100) : 0) + '%';
+            // Se os dois cursores coincidem, o de cima tem de ser o que consegue afastar-se
+            a.style.zIndex = (s === e && s > max / 2) ? 5 : 3;
+            b.style.zIndex = 4;
+        }
+
+        // Mesma base dos botões: ano (d.ano) + mês de plantação (d.mes); sem esses, usa a data de início
+        function periodIdxOfRow(d) {
+            const fromDate = periodIdxFromDateStr(d.inicio || d.plantacao);
+            const mes = d.mes || (fromDate !== null ? fromDate % 12 + 1 : null);
+            if (d.ano && mes) return d.ano * 12 + (mes - 1);
+            return fromDate;
+        }
+        function inPeriodRow(d) { return periodInactive() ? true : inPeriodIdx(periodIdxOfRow(d)); }
+
+        function initPeriodSliderFromData() {
+            let mn = Infinity, mx = -Infinity;
+            rawData.forEach(d => {
+                const i = periodIdxOfRow(d);
+                if (i === null || isNaN(i)) return;
+                if (i < mn) mn = i;
+                if (i > mx) mx = i;
+            });
+            initPeriodSlider(mn, mx);
+        }
+
+        // Slider -> filtros: anos e meses (e épocas) passam a refletir o período escolhido
+        function applyPeriodToFilters() {
+            const loY = periodLo === -Infinity ? -Infinity : Math.floor(periodLo / 12);
+            const hiY = periodHi === Infinity ? Infinity : Math.floor(periodHi / 12);
+            const yBtns = [...document.querySelectorAll('#years-grid .btn-filter')];
+            selectedYears = yBtns.map(b => parseInt(b.innerText, 10)).filter(y => y >= loY && y <= hiY);
+            yBtns.forEach(b => b.classList.toggle('active', selectedYears.includes(parseInt(b.innerText, 10))));
+
+            selectedMonths = periodCoveredMonths();
+            for (let m = 1; m <= 12; m++) {
+                const mb = document.getElementById(`m-btn-${m}`);
+                if (mb) mb.classList.toggle('active', selectedMonths.includes(m));
+            }
+            const allSel = arr => arr.every(m => selectedMonths.includes(m));
+            const epO = document.getElementById('ep-outono');
+            const epP = document.getElementById('ep-primavera');
+            if (epO) epO.classList.toggle('active', allSel([9, 10, 11, 12, 1, 2]));
+            if (epP) epP.classList.toggle('active', allSel([3, 4, 5, 6, 7, 8]));
+        }
+
+        // Filtros (anos / meses / épocas) -> slider
+        function syncPeriodFromFilters() {
+            if (!selectedYears.length || !selectedMonths.length) return;
+            const ys = [...selectedYears].sort((a, b) => a - b);
+            setPeriodRange(ys[0] * 12 + Math.min(...selectedMonths) - 1,
+                           ys[ys.length - 1] * 12 + Math.max(...selectedMonths) - 1);
+        }
+
+        function periodChanged() { updateDashboard(); }
 
         // Mini = exatamente "Cherry" e "Mini-Pêra"; Grande = todos os outros tipos (incluindo Mini-Coração)
         const MINI_TYPES = ['cherry', 'mini-pera'];
@@ -1194,6 +1390,7 @@ let rawData = rawDataDefault;
                 if(mBtn) mBtn.classList.toggle('active', isActive);
             });
 
+            syncPeriodFromFilters();
             updateDashboard();
         }
 
@@ -1218,6 +1415,7 @@ let rawData = rawDataDefault;
 
         const matchesFilters = 
             selectedYears.includes(d.ano) &&
+            inPeriodRow(d) &&
             selectedMonths.includes(d.mes) &&
             selectedTypes.includes(d.tipo) &&
             selectedFarms.includes(d.quinta);
@@ -1286,7 +1484,7 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
         // kg/m²/ano só aparece quando os filtros de Tipo e Cultura não estão a filtrar nada
         const showKgM2Ano = !isTypeOrCultureFiltering();
         const farmYearMatches = showKgM2Ano
-            ? secondRawData.filter(d => d.quinta === farm && selectedYears.includes(d.ano) && d.kg_m2_ano > 0)
+            ? secondRawData.filter(d => d.quinta === farm && getActiveYears().includes(d.ano) && d.kg_m2_ano > 0)
             : [];
         
         let kgM2AnoAvgStr = '-';
@@ -1719,7 +1917,7 @@ function updateTabQuintas(data) {
 //////////////GRÁFICO DOS ANOS///////////////
 
 function updateTabAnos(data) {
-    const years = [...selectedYears].sort((a,b) => a - b);
+    const years = getActiveYears().sort((a,b) => a - b);
     let yearBarColor = '#75b35c';
     if (selectedFarms.length === 1) {
         yearBarColor = farmColors[selectedFarms[0]] || '#75b35c';
@@ -1879,7 +2077,7 @@ function updateTabCulturas(data) {
         function updateTabKgM2Ano() {
             const canvasId = 'chartKgM2Ano';
             const ungrouped = document.getElementById('ungroupYearsToggle').checked;
-            const filteredYears = [...selectedYears].sort((a,b) => a - b);
+            const filteredYears = getActiveYears().sort((a,b) => a - b);
             const filteredFarms = selectedFarms;
 
             if (!ungrouped) {

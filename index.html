@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <!-- SheetJS: leitura de ficheiros Excel (.xlsx/.xls/.csv) no browser -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- Google Fonts -->
+    <!-- Google Fonts -->f
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -535,7 +535,7 @@
         </div>
 
         <div class="filter-section" id="period-filter">
-            <div class="filter-title">Período</div>
+            <div class="filter-title">Período <span style="text-transform: none;">(plantação)</span></div>
             <div class="period-values"><span id="period-start-label">–</span><i>→</i><span id="period-end-label">–</span></div>
             <div class="period-slider">
                 <div class="ps-track"><div class="ps-fill" id="period-fill"></div></div>
@@ -739,7 +739,7 @@
                         </div>
                         <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
                             <input type="checkbox" id="ungroupYearsToggle" checked onchange="updateDashboard()" style="width: 16px; height: 16px; cursor: pointer;">
-                            Separar por ano
+                            Dividir por ano
                         </label>
                     </div>
                     <div class="chart-container" style="height: 380px;">
@@ -973,9 +973,22 @@
         function computeMesField(dataArr) {
             dataArr.forEach(d => {
                 const dataInicio = d.inicio || d.plantacao;
-                if (!d.mes && dataInicio) {
-                    const parts = dataInicio.split('/');
-                    if (parts.length >= 2) d.mes = parseInt(parts[1], 10);
+                if (dataInicio) {
+                    const parts = String(dataInicio).split('/');
+                    if (parts.length >= 2) {
+                        const m = parseInt(parts[1], 10);
+                        if (!isNaN(m)) d.mes = m;
+                    }
+                    // O ano passa a ser sempre o ano da data de início (a coluna "ano" do Excel é ignorada
+                    // quando há data de início; fica guardada em ano_excel)
+                    if (parts.length >= 3) {
+                        let y = parseInt(parts[2], 10);
+                        if (!isNaN(y)) {
+                            if (y < 100) y += 2000;
+                            if (d.ano_excel === undefined) d.ano_excel = d.ano;
+                            d.ano = y;
+                        }
+                    }
                 }
             });
             return dataArr;
@@ -1263,12 +1276,13 @@ let rawData = rawDataDefault;
             b.style.zIndex = 4;
         }
 
-        // Mesma base dos botões: ano (d.ano) + mês de plantação (d.mes); sem esses, usa a data de início
+        // Mês e ano vêm da data de início (a mesma base dos botões de ano e mês)
         function periodIdxOfRow(d) {
             const fromDate = periodIdxFromDateStr(d.inicio || d.plantacao);
-            const mes = d.mes || (fromDate !== null ? fromDate % 12 + 1 : null);
-            if (d.ano && mes) return d.ano * 12 + (mes - 1);
-            return fromDate;
+            if (fromDate !== null) return fromDate;
+            // Sem data de início: recorre a ano + mês, se existirem
+            if (d.ano && d.mes) return d.ano * 12 + (d.mes - 1);
+            return null;
         }
         function inPeriodRow(d) { return periodInactive() ? true : inPeriodIdx(periodIdxOfRow(d)); }
 

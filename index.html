@@ -2006,8 +2006,8 @@ function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = fal
                 family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
             },
             generateLabels: () => farmSeries.map((s, i) => ({
-    text: s.farm,
-    fillStyle: farmColors[s.farm],
+                text: farmAbbreviations[s.farm] || s.farm,
+                fillStyle: farmColors[s.farm],
                 strokeStyle: farmBorderColors[s.farm] || '#7F7F7F',
                 lineWidth: 1.5,
                 hidden: hiddenFarms.has(s.farm),

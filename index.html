@@ -1095,7 +1095,7 @@ let rawData = rawDataDefault;
 
         function initFilters() {
             const allYears = [...new Set([...rawData.map(d => d.ano), ...secondRawData.map(d => d.ano)])].sort((a,b) => a - b);
-            // Predefinição: apenas os 2 anos mais recentes
+            // Predefinição inicial (o slider de período redefine-o logo a seguir: últimos 24 meses)
             selectedYears = allYears.slice(-2);
 
             const yearsGrid = document.getElementById('years-grid');
@@ -1213,7 +1213,9 @@ let rawData = rawDataDefault;
             a.value = 0;
             b.value = maxIdx - minIdx;
             renderPeriodSlider();
-            syncPeriodFromFilters();
+            // Predefinição: últimos 24 meses (mês mais recente dos dados e os 23 anteriores, sem repetir o mês)
+            setPeriodRange(maxIdx - 23, maxIdx);
+            applyPeriodToFilters();
         }
 
         // Limites atuais do período em índices absolutos (extremos abertos ficam nos limites dos dados)

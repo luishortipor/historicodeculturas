@@ -562,7 +562,7 @@
             <div class="btn-grid-3" id="months-grid"></div>
         </div>
 
-        <div class="filter-section">
+        <div class="filter-section" id="type-filter-section">
             <div class="filter-title">Tipo</div>
             <div class="btn-grid-1" id="types-grid"></div>
         </div>
@@ -576,7 +576,7 @@
     <main class="main-content">
         <section>
             <h2 class="section-title">Análise estatística</h2>
-            <div class="culture-filters" style="margin-bottom: 8px;">
+            <div class="culture-filters" id="culture-filters-bar" style="margin-bottom: 8px;">
                 <input type="text" id="culture-search" placeholder="Filtrar culturas..." oninput="updateDashboard()" style="width: 140px; min-width: unset; flex: unset;">
                 <div class="activity-btns" id="culture-size-btns">
                     <button class="btn-act active" onclick="selectCultureSize('Todas', this)">Todas</button>
@@ -1417,17 +1417,19 @@ let rawData = rawDataDefault;
         }
 
         function getFilteredData() {
+    // Na aba kg/m²/ano os filtros de cultura/tipo/estado são ignorados (e estão escondidos)
+    const ignoreCultureType = (activeTabId === 'tab-kgm2ano');
     const rawFilter = document.getElementById('culture-search').value.toLowerCase().trim();
     
     // Separa por: vírgula, ponto e vírgula, barra, hífen, a palavra "ou", ou espaços
-    const terms = rawFilter
+    const terms = (rawFilter && !ignoreCultureType)
         ? rawFilter.split(/,|;|\/|-|\sou\s|\s+/).map(t => t.trim()).filter(Boolean)
         : [];
 
     const chkFin = document.getElementById('chk-finalizadas');
     const chkCur = document.getElementById('chk-emcurso');
-    const showFinalizadas = chkFin ? chkFin.checked : true;
-    const showEmCurso = chkCur ? chkCur.checked : true;
+    const showFinalizadas = ignoreCultureType ? true : (chkFin ? chkFin.checked : true);
+    const showEmCurso = ignoreCultureType ? true : (chkCur ? chkCur.checked : true);
 
     return rawData.filter(d => {
         // Finalizada = tem data de fim; Em curso = sem data de fim
@@ -1439,7 +1441,7 @@ let rawData = rawDataDefault;
             selectedYears.includes(d.ano) &&
             inPeriodRow(d) &&
             selectedMonths.includes(d.mes) &&
-            selectedTypes.includes(d.tipo) &&
+            (ignoreCultureType || selectedTypes.includes(d.tipo)) &&
             selectedFarms.includes(d.quinta);
 
         if (!matchesFilters) return false;
@@ -1452,6 +1454,7 @@ let rawData = rawDataDefault;
 
         // Devolve true quando os filtros de Tipo ou Cultura estão a restringir os dados
         function isTypeOrCultureFiltering() {
+            if (activeTabId === 'tab-kgm2ano') return false;
             const allTypes = [...new Set(rawData.map(d => d.tipo).filter(Boolean))];
             const typeFiltered = allTypes.some(tp => !selectedTypes.includes(tp));
             const searchEl = document.getElementById('culture-search');
@@ -2375,6 +2378,14 @@ variations.push(varStr);
             btn.classList.add('active');
 
             activeTabId = tabId;
+
+            // Na aba kg/m²/ano, os filtros de cultura e tipo não têm influência no gráfico
+            const hideCultureTypeFilters = (tabId === 'tab-kgm2ano');
+            ['type-filter-section', 'culture-filters-bar'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = hideCultureTypeFilters ? 'none' : '';
+            });
+
             requestAnimationFrame(() => {
                 updateDashboard();
             });

@@ -636,6 +636,12 @@
             </div>
 
             <div id="tab-ano" class="tab-content">
+                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 12px; padding: 0 4px;">
+                    <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px;">
+                        <input type="checkbox" id="chkSplitFarmsAnos" onchange="updateDashboard()" style="cursor: pointer; width: 16px; height: 16px;">
+                        Dividir por quinta
+                    </label>
+                </div>
                 <div class="charts-grid-2x2">
                     <div class="chart-box"><div class="chart-box-title">kg/m²/sem</div><div class="chart-container"><canvas id="chartP1"></canvas></div></div>
                     <div class="chart-box"><div class="chart-box-title">kg/h de trabalho</div><div class="chart-container"><canvas id="chartP2"></canvas></div></div>
@@ -669,12 +675,12 @@
 <div id="tab-cultura" class="tab-content">
     <!-- Checkboxes Globais da Aba -->
     <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 12px; padding: 0 4px;">
-        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0d7de;">
+        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px;">
             <input type="checkbox" id="chkTop10Culturas" checked onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
             Top 10
         </label>
 
-        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px; border: 1px solid #d0d7de;">
+        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px;">
             <input type="checkbox" id="chkInvertCulturas" onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
             Inverter Ordem
         </label>
@@ -1916,8 +1922,111 @@ function updateTabQuintas(data) {
 
 //////////////GRÁFICO DOS ANOS///////////////
 
+// Barras agrupadas: para cada ano, uma barra por quinta (em vez da média de todas)
+function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = false) {
+    if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+    let fullUnit = '', shortUnit = '';
+    if (canvasId.includes('1')) { fullUnit = ' kg/m²/sem'; shortUnit = ' kg'; }
+    else if (canvasId.includes('2')) { fullUnit = ' kg/h'; shortUnit = ' kg'; }
+    else if (canvasId.includes('3')) { fullUnit = ' h/ha/sem'; shortUnit = ' h'; }
+    else if (canvasId.includes('4')) { fullUnit = ' kg/m²'; shortUnit = ' kg'; }
+
+    // Variação face à melhor quinta de cada ano (igual ao formato da vista agrupada)
+    const variationFor = (farmIdx, yearIdx) => {
+        const v = farmSeries[farmIdx].vals[yearIdx];
+        if (!v) return '';
+        const vals = farmSeries.map(s => s.vals[yearIdx]).filter(x => typeof x === 'number' && x > 0);
+        if (vals.length <= 1) return '';
+        const best = lowerIsBetter ? Math.min(...vals) : Math.max(...vals);
+        if (v === best) return '(Melhor)';
+        const diff = ((v - best) / best) * 100;
+        return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
+    };
+
+    const datasets = farmSeries.map(s => ({
+        label: farmAbbreviations[s.farm] || s.farm,
+        data: s.vals,
+        backgroundColor: farmColors[s.farm],
+        borderColor: farmBorderColors[s.farm] || '#7F7F7F',
+        borderWidth: 1.5,
+        borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+    }));
+
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: labels, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animations: {
+                numbers: { type: 'number', properties: ['x', 'y', 'base', 'height'], duration: 1000, easing: 'easeOutQuart' }
+            },
+            layout: { padding: { top: 30 } },
+            plugins: {
+                legend: { display: true, position: 'bottom', labels: { boxWidth: 12, boxHeight: 12, font: { size: 11 } } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let value = context.raw || 0;
+                            value = fullUnit.includes('kg/m²') ? fmtKgTooltip(value) : fmtPT(value);
+                            return ` ${context.dataset.label}: ${value}${fullUnit}`;
+                        }
+                    }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    offset: 2,
+                    font: { size: 11, weight: 'bold' },
+                    textAlign: 'center',
+                    color: '#555555',
+                    formatter: (val, ctx) => {
+                        if (!val || val === 0) return '';
+                        const varStr = variationFor(ctx.datasetIndex, ctx.dataIndex);
+                        const valWithUnit = `${fmtPT(val)}${shortUnit}`;
+                        return varStr ? `${valWithUnit}\n${varStr}` : valWithUnit;
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, grace: '15%', grid: { color: '#f0ebd9' }, ticks: { font: { size: 11 } } },
+                x: { ticks: { font: { size: 12, weight: '500' } }, grid: { display: false } }
+            }
+        }
+    });
+}
+
 function updateTabAnos(data) {
     const years = getActiveYears().sort((a,b) => a - b);
+    const chkSplit = document.getElementById('chkSplitFarmsAnos');
+    const splitByFarm = chkSplit ? chkSplit.checked : false;
+
+    const dataMinKg = filterByMinKgM2(data);
+    const dataP4 = filterByMaxSemanas(data);
+
+    if (splitByFarm) {
+        const farms = Object.keys(farmColors).filter(f => selectedFarms.includes(f));
+        const buildSeries = (key, roundToUnit = false, src = data) => {
+            return farms.map(f => ({
+                farm: f,
+                vals: years.map(yr => {
+                    const yData = src.filter(d => d.quinta === f && d.ano === yr && d[key] > 0);
+                    if (!yData.length) return 0;
+                    const avg = yData.reduce((a, b) => a + b[key], 0) / yData.length;
+                    return roundToUnit ? Math.round(avg) : +avg.toFixed(2);
+                })
+            })).filter(s => s.vals.some(v => v > 0));
+        };
+
+        renderGroupedBarChart('chartP1', years, buildSeries('kg_m2_sem'));
+        renderGroupedBarChart('chartP2', years, buildSeries('kg_h'));
+        renderGroupedBarChart('chartP3', years, buildSeries(getHhaKey(), true, dataMinKg), true);
+        renderGroupedBarChart('chartP4', years, buildSeries('kg_m2_totais', false, dataP4));
+        return;
+    }
+
     let yearBarColor = '#75b35c';
     if (selectedFarms.length === 1) {
         yearBarColor = farmColors[selectedFarms[0]] || '#75b35c';
@@ -1934,20 +2043,12 @@ function updateTabAnos(data) {
 
     renderBarChart('chartP1', years, calcYearAvg('kg_m2_sem'), yearBarColor, false, null, null);
     renderBarChart('chartP2', years, calcYearAvg('kg_h'), yearBarColor, false, null, null);
-    renderBarChart('chartP3', years, calcYearAvg(getHhaKey(), true, filterByMinKgM2(data)), yearBarColor, true, null, null);
+    renderBarChart('chartP3', years, calcYearAvg(getHhaKey(), true, dataMinKg), yearBarColor, true, null, null);
 
-    const dataP4 = filterByMaxSemanas(data);
     const yearTotals = years.map(yr => {
         const yData = dataP4.filter(d => d.ano === yr && d.kg_m2_totais > 0);
         if (!yData.length) return 0;
         return +(yData.reduce((a, b) => a + b.kg_m2_totais, 0) / yData.length).toFixed(2);
-    });
-
-    const yearWeeks = years.map(yr => {
-        const yData = dataP4.filter(d => d.ano === yr && d.kg_m2_totais > 0);
-        if (!yData.length) return 0;
-        const sumWeeks = yData.reduce((a, b) => a + (b.semanas_duracao || 0), 0);
-        return Math.round(sumWeeks / yData.length);
     });
 
     renderBarChart('chartP4', years, yearTotals, yearBarColor, false, null, null);

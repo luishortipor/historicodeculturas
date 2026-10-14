@@ -1994,19 +1994,25 @@ function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = fal
             },
             layout: { padding: { top: 30 } },
             plugins: {
-                legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 12, boxHeight: 12, font: { size: 11 },
-                        generateLabels: () => farmSeries.map((s, i) => ({
-                            text: farmAbbreviations[s.farm] || s.farm,
-                            fillStyle: farmColors[s.farm],
-                            strokeStyle: farmBorderColors[s.farm] || '#7F7F7F',
-                            lineWidth: 1.5,
-                            hidden: hiddenFarms.has(s.farm),
-                            farmIdx: i
-                        }))
+    legend: {
+        display: true,
+        position: 'bottom',
+        labels: {
+            boxWidth: 12, 
+            boxHeight: 12, 
+            font: { 
+                size: 11, 
+                weight: 'normal',
+                family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            },
+            generateLabels: () => farmSeries.map((s, i) => ({
+    text: s.farm,
+    fillStyle: farmColors[s.farm],
+                strokeStyle: farmBorderColors[s.farm] || '#7F7F7F',
+                lineWidth: 1.5,
+                hidden: hiddenFarms.has(s.farm),
+                farmIdx: i
+            }))
                     },
                     onClick: (e, item) => {
                         const h = new Set(hiddenFarms);

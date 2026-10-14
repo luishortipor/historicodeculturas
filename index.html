@@ -1939,7 +1939,7 @@ function updateTabQuintas(data) {
 //////////////GRÁFICO DOS ANOS///////////////
 
 // Barras agrupadas: para cada ano, uma barra por quinta (em vez da média de todas)
-function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = false) {
+function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = false, hiddenFarms = new Set()) {
     if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
 
     let fullUnit = '', shortUnit = '';
@@ -1960,11 +1960,24 @@ function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = fal
         return isFinite(diff) ? `${diff > 0 ? '+' : ''}${diff.toFixed(0)}%` : '';
     };
 
-    const datasets = farmSeries.map(s => ({
-        label: farmAbbreviations[s.farm] || s.farm,
-        data: s.vals,
-        backgroundColor: farmColors[s.farm],
-        borderColor: farmBorderColors[s.farm] || '#7F7F7F',
+    // Dentro de cada ano, as barras ficam ordenadas do melhor para o pior.
+    // ranked[k][anoIdx] = índice da quinta que ocupa a posição k nesse ano (-1 = sem barra)
+    const ranked = farmSeries.map(() => labels.map(() => -1));
+    labels.forEach((_, yi) => {
+        const order = farmSeries
+            .map((s, i) => ({ i, v: s.vals[yi] }))
+            .filter(o => !hiddenFarms.has(farmSeries[o.i].farm) && typeof o.v === 'number' && o.v > 0);
+        order.sort((a, b) => ((lowerIsBetter ? a.v - b.v : b.v - a.v) || (a.i - b.i)));
+        order.forEach((o, k) => { ranked[k][yi] = o.i; });
+    });
+    const slots = ranked.filter(row => row.some(x => x >= 0));
+    const farmAt = (dsIdx, yi) => (slots[dsIdx] ? slots[dsIdx][yi] : -1);
+
+    const datasets = slots.map(row => ({
+        label: 'rank',
+        data: row.map((f, yi) => f >= 0 ? farmSeries[f].vals[yi] : 0),
+        backgroundColor: row.map(f => f >= 0 ? farmColors[farmSeries[f].farm] : 'transparent'),
+        borderColor: row.map(f => f >= 0 ? (farmBorderColors[farmSeries[f].farm] || '#7F7F7F') : 'transparent'),
         borderWidth: 1.5,
         borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
     }));
@@ -1981,13 +1994,35 @@ function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = fal
             },
             layout: { padding: { top: 30 } },
             plugins: {
-                legend: { display: true, position: 'bottom', labels: { boxWidth: 12, boxHeight: 12, font: { size: 11 } } },
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12, boxHeight: 12, font: { size: 11 },
+                        generateLabels: () => farmSeries.map((s, i) => ({
+                            text: farmAbbreviations[s.farm] || s.farm,
+                            fillStyle: farmColors[s.farm],
+                            strokeStyle: farmBorderColors[s.farm] || '#7F7F7F',
+                            lineWidth: 1.5,
+                            hidden: hiddenFarms.has(s.farm),
+                            farmIdx: i
+                        }))
+                    },
+                    onClick: (e, item) => {
+                        const h = new Set(hiddenFarms);
+                        const farm = farmSeries[item.farmIdx].farm;
+                        if (h.has(farm)) h.delete(farm); else h.add(farm);
+                        setTimeout(() => renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter, h), 0);
+                    }
+                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             let value = context.raw || 0;
                             value = fullUnit.includes('kg/m²') ? fmtKgTooltip(value) : fmtPT(value);
-                            return ` ${context.dataset.label}: ${value}${fullUnit}`;
+                            const f = farmAt(context.datasetIndex, context.dataIndex);
+                            const farmName = f >= 0 ? (farmAbbreviations[farmSeries[f].farm] || farmSeries[f].farm) : '';
+                            return ` ${farmName}: ${value}${fullUnit}`;
                         }
                     }
                 },
@@ -2000,7 +2035,8 @@ function renderGroupedBarChart(canvasId, labels, farmSeries, lowerIsBetter = fal
                     color: '#555555',
                     formatter: (val, ctx) => {
                         if (!val || val === 0) return '';
-                        const varStr = variationFor(ctx.datasetIndex, ctx.dataIndex);
+                        const f = farmAt(ctx.datasetIndex, ctx.dataIndex);
+                        const varStr = f >= 0 ? variationFor(f, ctx.dataIndex) : '';
                         const valWithUnit = `${fmtPT(val)}${shortUnit}`;
                         return varStr ? `${valWithUnit}\n${varStr}` : valWithUnit;
                     }

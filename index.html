@@ -741,7 +741,7 @@
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                         <div>
                             <div class="chart-box-title" style="margin-bottom:2px;">kg/m²/ano</div>
-                            <div style="font-size: 0.75rem; font-style: italic; color: var(--text-muted);">Total de kg produzidos na área da quinta (não tem em conta filtros de cultura/tipo)</div>
+                            <div style="font-size: 0.75rem; font-style: italic; color: var(--text-muted);">Total de kg produzidos na área da quinta</div>
                         </div>
                         <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
                             <input type="checkbox" id="ungroupYearsToggle" checked onchange="updateDashboard()" style="width: 16px; height: 16px; cursor: pointer;">
@@ -1230,7 +1230,7 @@ let rawData = rawDataDefault;
             periodLo = -Infinity;
             periodHi = Infinity;
             if (!isFinite(minIdx) || !isFinite(maxIdx)) { box.style.display = 'none'; return; }
-            box.style.display = '';
+            box.style.display = (activeTabId === 'tab-kgm2ano') ? 'none' : '';
             periodMinIdx = minIdx;
             [a, b].forEach(el => { el.min = 0; el.max = maxIdx - minIdx; el.step = 1; });
             periodMaxIdx = maxIdx;
@@ -2425,7 +2425,7 @@ variations.push(varStr);
             // Na aba kg/m²/ano: esconde Tipo, Época e Mês; a pesquisa e as checkboxes ficam
             // esbatidas e bloqueadas (checkboxes sempre ativas); o tamanho (Todas/Grande/Mini) influencia o gráfico
             const isKg = (tabId === 'tab-kgm2ano');
-            ['type-filter-section', 'season-filter-section', 'month-filter-section'].forEach(id => {
+            ['period-filter', 'type-filter-section', 'season-filter-section', 'month-filter-section'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = isKg ? 'none' : '';
             });

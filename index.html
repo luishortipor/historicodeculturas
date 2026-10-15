@@ -136,6 +136,7 @@
             gap: 6px;
         }
 
+        .kg-locked { opacity: 0.4; pointer-events: none; }
         .filter-title {
             font-size: 0.8rem;
             font-weight: 600;
@@ -549,7 +550,7 @@
             <div class="btn-grid" id="years-grid"></div>
         </div>
 
-        <div class="filter-section">
+        <div class="filter-section" id="season-filter-section">
             <div class="filter-title">Época de plantação</div>
             <div class="btn-grid-1">
                 <button class="btn-filter active" id="ep-outono" onclick="toggleSeason('outono')">Outono / Inverno (Set a Fev)</button>
@@ -557,7 +558,7 @@
             </div>
         </div>
 
-        <div class="filter-section">
+        <div class="filter-section" id="month-filter-section">
             <div class="filter-title">Mês de plantação</div>
             <div class="btn-grid-3" id="months-grid"></div>
         </div>
@@ -683,6 +684,11 @@
         <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px;">
             <input type="checkbox" id="chkInvertCulturas" onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
             Inverter Ordem
+        </label>
+
+        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px;">
+            <input type="checkbox" id="chkSepAnosCulturas" onchange="handleTop10CulturasChange()" style="cursor: pointer; width: 16px; height: 16px;">
+            Separar por anos
         </label>
     </div>
 
@@ -955,14 +961,24 @@
 
         // Converte as linhas "largas" (uma coluna por quinta) da aba de produtividade
         // anual no formato "longo" {ano, quinta, kg_m2_ano} usado por secondRawData
+        // Lê a coluna "Tamanho" (Todas / Grande / Mini); sem valor => "Todas"
+        function normalizeTamanho(row) {
+            const key = Object.keys(row).find(k => String(k).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim() === 'tamanho');
+            const v = key ? String(row[key] ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim() : '';
+            if (v.includes('mini')) return 'Mini';
+            if (v.includes('grande')) return 'Grande';
+            return 'Todas';
+        }
+
         function normalizeAnnualRows(rows) {
             const result = [];
             rows.forEach(row => {
                 const ano = toNumberOrNull(row['Ano']);
                 if (ano === null) return;
+                const tamanho = normalizeTamanho(row);
                 ANNUAL_FARM_COLUMNS.forEach(farm => {
                     const val = toNumberOrNull(row[farm]);
-                    if (val !== null) result.push({ ano: ano, quinta: farm, kg_m2_ano: val });
+                    if (val !== null) result.push({ ano: ano, quinta: farm, kg_m2_ano: val, tamanho: tamanho });
                 });
             });
             return result;
@@ -1076,6 +1092,14 @@ let rawData = rawDataDefault;
             { ano: 2017, quinta: "Horticilha", kg_m2_ano: 8.00 }
         ];
         let secondRawData = secondRawDataDefault;
+
+        // Tamanho selecionado (Todas/Grande/Mini) na aba kg/m²/ano
+        let kgSize = 'Todas';
+        // Linhas anuais do tamanho em uso (na aba kg/m²/ano o selecionado; nas outras, "Todas")
+        function annualRows() {
+            const size = (activeTabId === 'tab-kgm2ano') ? kgSize : 'Todas';
+            return secondRawData.filter(d => (d.tamanho || 'Todas') === size);
+        }
 
         let selectedMonths = [1,2,3,4,5,6,7,8,9,10,11,12];
         let selectedYears = [];
@@ -1342,6 +1366,13 @@ let rawData = rawDataDefault;
 
         // Botões Todas / Grande / Mini por cima dos cards: atualizam o filtro "Tipo" da barra lateral
         function selectCultureSize(size, btn) {
+            // Na aba kg/m²/ano o tamanho escolhe as linhas anuais; não mexe no filtro "Tipo"
+            if (activeTabId === 'tab-kgm2ano') {
+                kgSize = size;
+                updateSizeButtons();
+                updateDashboard();
+                return;
+            }
             const types = getAllTypes();
             if (size === 'Mini') selectedTypes = types.filter(isMiniType);
             else if (size === 'Grande') selectedTypes = types.filter(t => !isMiniType(t));
@@ -1365,7 +1396,8 @@ let rawData = rawDataDefault;
             const same = set => set.length > 0 && set.length === selectedTypes.length && set.every(t => selectedTypes.includes(t));
 
             let active = null;
-            if (same(types)) active = 'Todas';
+            if (activeTabId === 'tab-kgm2ano') active = kgSize;
+            else if (same(types)) active = 'Todas';
             else if (same(types.filter(isMiniType))) active = 'Mini';
             else if (same(types.filter(t => !isMiniType(t)))) active = 'Grande';
 
@@ -1440,8 +1472,10 @@ let rawData = rawDataDefault;
         const matchesFilters = 
             selectedYears.includes(d.ano) &&
             inPeriodRow(d) &&
-            selectedMonths.includes(d.mes) &&
-            (ignoreCultureType || selectedTypes.includes(d.tipo)) &&
+            (ignoreCultureType || selectedMonths.includes(d.mes)) &&
+            (ignoreCultureType
+                ? (kgSize === 'Todas' || (kgSize === 'Mini') === isMiniType(d.tipo))
+                : selectedTypes.includes(d.tipo)) &&
             selectedFarms.includes(d.quinta);
 
         if (!matchesFilters) return false;
@@ -1509,7 +1543,7 @@ function updateStats(data, minKgM2 = 0, maxSemanasVal = null) {
         // kg/m²/ano só aparece quando os filtros de Tipo e Cultura não estão a filtrar nada
         const showKgM2Ano = !isTypeOrCultureFiltering();
         const farmYearMatches = showKgM2Ano
-            ? secondRawData.filter(d => d.quinta === farm && getActiveYears().includes(d.ano) && d.kg_m2_ano > 0)
+            ? annualRows().filter(d => d.quinta === farm && getActiveYears().includes(d.ano) && d.kg_m2_ano > 0)
             : [];
         
         let kgM2AnoAvgStr = '-';
@@ -2157,6 +2191,8 @@ function updateTabCulturas(data) {
 
     const isTop10 = chkTop10 ? chkTop10.checked : true;
     const isInverted = chkInvert ? chkInvert.checked : false;
+    const chkSepAnos = document.getElementById('chkSepAnosCulturas');
+    const isSepAnos = chkSepAnos ? chkSepAnos.checked : false;
 
     const orderPrefix = isInverted ? '' : 'Top 10 -';
     const prefix = isTop10 ? `${orderPrefix}` : '';
@@ -2197,6 +2233,7 @@ function updateTabCulturas(data) {
                 nameLabel: displayName,
                 avg: roundToUnit ? Math.round(val) : +val.toFixed(2),
                 farm: d.quinta,
+                ano: yearNum || 0,
                 semanas: semanasCalculadas,
                 inicio: dataInicioStr || ''
             });
@@ -2208,7 +2245,13 @@ function updateTabCulturas(data) {
             list.reverse();
         }
 
-        return isTop10 ? list.slice(0, 10) : list;
+        const shown = isTop10 ? list.slice(0, 10) : list;
+
+        // "Separar por anos": agrupa as culturas mostradas por ano (do mais antigo ao mais recente),
+        // mantendo a ordem por valor dentro de cada ano (sort estável)
+        if (isSepAnos) shown.sort((a, b) => a.ano - b.ano);
+
+        return shown;
     };
 
     const colors = (typeof farmColors !== 'undefined') ? farmColors : {};
@@ -2245,7 +2288,7 @@ function updateTabCulturas(data) {
             if (!ungrouped) {
                 let stats = [];
                 filteredFarms.forEach(farm => {
-                    const farmMatches = secondRawData.filter(d => d.quinta === farm && filteredYears.includes(d.ano) && d.kg_m2_ano > 0);
+                    const farmMatches = annualRows().filter(d => d.quinta === farm && filteredYears.includes(d.ano) && d.kg_m2_ano > 0);
                     if (farmMatches.length > 0) {
                         const avg = farmMatches.reduce((acc, curr) => acc + curr.kg_m2_ano, 0) / farmMatches.length;
                         stats.push({ farm: farm, avg: +avg.toFixed(2) });
@@ -2273,7 +2316,7 @@ function updateTabCulturas(data) {
                 filteredYears.forEach(yr => {
                     const yearShort = String(yr).slice(-2);
                     let yearItems = filteredFarms.map(farm => {
-                        const match = secondRawData.find(d => d.ano === yr && d.quinta === farm);
+                        const match = annualRows().find(d => d.ano === yr && d.quinta === farm);
                         const val = (match && match.kg_m2_ano !== undefined) ? match.kg_m2_ano : 0;
                         const abbr = farmAbbreviations[farm] || farm;
                         return { farm, val, label: `${abbr} (${yearShort})` };
@@ -2379,12 +2422,32 @@ variations.push(varStr);
 
             activeTabId = tabId;
 
-            // Na aba kg/m²/ano, os filtros de cultura e tipo não têm influência no gráfico
-            const hideCultureTypeFilters = (tabId === 'tab-kgm2ano');
-            ['type-filter-section', 'culture-filters-bar'].forEach(id => {
+            // Na aba kg/m²/ano: esconde Tipo, Época e Mês; a pesquisa e as checkboxes ficam
+            // esbatidas e bloqueadas (checkboxes sempre ativas); o tamanho (Todas/Grande/Mini) influencia o gráfico
+            const isKg = (tabId === 'tab-kgm2ano');
+            ['type-filter-section', 'season-filter-section', 'month-filter-section'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.style.display = hideCultureTypeFilters ? 'none' : '';
+                if (el) el.style.display = isKg ? 'none' : '';
             });
+
+            const searchEl = document.getElementById('culture-search');
+            const chkFin = document.getElementById('chk-finalizadas');
+            const chkCur = document.getElementById('chk-emcurso');
+            const checkRow = document.querySelector('#culture-filters-bar .chart-check-row');
+            if (isKg && !window._kgLocked) {
+                window._kgSaved = { fin: chkFin.checked, cur: chkCur.checked };
+                chkFin.checked = true;
+                chkCur.checked = true;
+                window._kgLocked = true;
+            } else if (!isKg && window._kgLocked) {
+                chkFin.checked = window._kgSaved.fin;
+                chkCur.checked = window._kgSaved.cur;
+                window._kgLocked = false;
+            }
+            [searchEl, chkFin, chkCur].forEach(el => { if (el) el.disabled = isKg; });
+            if (searchEl) searchEl.classList.toggle('kg-locked', isKg);
+            if (checkRow) checkRow.classList.toggle('kg-locked', isKg);
+            updateSizeButtons();
 
             requestAnimationFrame(() => {
                 updateDashboard();

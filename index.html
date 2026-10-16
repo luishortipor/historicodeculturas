@@ -695,10 +695,10 @@
                             <div class="chart-box-title" style="margin-bottom:2px;">kg/m²/ano</div>
                             <div style="font-size: 0.75rem; font-style: italic; color: var(--text-muted);">Total de kg produzidos na área da quinta</div>
                         </div>
-                        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
-                            <input type="checkbox" id="ungroupYearsToggle" checked onchange="updateDashboard()" style="width: 16px; height: 16px; cursor: pointer;">
-                            Separar por ano
-                        </label>
+                        <label style="font-size: 13px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; padding: 6px 12px; border-radius: 6px;">
+    <input type="checkbox" id="ungroupYearsToggle" checked onchange="updateDashboard()" style="cursor: pointer; width: 16px; height: 16px;">
+    Separar por ano
+</label>
                     </div>
                     <div class="chart-container" style="height: 380px;">
                         <canvas id="chartKgM2Ano"></canvas>

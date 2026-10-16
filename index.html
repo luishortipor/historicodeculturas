@@ -1801,10 +1801,10 @@ function updateTabAnosUsingQCharts(data) {
             return +(valid.reduce((a,b) => a + b.kg_m2_totais, 0) / valid.length).toFixed(2);
         };
 
-        renderBarChart('chartQ1', ['Total Geral'], [calcGlobalAvg('kg_m2_sem', false, data)], globalBarColor);
-        renderBarChart('chartQ2', ['Total Geral'], [calcGlobalAvg('kg_h', true, data)], globalBarColor);
-        renderBarChart('chartQ3', ['Total Geral'], [calcGlobalAvg(getHhaKey(), true, dataMinKg)], globalBarColor, true);
-        renderBarChart('chartQ4', ['Total Geral'], [globalTotalAvg(dataP4)], globalBarColor);
+        renderBarChart('chartQ1', ['Média Geral'], [calcGlobalAvg('kg_m2_sem', false, data)], globalBarColor);
+        renderBarChart('chartQ2', ['Média Geral'], [calcGlobalAvg('kg_h', true, data)], globalBarColor);
+        renderBarChart('chartQ3', ['Média Geral'], [calcGlobalAvg(getHhaKey(), true, dataMinKg)], globalBarColor, true);
+        renderBarChart('chartQ4', ['Média Geral'], [globalTotalAvg(dataP4)], globalBarColor);
     }
 }
 
